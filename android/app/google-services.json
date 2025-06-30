@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "793194430829",
+    "project_id": "raising-6ef34",
+    "storage_bucket": "raising-6ef34.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793194430829:android:f8cc4d5003126f8b311a64",
+        "android_client_info": {
+          "package_name": "com.example.raising_india"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDASNlUbwbH6YnJxifxtmGhfFmxvTacYk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
