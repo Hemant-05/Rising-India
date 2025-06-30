@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'AppColour.dart';
+import '../constant/AppColour.dart';
 
 ButtonStyle elevated_button_style([double width = double.infinity]) {
   width = width == double.infinity

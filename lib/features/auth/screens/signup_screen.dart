@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/constant/AppColour.dart';
-import '../bloc/user_bloc.dart';
-import '../models/user_model.dart';
-import 'home_screen.dart';
+
+import '../../../bloc/user_bloc.dart';
+import '../../../models/user_model.dart';
+import '../../../screens/home_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});

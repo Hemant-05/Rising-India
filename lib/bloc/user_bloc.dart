@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 import '../models/user_model.dart';
 import 'package:equatable/equatable.dart';
@@ -36,7 +37,8 @@ class UserSignUp extends UserEvent {
 
 class UserSignIn extends UserEvent {
   final String email, password;
-  UserSignIn(this.email, this.password);
+  final bool rememberMe;
+  UserSignIn(this.email, this.password, this.rememberMe);
   @override
   List<Object?> get props => [email, password];
 }
@@ -128,6 +130,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final error = await authService.signIn(event.email, event.password);
       if (error == null) {
         final user = await authService.getCurrentUser();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (event.rememberMe) {
+          await prefs.setBool('rememberMe', true);
+        } else {
+          await prefs.remove('rememberMe');
+        }
         emit(UserAuthenticated(user!));
       } else {
         emit(UserError(error));

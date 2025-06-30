@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/features/on_boarding/screens/welcome_screen.dart';
+import 'package:raising_india/screens/splash_screen.dart';
 
 import 'firebase_options.dart';
 import 'bloc/user_bloc.dart';
@@ -26,10 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Raising India',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const WelcomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }

@@ -12,6 +12,4 @@ final String hello_hand_svg = "assets/images/hands/hello_hand.svg";
 final String congratulation_hand_svg = "assets/images/hands/congratulation_hand.svg";
 final String clapping_hand_svg = "assets/images/hands/clapping_hand.svg";
 
-final String background_image = "assets/images/background/background_vector.svg";
-
 final String done_svg = "assets/images/utility/done.svg";

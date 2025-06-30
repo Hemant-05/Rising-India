@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:raising_india/features/on_boarding/screens/welcome_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/user_bloc.dart';
 import '../constant/ConPath.dart';
-import 'login_screen.dart';
+import '../features/auth/screens/login_screen.dart';
 import 'home_screen.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -10,15 +12,18 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocListener<UserBloc, UserState>(
       listenWhen: (prev, curr) => curr is! UserInitial,
-      listener: (context, state) {
-        if (state is UserAuthenticated) {
+      listener: (context, state) async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        bool isRememberMe = prefs.getBool('rememberMe') ?? false;
+        if (isRememberMe && state is UserAuthenticated) {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-        } else if (state is UserUnauthenticated) {
+        } else if (isRememberMe && state is UserUnauthenticated) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+              context, MaterialPageRoute(builder: (_) => const WelcomeScreen()));
         }
       },
       child: Scaffold(

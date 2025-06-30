@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/constant/ConString.dart';
-import '../../../constant/bold_text_style.dart';
-import '../../../constant/elevated_button_style.dart';
+import '../../../comman/bold_text_style.dart';
+import '../../../comman/elevated_button_style.dart';
 import 'on_boarding_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
