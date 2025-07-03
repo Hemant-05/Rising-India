@@ -1,75 +1,11 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../services/auth_service.dart';
-import '../models/user_model.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../models/user_model.dart';
+import '../services/auth_service.dart';
+part 'auth_event.dart';
+part 'auth_state.dart';
 
-// Events
-abstract class UserEvent extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
 
-class AppStarted extends UserEvent {}
-
-class UserLoggedIn extends UserEvent {
-  final AppUser user;
-  UserLoggedIn(this.user);
-  @override
-  List<Object?> get props => [user];
-}
-
-class UserLoggedOut extends UserEvent {}
-
-class UserSignUp extends UserEvent {
-  final String name, email, number, password;
-  final UserRole role;
-  UserSignUp({
-    required this.name,
-    required this.email,
-    required this.number,
-    required this.password,
-    required this.role,
-  });
-  @override
-  List<Object?> get props => [name, email, number, password, role];
-}
-
-class UserSignIn extends UserEvent {
-  final String email, password;
-  final bool rememberMe;
-  UserSignIn(this.email, this.password, this.rememberMe);
-  @override
-  List<Object?> get props => [email, password];
-}
-
-class UserGoogleSignIn extends UserEvent {}
-
-// States
-abstract class UserState extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
-
-class UserInitial extends UserState {}
-
-class UserLoading extends UserState {}
-
-class UserAuthenticated extends UserState {
-  final AppUser user;
-  UserAuthenticated(this.user);
-  @override
-  List<Object?> get props => [user];
-}
-
-class UserUnauthenticated extends UserState {}
-
-class UserError extends UserState {
-  final String message;
-  UserError(this.message);
-  @override
-  List<Object?> get props => [message];
-}
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final AuthService authService;
@@ -82,6 +18,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserUnauthenticated());
       }
     });
+
     on<UserSignUp>((event, emit) async {
       emit(UserLoading());
       // Validate email format
@@ -103,6 +40,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserError('Invalid phone number format'));
         return;
       }
+      if (event.confirmPassword.isEmpty) {
+        emit(UserError('Confirm Password cannot be empty'));
+        return;
+      } else if (event.confirmPassword != event.password) {
+        emit(UserError('Passwords do not match'));
+        return;
+      }
       if (event.password.isEmpty) {
         emit(UserError('Password cannot be empty'));
         return;
@@ -110,7 +54,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserError('Password must be at least 6 characters long'));
         return;
       }
-
       final error = await authService.signUp(
         name: event.name,
         email: event.email,
@@ -145,15 +88,66 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final error = await authService.signIn(event.email, event.password);
       if (error == null) {
         final user = await authService.getCurrentUser();
-        /*SharedPreferences prefs = await SharedPreferences.getInstance();
-        if (event.rememberMe) {
-          await prefs.setBool('rememberMe', true);
-        } else {
-          await prefs.remove('rememberMe');
-        }*/
         emit(UserAuthenticated(user!));
       } else {
         emit(UserError(error));
+      }
+    });
+
+    on<SendVerificationCode>((event, emit) async {
+      emit(UserLoading());
+      if (event.email.isEmpty) {
+        emit(UserError('Email cannot be empty'));
+        return;
+      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(event.email)) {
+        emit(UserError('Invalid email format'));
+        return;
+      }
+      final error = await authService.sendVerificationCode(event.email);
+      if (error == 'ok') {
+        emit(ForgotPasswordState(event.email));
+      } else {
+        emit(UserError(error!));
+      }
+    });
+
+    on<VerifyCode>((event, emit) async {
+      emit(UserLoading());
+      final code = event.code.trim();
+      final error = await authService.verifyCode(code); //await authService.verifyCode(event.code);
+      if (error == 'ok') {
+        emit(VerificatoinSuccess(event.code));
+      } else {
+        emit(VerificationError(error!));
+      }
+    });
+
+    on<ResetPassword>((event, emit) async {
+      emit(UserLoading());
+      final code = event.code;
+      final email = event.email;
+      final password = event.password;
+      final confirmPassword = event.confirmPassword;
+      if(password .isEmpty) {
+        emit(UserError('Password cannot be empty'));
+        return;
+      } else if (password.length < 6) {
+        emit(UserError('Password must be at least 6 characters long'));
+        return;
+      }else if (confirmPassword.isEmpty) {
+        emit(UserError('Confirm Password cannot be empty'));
+        return;
+      } else if (confirmPassword != password) {
+        emit(UserError('Passwords do not match'));
+        return;
+      }
+      final res = await authService.resetPassword(
+        code,password
+      );
+      if (res == 'ok') {
+        emit(ResetPasswordSuccess(email));
+      } else {
+        emit(ResetPasswordError(res!));
       }
     });
     /*    on<UserGoogleSignIn>((event, emit) async {
@@ -166,6 +160,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserError(error));
       }
     });*/
+
     on<UserLoggedOut>((event, emit) async {
       emit(UserLoading());
       await authService.signOut();

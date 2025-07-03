@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/features/on_boarding/screens/welcome_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../bloc/user_bloc.dart';
 import '../constant/ConPath.dart';
-import '../features/auth/screens/login_screen.dart';
+import '../features/auth/bloc/auth_bloc.dart';
 import 'home_screen.dart';
 
 class SplashScreen extends StatelessWidget {

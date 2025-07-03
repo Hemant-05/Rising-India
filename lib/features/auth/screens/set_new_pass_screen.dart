@@ -6,31 +6,33 @@ import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
-import 'package:raising_india/features/auth/screens/signup_screen.dart';
 import '../../../comman/bold_text_style.dart';
 import '../../../comman/cus_text_field.dart';
 import '../../../screens/home_screen.dart';
 import '../bloc/auth_bloc.dart';
-import 'forgot_pass_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
 
+class SetNewPassScreen extends StatefulWidget {
+  const SetNewPassScreen({super.key, required this.email, required this.code});
+  final String email;
+  final String code;
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SetNewPassScreen> createState() => _SetNewPassScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+class _SetNewPassScreenState extends State<SetNewPassScreen> {
+  final _passController = TextEditingController();
+
+  final _conPasswordController = TextEditingController();
+
   String? _error;
-  bool isRememberMe = false;
 
   @override
   void initState() {
     super.initState();
     setStatusBarColor();
   }
+
   void setStatusBarColor() {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -44,13 +46,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
-        if (state is UserAuthenticated) {
+        if (state is ResetPasswordSuccess) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => const HomeScreen()),
-            (route) => false,
+                (route) => false,
           );
-        } else if (state is UserError) {
+        } else if (state is ResetPasswordError) {
           setState(() => _error = state.message);
         }
       },
@@ -75,10 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text('Log In', style: bold_text_style(AppColour.white)),
+                      Text('Reset Password', style: bold_text_style(AppColour.white)),
                       const SizedBox(height: 10),
                       Text(
-                        'Please sign in to your existing account',
+                        'Create a new password for your account',
                         style: simple_text_style(color: AppColour.white),
                       ),
                     ],
@@ -100,14 +102,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         children: [
                           cus_text_field(
-                            'EMAIL',
-                            _emailController,
-                            'example@gmail.com',
+                            'PASSWORD',
+                            _passController,
+                            '********',
+                            obscureText: true,
                           ),
                           const SizedBox(height: 20),
                           cus_text_field(
-                            'PASSWORD',
-                            _passwordController,
+                            'CONFIRM PASSWORD',
+                            _conPasswordController,
                             '********',
                             obscureText: true,
                           ),
@@ -115,43 +118,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Checkbox(
-                                    value: isRememberMe,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        isRememberMe = value ?? false;
-                                      });
-                                    },
-                                    activeColor: AppColour.primary,
-                                    side: MaterialStateBorderSide.resolveWith((states) {
-                                      if (states.contains(MaterialState.selected)) {
-                                        return BorderSide(color: AppColour.primary); // Checked border color
-                                      }
-                                      return BorderSide(color: AppColour.lightGrey); // Unchecked border color
-                                    }),
-                                  ),
-                                  Text(
-                                    'Remember Me',
-                                    style: simple_text_style(
-                                      color: AppColour.grey,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              Container(),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const ForgotPassScreen(),
-                                    ),
-                                  );
+
                                 },
                                 child: Text(
-                                  'Forgot Password?',
+                                  'Resend Code',
                                   style: simple_text_style(
                                     color: AppColour.primary,
                                     fontSize: 14,
@@ -166,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               _error!,
                               style: simple_text_style(color: AppColour.red),
                             ),
-                            const SizedBox(height: 20),
+                          if(_error != null )const SizedBox(height: 20),
                           BlocBuilder<UserBloc, UserState>(
                             builder: (context, state) {
                               if (state is UserLoading) {
@@ -178,17 +151,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               }
                               return ElevatedButton(
                                 onPressed: () {
+                                  String code = widget.code; // Retrieve the code from the previous screen or state
+                                  String email = widget.email; // Retrieve the email from the previous screen or state
+                                  String password = _passController.text.trim();
+                                  String confirmPassword = _conPasswordController.text.trim();
                                   BlocProvider.of<UserBloc>(context).add(
-                                    UserSignIn(
-                                      _emailController.text,
-                                      _passwordController.text,
-                                      isRememberMe,
-                                    ),
+                                    ResetPassword(code: code, email: email, password: password, confirmPassword: confirmPassword)
                                   );
                                 },
                                 style: elevated_button_style(),
                                 child: Text(
-                                  'LOG IN',
+                                  'RESET PASSWORD',
                                   style: simple_text_style(
                                     color: AppColour.white,
                                     fontWeight: FontWeight.bold,
@@ -196,29 +169,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               );
                             },
-                          ),
-                          const SizedBox(height: 20),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const SignupScreen(),
-                                ),
-                              );
-                            },
-                            child : RichText(
-                              text: TextSpan(
-                                text: 'Don\'t have an account? ',
-                                style: simple_text_style(color: AppColour.grey),
-                                children: [
-                                  TextSpan(
-                                    text: 'SIGN UP',
-                                    style: simple_text_style(color: AppColour.primary,fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
                         ],
                       ),

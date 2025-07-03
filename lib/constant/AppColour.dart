@@ -8,4 +8,5 @@ class AppColour {
   static final Color grey = Color(0xFF646982);
   static final Color lightGrey = Color(0xFFBABABA);
   static final Color red = Color(0xFFFF0000);
+  static final Color green = Color(0xFF33D526);
 }

@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import '../../../models/user_model.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -73,6 +74,38 @@ class AuthService extends ChangeNotifier {
       return e.message;
     } catch (e) {
       return "An unknown error occurred";
+    }
+  }
+
+  Future<String?> sendVerificationCode(String email) async{
+    try{
+      await _auth.sendPasswordResetEmail(email: email);
+      return 'ok';
+    } on FirebaseAuthException catch(e){
+      return e.message;
+    }catch (e){
+      return "An Unknow error occurred $e";
+    }
+  }
+
+  Future<String?> verifyCode(String code) async{
+    try{
+      return await _auth.verifyPasswordResetCode(code);
+    } on FirebaseAuthException catch(e){
+      return e.message;
+    }catch (e){
+      return "An Unknow error occurred $e";
+    }
+  }
+
+  Future<String?> resetPassword(String code,String newPass) async{
+    try{
+      await _auth.confirmPasswordReset(code: code, newPassword: newPass);
+      return 'ok';
+    } on FirebaseAuthException catch(e){
+      return e.message;
+    }catch (e){
+      return "An Unknow error occurred $e";
     }
   }
 
