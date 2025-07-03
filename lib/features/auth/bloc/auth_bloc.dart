@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/user_model.dart';
 import '../services/auth_service.dart';
 part 'auth_event.dart';
@@ -88,6 +89,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final error = await authService.signIn(event.email, event.password);
       if (error == null) {
         final user = await authService.getCurrentUser();
+        if (event.rememberMe) {
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setBool('rememberMe', true);
+          print('UserBloc: Remember me set to true');
+        } else {
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setBool('rememberMe', false);
+          print('UserBloc: Remember me set to false');
+        }
         emit(UserAuthenticated(user!));
       } else {
         emit(UserError(error));
@@ -150,6 +160,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(ResetPasswordError(res!));
       }
     });
+
     /*    on<UserGoogleSignIn>((event, emit) async {
       emit(UserLoading());
       final error = await authService.signInWithGoogle();

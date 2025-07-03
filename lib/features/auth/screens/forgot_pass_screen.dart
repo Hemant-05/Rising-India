@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:raising_india/features/auth/screens/verification_screen.dart';
 import '../../../comman/bold_text_style.dart';
 import '../../../comman/cus_text_field.dart';
 import '../../../comman/elevated_button_style.dart';
@@ -56,6 +55,7 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: AppColour.background,
         body: Stack(
           children: [

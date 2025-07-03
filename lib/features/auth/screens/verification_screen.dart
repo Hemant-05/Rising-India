@@ -52,6 +52,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: AppColour.background,
         body: Stack(
           children: [

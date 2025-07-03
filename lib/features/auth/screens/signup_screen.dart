@@ -63,6 +63,7 @@ class _SignupScreenState extends State<SignupScreen> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: AppColour.background,
         body: Stack(
           children: [

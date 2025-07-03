@@ -17,6 +17,7 @@ class HomeScreen extends StatelessWidget {
           role = state.user.role.name;
         }
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text('Home'),
             actions: [

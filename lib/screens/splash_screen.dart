@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:raising_india/features/auth/services/auth_service.dart';
 import 'package:raising_india/features/on_boarding/screens/welcome_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constant/ConPath.dart';
 import '../features/auth/bloc/auth_bloc.dart';
 import 'home_screen.dart';
@@ -14,12 +16,15 @@ class SplashScreen extends StatelessWidget {
     return BlocListener<UserBloc, UserState>(
       listenWhen: (prev, curr) => curr is! UserInitial,
       listener: (context, state) async {
-       /* SharedPreferences prefs = await SharedPreferences.getInstance();
-        bool isRememberMe = prefs.getBool('rememberMe') ?? false;*/
-        if (state is UserAuthenticated) {
+        AuthService service = AuthService();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        bool isRememberMe = prefs.getBool('rememberMe') ?? false;
+        print('Remember Me: $isRememberMe');
+        if (isRememberMe ?? state is UserAuthenticated) {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-        } else if (state is UserUnauthenticated) {
+        } else {
+          await service.signOut();
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (_) => const WelcomeScreen()));
         }

@@ -55,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: AppColour.background,
         body: Stack(
           children: [
@@ -121,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     value: isRememberMe,
                                     onChanged: (value) {
                                       setState(() {
-                                        isRememberMe = value ?? false;
+                                        isRememberMe = value!;
                                       });
                                     },
                                     activeColor: AppColour.primary,

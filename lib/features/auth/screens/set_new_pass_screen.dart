@@ -57,6 +57,7 @@ class _SetNewPassScreenState extends State<SetNewPassScreen> {
         }
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: AppColour.background,
         body: Stack(
           children: [
