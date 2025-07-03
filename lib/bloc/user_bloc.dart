@@ -125,17 +125,32 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserError(error));
       }
     });
+
     on<UserSignIn>((event, emit) async {
       emit(UserLoading());
+      if (event.email.isEmpty) {
+        emit(UserError('Email cannot be empty'));
+        return;
+      } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(event.email)) {
+        emit(UserError('Invalid email format'));
+        return;
+      }
+      if (event.password.isEmpty) {
+        emit(UserError('Please enter your password'));
+        return;
+      } else if (event.password.length < 6) {
+        emit(UserError('Password must be at least 6 characters long'));
+        return;
+      }
       final error = await authService.signIn(event.email, event.password);
       if (error == null) {
         final user = await authService.getCurrentUser();
-        SharedPreferences prefs = await SharedPreferences.getInstance();
+        /*SharedPreferences prefs = await SharedPreferences.getInstance();
         if (event.rememberMe) {
           await prefs.setBool('rememberMe', true);
         } else {
           await prefs.remove('rememberMe');
-        }
+        }*/
         emit(UserAuthenticated(user!));
       } else {
         emit(UserError(error));

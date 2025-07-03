@@ -16,12 +16,12 @@ class SplashScreen extends StatelessWidget {
     return BlocListener<UserBloc, UserState>(
       listenWhen: (prev, curr) => curr is! UserInitial,
       listener: (context, state) async {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        bool isRememberMe = prefs.getBool('rememberMe') ?? false;
-        if (isRememberMe && state is UserAuthenticated) {
+       /* SharedPreferences prefs = await SharedPreferences.getInstance();
+        bool isRememberMe = prefs.getBool('rememberMe') ?? false;*/
+        if (state is UserAuthenticated) {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (_) => const HomeScreen()));
-        } else if (isRememberMe && state is UserUnauthenticated) {
+        } else if (state is UserUnauthenticated) {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (_) => const WelcomeScreen()));
         }

@@ -145,62 +145,60 @@ class _LoginScreenState extends State<LoginScreen> {
                               _error!,
                               style: simple_text_style(color: AppColour.red),
                             ),
+                          if (_error != null)
+                            const SizedBox(height: 20),
                           BlocBuilder<UserBloc, UserState>(
                             builder: (context, state) {
                               if (state is UserLoading) {
                                 return SizedBox(
-                                  height: double.infinity,
-                                  width: 100,
+                                  height: 50,
+                                  width: 50,
                                   child: const CircularProgressIndicator(),
                                 );
                               }
-                              return Column(
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      BlocProvider.of<UserBloc>(context).add(
-                                        UserSignIn(
-                                          _emailController.text,
-                                          _passwordController.text,
-                                          isRememberMe,
-                                        ),
-                                      );
-                                    },
-                                    style: elevated_button_style(),
-                                    child: Text(
-                                      'LOG IN',
-                                      style: simple_text_style(
-                                        color: AppColour.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              return ElevatedButton(
+                                onPressed: () {
+                                  BlocProvider.of<UserBloc>(context).add(
+                                    UserSignIn(
+                                      _emailController.text,
+                                      _passwordController.text,
+                                      isRememberMe,
                                     ),
+                                  );
+                                },
+                                style: elevated_button_style(),
+                                child: Text(
+                                  'LOG IN',
+                                  style: simple_text_style(
+                                    color: AppColour.white,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  const SizedBox(height: 20),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => const SignupScreen(),
-                                        ),
-                                      );
-                                    },
-                                    child : RichText(
-                                      text: TextSpan(
-                                        text: 'Don\'t have an account? ',
-                                        style: simple_text_style(color: AppColour.grey),
-                                        children: [
-                                          TextSpan(
-                                            text: 'SIGN UP',
-                                            style: simple_text_style(color: AppColour.primary,fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               );
                             },
+                          ),
+                          const SizedBox(height: 20),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const SignupScreen(),
+                                ),
+                              );
+                            },
+                            child : RichText(
+                              text: TextSpan(
+                                text: 'Don\'t have an account? ',
+                                style: simple_text_style(color: AppColour.grey),
+                                children: [
+                                  TextSpan(
+                                    text: 'SIGN UP',
+                                    style: simple_text_style(color: AppColour.primary,fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),

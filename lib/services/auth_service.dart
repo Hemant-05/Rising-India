@@ -68,7 +68,6 @@ class AuthService extends ChangeNotifier {
         email: email,
         password: password,
       );
-      print("User signed in: ${x.user?.email}");
       return x.user != null ? null : "Invalid email or password";
     } on FirebaseAuthException catch (e) {
       return e.message;
