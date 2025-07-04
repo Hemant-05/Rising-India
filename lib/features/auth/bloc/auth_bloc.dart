@@ -64,6 +64,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       );
       if (error == null) {
         final user = await authService.getCurrentUser();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('rememberMe', true);
         emit(UserAuthenticated(user!));
       } else {
         emit(UserError(error));
@@ -92,11 +94,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         if (event.rememberMe) {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool('rememberMe', true);
-          print('UserBloc: Remember me set to true');
         } else {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool('rememberMe', false);
-          print('UserBloc: Remember me set to false');
         }
         emit(UserAuthenticated(user!));
       } else {

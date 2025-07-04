@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../comman/bold_text_style.dart';
-import '../../../comman/cus_text_field.dart';
+import '../widgets/cus_text_field.dart';
 import '../../../comman/elevated_button_style.dart';
 import '../../../comman/simple_text_style.dart';
 import '../../../constant/AppColour.dart';
 import '../../../constant/ConPath.dart';
-import '../../../screens/home_screen.dart';
+import '../../home/screens/home_screen.dart';
 import '../bloc/auth_bloc.dart';
 
 

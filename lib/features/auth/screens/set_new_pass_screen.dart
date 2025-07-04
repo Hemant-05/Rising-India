@@ -7,8 +7,8 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import '../../../comman/bold_text_style.dart';
-import '../../../comman/cus_text_field.dart';
-import '../../../screens/home_screen.dart';
+import '../widgets/cus_text_field.dart';
+import '../../home/screens/home_screen.dart';
 import '../bloc/auth_bloc.dart';
 
 

@@ -5,7 +5,7 @@ import 'package:raising_india/features/on_boarding/screens/welcome_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constant/ConPath.dart';
 import '../features/auth/bloc/auth_bloc.dart';
-import 'home_screen.dart';
+import '../features/home/screens/home_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -19,7 +19,6 @@ class SplashScreen extends StatelessWidget {
         AuthService service = AuthService();
         SharedPreferences prefs = await SharedPreferences.getInstance();
         bool isRememberMe = prefs.getBool('rememberMe') ?? false;
-        print('Remember Me: $isRememberMe');
         if (isRememberMe ?? state is UserAuthenticated) {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (_) => const HomeScreen()));

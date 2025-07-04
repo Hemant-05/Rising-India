@@ -59,9 +59,19 @@ class AuthService extends ChangeNotifier {
       }
       return "User creation failed";
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      if(e.code == 'email-already-in-use') {
+        return "Email is already in use";
+      } else if (e.code == 'weak-password') {
+        return "Password is too weak";
+      } else if(e.code == 'invalid-email') {
+        return "Invalid email format";
+      } else if(e.code == 'network-request-failed') {
+        return "Network error, please try again";
+      } else {
+        return e.message;
+      }
     } catch (e) {
-      return "An unknown error occurred";
+      return "Server is Busy, please try again later";
     }
   }
 
@@ -73,7 +83,21 @@ class AuthService extends ChangeNotifier {
       );
       return x.user != null ? null : "Invalid email or password";
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      if(e.code == 'user-not-found') {
+        return "No user found with this email";
+      } else if (e.code == 'wrong-password') {
+        return "Incorrect password";
+      } else if (e.code == 'invalid-email') {
+        return "Invalid email format";
+      } else if (e.code == 'network-request-failed') {
+        return "Network error, please try again";
+      } else if( e.code == 'too-many-requests') {
+        return "Too many login attempts, please try again later";
+      }else if(e.code == 'invalid-credential') {
+        return "Invalid credentials provided";
+      } else {
+        return e.message;
+      }
     } catch (e) {
       return "An unknown error occurred";
     }
@@ -94,7 +118,13 @@ class AuthService extends ChangeNotifier {
     try{
       return await _auth.verifyPasswordResetCode(code);
     } on FirebaseAuthException catch(e){
-      return e.message;
+      if(e.code == 'expired-action-code'){
+        return 'Code is Expired !!';
+      }else if(e.code == 'invalid-action-code'){
+        return 'Code is Invalid !!';
+      }else{
+        return 'Error occurred...';
+      }
     }catch (e){
       return "An Unknow error occurred $e";
     }
@@ -153,12 +183,16 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<AppUser?> getCurrentUser() async {
-    final firebaseUser = _auth.currentUser;
-    if (firebaseUser == null) return null;
-    final doc = await _db.collection('users').doc(firebaseUser.uid).get();
-    if (doc.exists) {
-      return AppUser.fromMap(doc.data()!, firebaseUser.uid);
+    try{
+      final firebaseUser = _auth.currentUser;
+      if (firebaseUser == null) return null;
+      final doc = await _db.collection('users').doc(firebaseUser.uid).get();
+      if (doc.exists) {
+        return AppUser.fromMap(doc.data()!, firebaseUser.uid);
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
-    return null;
   }
 }

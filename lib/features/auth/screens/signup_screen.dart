@@ -6,10 +6,10 @@ import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import '../../../comman/bold_text_style.dart';
-import '../../../comman/cus_text_field.dart';
+import '../widgets/cus_text_field.dart';
 import '../../../constant/ConPath.dart';
 import '../../../models/user_model.dart';
-import '../../../screens/home_screen.dart';
+import '../../home/screens/home_screen.dart';
 import '../bloc/auth_bloc.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -30,21 +30,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setStatusBarColor();
   }
   void setStatusBarColor() {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        // For light status bar icons (dark background)
         statusBarIconBrightness: Brightness.light,
-
-        // For dark status bar icons (light background)
-        // statusBarIconBrightness: Brightness.dark,
-
-        // Optional: Change status bar color (Android only)
-        statusBarColor: Colors.transparent, // or any color
+        statusBarColor: Colors.transparent,
       ),
     );
   }
@@ -147,7 +140,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           const SizedBox(height: 10),
                           cus_text_field(
-                            'NUMBER',
+                            'MOBILE NUMBER',
                             _numberController,
                             '1234567890',
                             isNumber: true,
