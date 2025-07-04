@@ -66,6 +66,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         final user = await authService.getCurrentUser();
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('rememberMe', true);
+        prefs.setBool('isAdmin', user?.role == UserRole.ADMIN);
         emit(UserAuthenticated(user!));
       } else {
         emit(UserError(error));
@@ -91,6 +92,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final error = await authService.signIn(event.email, event.password);
       if (error == null) {
         final user = await authService.getCurrentUser();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isAdmin', user?.role == UserRole.ADMIN);
         if (event.rememberMe) {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool('rememberMe', true);
@@ -126,7 +129,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final code = event.code.trim();
       final error = await authService.verifyCode(code); //await authService.verifyCode(event.code);
       if (error == 'ok') {
-        emit(VerificatoinSuccess(event.code));
+        emit(VerificatoinSuccess(event.email, event.code));
       } else {
         emit(VerificationError(error!));
       }

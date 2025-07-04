@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:raising_india/features/auth/bloc/auth_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../models/user_model.dart';
@@ -179,12 +177,14 @@ class AuthService extends ChangeNotifier {
     _user = null;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('rememberMe', false);
+    prefs.remove('isAdmin');
     notifyListeners();
   }
 
   Future<AppUser?> getCurrentUser() async {
     try{
       final firebaseUser = _auth.currentUser;
+
       if (firebaseUser == null) return null;
       final doc = await _db.collection('users').doc(firebaseUser.uid).get();
       if (doc.exists) {

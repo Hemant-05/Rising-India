@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:raising_india/features/auth/screens/set_new_pass_screen.dart';
 import '../../../comman/bold_text_style.dart';
 import '../widgets/cus_text_field.dart';
 import '../../../comman/elevated_button_style.dart';
 import '../../../comman/simple_text_style.dart';
 import '../../../constant/AppColour.dart';
 import '../../../constant/ConPath.dart';
-import '../../home/screens/home_screen.dart';
 import '../bloc/auth_bloc.dart';
 
 
@@ -45,7 +45,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
         if (state is VerificatoinSuccess) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const HomeScreen()),
+            MaterialPageRoute(builder: (_) => SetNewPassScreen(email: state.email, code: state.code)),
           );
         } else if (state is VerificationError) {
           setState(() => _error = state.message);
@@ -148,7 +148,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                               return ElevatedButton(
                                 onPressed: () {
                                   BlocProvider.of<UserBloc>(context).add(
-                                      VerifyCode(_verificationCodeController.text.trim()),
+                                      VerifyCode(_verificationCodeController.text.trim(), widget.email),
                                   );
                                 },
                                 style: elevated_button_style(),

@@ -6,9 +6,9 @@ import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
+import 'package:raising_india/features/auth/screens/login_screen.dart';
 import '../../../comman/bold_text_style.dart';
 import '../widgets/cus_text_field.dart';
-import '../../home/screens/home_screen.dart';
 import '../bloc/auth_bloc.dart';
 
 
@@ -49,7 +49,7 @@ class _SetNewPassScreenState extends State<SetNewPassScreen> {
         if (state is ResetPasswordSuccess) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const HomeScreen()),
+            MaterialPageRoute(builder: (_) => const LoginScreen()),
                 (route) => false,
           );
         } else if (state is ResetPasswordError) {

@@ -35,7 +35,8 @@ class UserError extends UserState {
 
 class VerificatoinSuccess extends UserState {
   final String email;
-  VerificatoinSuccess(this.email);
+  final String code;
+  VerificatoinSuccess(this.email, this.code);
   @override
   List<Object?> get props => [email];
 }

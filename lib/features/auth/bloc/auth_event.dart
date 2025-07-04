@@ -17,9 +17,9 @@ class UserLoggedIn extends UserEvent {
 class UserLoggedOut extends UserEvent {}
 
 class VerifyCode extends UserEvent {
+  final String email;
   final String code;
-
-  VerifyCode(this.code);
+  VerifyCode(this.code, this.email);
   @override
   List<Object?> get props => [code];
 }

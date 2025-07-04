@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../auth/bloc/auth_bloc.dart';
-import '../../auth/screens/login_screen.dart';
+import '../../../auth/bloc/auth_bloc.dart';
+import '../../../auth/screens/login_screen.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class AdminHomeScreen extends StatelessWidget {
+  const AdminHomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: const Text('Home'),
+            title: const Text('Admin Home'),
             actions: [
               BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {

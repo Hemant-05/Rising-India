@@ -6,10 +6,12 @@ import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
+import 'package:raising_india/features/admin/home/screens/admin_home_screen.dart';
 import 'package:raising_india/features/auth/screens/signup_screen.dart';
+import 'package:raising_india/models/user_model.dart';
 import '../../../comman/bold_text_style.dart';
+import '../../user/home/screens/user_home_screen.dart';
 import '../widgets/cus_text_field.dart';
-import '../../home/screens/home_screen.dart';
 import '../bloc/auth_bloc.dart';
 import 'forgot_pass_screen.dart';
 
@@ -47,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state is UserAuthenticated) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const HomeScreen()),
+            MaterialPageRoute(builder: (_) => state.user.role == UserRole.ADMIN? const AdminHomeScreen(): const UserHomeScreen()),
             (route) => false,
           );
         } else if (state is UserError) {

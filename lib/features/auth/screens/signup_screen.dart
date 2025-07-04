@@ -6,10 +6,11 @@ import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import '../../../comman/bold_text_style.dart';
+import '../../admin/home/screens/admin_home_screen.dart';
+import '../../user/home/screens/user_home_screen.dart';
 import '../widgets/cus_text_field.dart';
 import '../../../constant/ConPath.dart';
 import '../../../models/user_model.dart';
-import '../../home/screens/home_screen.dart';
 import '../bloc/auth_bloc.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -48,7 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
         if (state is UserAuthenticated) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => const HomeScreen()),
+            MaterialPageRoute(builder: (_) => state.user.role == UserRole.ADMIN? const AdminHomeScreen(): const UserHomeScreen()),
             (route) => false,
           );
         } else if (state is UserError) {

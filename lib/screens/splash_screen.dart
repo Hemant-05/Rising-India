@@ -4,8 +4,9 @@ import 'package:raising_india/features/auth/services/auth_service.dart';
 import 'package:raising_india/features/on_boarding/screens/welcome_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constant/ConPath.dart';
+import '../features/admin/home/screens/admin_home_screen.dart';
 import '../features/auth/bloc/auth_bloc.dart';
-import '../features/home/screens/home_screen.dart';
+import '../features/user/home/screens/user_home_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -19,9 +20,10 @@ class SplashScreen extends StatelessWidget {
         AuthService service = AuthService();
         SharedPreferences prefs = await SharedPreferences.getInstance();
         bool isRememberMe = prefs.getBool('rememberMe') ?? false;
+        bool isAdmin = prefs.getBool('isAdmin') ?? false;
         if (isRememberMe ?? state is UserAuthenticated) {
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              context, MaterialPageRoute(builder: (_) => isAdmin? AdminHomeScreen() : const UserHomeScreen()));
         } else {
           await service.signOut();
           Navigator.pushReplacement(
