@@ -5,9 +5,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
+import 'package:raising_india/features/admin/pagination/main_screen_a.dart';
 import '../../../comman/bold_text_style.dart';
-import '../../admin/home/screens/admin_home_screen.dart';
-import '../../user/home/screens/user_home_screen.dart';
+import '../../admin/home/screens/home_screen_a.dart';
+import '../../user/home/screens/home_screen_u.dart';
 import '../widgets/cus_text_field.dart';
 import '../../../constant/ConPath.dart';
 import '../../../models/user_model.dart';
@@ -26,7 +27,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _numberController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  UserRole _role = UserRole.USER;
+  String _role = UserRole.USER.toString();
   String? _error;
 
   @override
@@ -49,7 +50,7 @@ class _SignupScreenState extends State<SignupScreen> {
         if (state is UserAuthenticated) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => state.user.role == UserRole.ADMIN? const AdminHomeScreen(): const UserHomeScreen()),
+            MaterialPageRoute(builder: (_) => state.user.role == UserRole.ADMIN? const MainScreenA(): const HomeScreenU()),
             (route) => false,
           );
         } else if (state is UserError) {
@@ -182,9 +183,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                   var email = _emailController.text;
                                   if (email.split('#').first.toLowerCase() ==
                                       'admin')
-                                    _role = UserRole.ADMIN;
+                                    _role = UserRole.ADMIN.toString();
                                   else
-                                    _role = UserRole.USER;
+                                    _role = UserRole.USER.toString();
                                   BlocProvider.of<UserBloc>(context).add(
                                     UserSignUp(
                                       name: _nameController.text,

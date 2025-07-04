@@ -44,6 +44,10 @@ dependencies:
   flutter_bloc: ^9.1.1
   flutter_svg: ^2.2.0
   shared_preferences: ^2.5.3
+  persistent_bottom_nav_bar: ^6.2.1
+  geocoding: ^4.0.0
+  geolocator: ^14.0.2
+  permission_handler: ^12.0.1
 
 dev_dependencies:
   flutter_test:

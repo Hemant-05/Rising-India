@@ -45,7 +45,7 @@ class ResetPassword extends UserEvent {
 
 class UserSignUp extends UserEvent {
   final String name, email, number, password,confirmPassword;
-  final UserRole role;
+  final String role;
   UserSignUp({
     required this.name,
     required this.email,

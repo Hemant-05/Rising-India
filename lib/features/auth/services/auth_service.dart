@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:raising_india/features/services/location_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../models/user_model.dart';
@@ -23,7 +24,7 @@ class AuthService extends ChangeNotifier {
       await Future.delayed(Duration(milliseconds: 500));
       final doc = await _db.collection('users').doc(firebaseUser.uid).get();
       if (doc.exists) {
-        _user = AppUser.fromMap(doc.data()!, firebaseUser.uid);
+        _user = AppUser.fromMap(doc.data()!,doc.id);
       }
     }
     notifyListeners();
@@ -34,7 +35,7 @@ class AuthService extends ChangeNotifier {
     required String email,
     required String number,
     required String password,
-    required UserRole role,
+    required String role,
   }) async {
     try {
       final cred = await _auth.createUserWithEmailAndPassword(
@@ -181,6 +182,24 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateUserLocation(String userId) async {
+    // Get current position
+    final position = await LocationService.getCurrentPosition();
+    if (position == null) return;
+
+    // Get human-readable address
+    final address = await LocationService.getAddressFromLatLng(
+      position.latitude,
+      position.longitude,
+    );
+
+    // Update user in Firestore
+    await _db.collection('users').doc(userId).update({
+      'currentLocation': GeoPoint(position.latitude, position.longitude),
+      'address': address,
+    });
+  }
+
   Future<AppUser?> getCurrentUser() async {
     try{
       final firebaseUser = _auth.currentUser;
@@ -188,7 +207,7 @@ class AuthService extends ChangeNotifier {
       if (firebaseUser == null) return null;
       final doc = await _db.collection('users').doc(firebaseUser.uid).get();
       if (doc.exists) {
-        return AppUser.fromMap(doc.data()!, firebaseUser.uid);
+        return AppUser.fromMap(doc.data()!,firebaseUser.uid);
       }
       return null;
     } catch (e) {
