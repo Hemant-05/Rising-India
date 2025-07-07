@@ -2,12 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSCameraUsageDescription</key>
+    <string>We need camera access to take product photos.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library to select images.`</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>This app needs access to your location to provide location-based services</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>This app needs access to your location to provide location-based services</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>This app needs access to your location to provide location-based services</string>	<key>CFBundleDevelopmentRegion</key>
+    <string>We need your location to show nearby stores.</string>
+    <key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Raising India</string>

@@ -89,19 +89,5 @@ class _MainScreenAState extends State<MainScreenA> {
       navBarHeight: kBottomNavigationBarHeight,
       navBarStyle: _navBarStyle, // Choose the nav bar style with this property
     );
-       /*BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (value) => setState(() {
-          currentIndex = value;
-          pageController.jumpToPage(value);
-        }),
-        items: [
-          BottomNavigationBarItem(icon: SvgPicture.asset(admin_home_svg,color: currentIndex == 0? AppColour.primary: AppColour.grey,),label: ''),
-          BottomNavigationBarItem(icon: SvgPicture.asset(admin_order_icon_svg,color: currentIndex == 1? AppColour.primary: AppColour.grey,),label: ''),
-          BottomNavigationBarItem(icon: SvgPicture.asset(admin_add_new_item_svg),label: ''),
-          BottomNavigationBarItem(icon: SvgPicture.asset(admin_notification_svg,color: currentIndex == 3? AppColour.primary: AppColour.grey,),label: ''),
-          BottomNavigationBarItem(icon: SvgPicture.asset(admin_profile_svg,color: currentIndex == 4? AppColour.primary: AppColour.grey,),label: ''),
-        ],
-      ),*/
   }
 }

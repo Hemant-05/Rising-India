@@ -6,6 +6,7 @@ import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
+import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/features/admin/home/screens/home_screen_a.dart';
 import 'package:raising_india/features/admin/pagination/main_screen_a.dart';
 import 'package:raising_india/features/auth/screens/signup_screen.dart';
@@ -50,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state is UserAuthenticated) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => state.user.role == UserRole.ADMIN? const MainScreenA(): const HomeScreenU()),
+            MaterialPageRoute(builder: (_) => state.user.role == admin? const MainScreenA(): const HomeScreenU()),
             (route) => false,
           );
         } else if (state is UserError) {

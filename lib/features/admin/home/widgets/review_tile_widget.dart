@@ -3,8 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
+import 'package:raising_india/features/admin/review/screens/review_screen_a.dart';
 
-Container review_tile(double rating, int reviewCount) {
+Container review_tile(double rating, int reviewCount, BuildContext context) {
   return Container(
     padding: EdgeInsets.all(12),
     height: 90,
@@ -27,12 +28,18 @@ Container review_tile(double rating, int reviewCount) {
           children: [
             Text('Reviews', style: simple_text_style(color: AppColour.grey)),
             Spacer(),
-            Text(
-              'See All',
-              style: simple_text_style(
-                color: AppColour.primary,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
+            InkWell(
+              onTap: () {
+                // Navigate to the reviews page
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ReviewScreenA()));
+              },
+              child: Text(
+                'See All',
+                style: simple_text_style(
+                  color: AppColour.primary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],

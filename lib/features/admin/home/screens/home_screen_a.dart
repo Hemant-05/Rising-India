@@ -68,14 +68,14 @@ class HomeScreenA extends StatelessWidget {
                   width: double.infinity,
                   child: Row(
                     children: [
-                      info_card('20', 'RUNNING ORDERS'),
+                      info_card('20', 'RUNNING ORDERS'), // put real data here
                       SizedBox(width: 10),
-                      info_card('10', 'ORDERS REQUEST'),
+                      info_card('10', 'ORDERS REQUEST'), // put real data here
                     ],
                   ),
                 ),
                 SizedBox(height: 10),
-                review_tile(4.5,24),
+                review_tile(4.5,24,context), // put real data here
               ],
             ),
           ),

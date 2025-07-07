@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:raising_india/constant/ConString.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/user_model.dart';
 import '../services/auth_service.dart';
@@ -66,7 +67,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         final user = await authService.getCurrentUser();
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setBool('rememberMe', true);
-        prefs.setBool('isAdmin', user?.role == UserRole.ADMIN);
+        prefs.setBool('isAdmin', user?.role == admin);
         emit(UserAuthenticated(user!));
       } else {
         emit(UserError(error));
@@ -93,7 +94,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (error == null) {
         final user = await authService.getCurrentUser();
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setBool('isAdmin', user?.role == UserRole.ADMIN);
+        prefs.setBool('isAdmin', user?.role == admin);
         if (event.rememberMe) {
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.setBool('rememberMe', true);

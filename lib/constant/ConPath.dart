@@ -26,3 +26,5 @@ final String review_svg = "assets/icons/reviews_icon.svg";
 final String settings_svg = "assets/icons/settings_icon.svg";
 final String receipt_svg = "assets/icons/receipt_outline.svg";
 final String star_svg = "assets/icons/star_icon.svg";
+final String menu_svg = "assets/icons/menu_icon.svg";
+final String withdrawal_history_svg = "assets/icons/withdrawal_history.svg";

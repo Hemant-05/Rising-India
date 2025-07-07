@@ -7,6 +7,7 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/pagination/main_screen_a.dart';
 import '../../../comman/bold_text_style.dart';
+import '../../../constant/ConString.dart';
 import '../../admin/home/screens/home_screen_a.dart';
 import '../../user/home/screens/home_screen_u.dart';
 import '../widgets/cus_text_field.dart';
@@ -27,7 +28,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _numberController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  String _role = UserRole.USER.toString();
+  String _role = user;
   String? _error;
 
   @override
@@ -50,7 +51,7 @@ class _SignupScreenState extends State<SignupScreen> {
         if (state is UserAuthenticated) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => state.user.role == UserRole.ADMIN? const MainScreenA(): const HomeScreenU()),
+            MaterialPageRoute(builder: (_) => state.user.role == admin? const MainScreenA(): const HomeScreenU()),
             (route) => false,
           );
         } else if (state is UserError) {
@@ -180,16 +181,17 @@ class _SignupScreenState extends State<SignupScreen> {
                               return ElevatedButton(
                                 style: elevated_button_style(),
                                 onPressed: () {
-                                  var email = _emailController.text;
+                                  var email = _emailController.text.trim();
                                   if (email.split('#').first.toLowerCase() ==
-                                      'admin')
-                                    _role = UserRole.ADMIN.toString();
-                                  else
-                                    _role = UserRole.USER.toString();
+                                      'admin') {
+                                    _role = admin;
+                                  } else {
+                                    _role = user;
+                                  }
                                   BlocProvider.of<UserBloc>(context).add(
                                     UserSignUp(
                                       name: _nameController.text,
-                                      email: _emailController.text,
+                                      email: email.split('#').last,
                                       number: _numberController.text,
                                       password: _passwordController.text,
                                       confirmPassword: _confirmPasswordController.text,
