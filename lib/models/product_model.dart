@@ -4,7 +4,7 @@ class ProductModel {
   final String name;
   final String description;
   final double price;
-  final double rating = 0.0; // Default rating if not provided
+  final double rating; // Default rating if not provided
   final bool isAvailable; // Default availability status
   final double quantity;
   final String measurement;
@@ -17,6 +17,7 @@ class ProductModel {
     required this.isAvailable, // Default value for availability
     required this.pid,
     required this.name,
+    required this.rating,
     required this.category,
     required this.description,
     required this.price,
@@ -31,6 +32,7 @@ class ProductModel {
       category: map['category'] ?? '',
       description: map['description'] ?? '',
       isAvailable: map['isAvailable'],
+      rating: (map['rating'] as num?)?.toDouble() ?? 0.0, // Default rating if not provided
       price: (map['price'] as num?)?.toDouble() ?? 0.0,
       quantity: (map['quantity'] as num?)?.toDouble() ?? 0.0,
       measurement: map['measurement'] ?? '',
@@ -48,6 +50,7 @@ class ProductModel {
       'description': description,
       'isAvailable': isAvailable,
       'price': price,
+      'rating': rating,
       'quantity': quantity,
       'measurement': measurement,
       'photos_list': photos_list,

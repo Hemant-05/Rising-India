@@ -14,6 +14,11 @@ class UserLoggedIn extends UserEvent {
   List<Object?> get props => [user];
 }
 
+class UserLocationRequested extends UserEvent {
+  final String uid;
+  UserLocationRequested(this.uid);
+}
+
 class UserLoggedOut extends UserEvent {}
 
 class VerifyCode extends UserEvent {

@@ -5,6 +5,7 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/auth/services/auth_service.dart';
+import 'package:raising_india/features/user/search/screens/product_search_screen.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 
 class HomeScreenU extends StatefulWidget {
@@ -22,40 +23,123 @@ class _HomeScreenUState extends State<HomeScreenU> {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         String name = '';
-        String address = '';
+        String address = 'Fetching address...';
         if (state is UserAuthenticated) {
           name = state.user.name;
-          authService.updateUserLocation(state.user.uid);
-          address = state.user.address!;
+          final uid = state.user.uid;
+          context.read<UserBloc>().add(UserLocationRequested(uid));
+        } else if (state is UserLocationSuccess) {
+          address = state.address;
+        } else if (state is UserUnauthenticated) {
+          return Scaffold(
+            body: Center(child: Text('Please log in to continue')),
+          );
         }
         return Scaffold(
+          backgroundColor: AppColour.white,
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
+            backgroundColor: AppColour.white,
             title: Row(
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: AppColour.white,
-                  child: SvgPicture.asset(menu_svg,width: 16,),
+                Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppColour.primary,
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  child: Image.asset(appLogo, width: 25, height: 25),
                 ),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'LOCATION',
-                      style: simple_text_style(color : AppColour.primary,fontSize: 14,fontWeight: FontWeight.bold,),
+                      'DELIVER TO',
+                      style: simple_text_style(
+                        color: AppColour.primary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
-                      address??'Fetching address...',
-                      style: simple_text_style(color : AppColour.black,fontSize: 14,fontWeight: FontWeight.w700,),
+                      address,
+                      style: simple_text_style(
+                        color: AppColour.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ],
-                )
+                ),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColour.black,
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  child: SvgPicture.asset(cart_svg, width: 22, height: 22),
+                ),
               ],
             ),
           ),
-          body: Center(child: Text('Welcome, $name')),
+          body: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                  text: TextSpan(
+                    text: 'Hey ${name},',
+                    style: simple_text_style(
+                      color: AppColour.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'Welcome to Raising India',
+                        style: simple_text_style(
+                          color: AppColour.primary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => ProductSearchScreen()));
+                  },
+                  child: Container(
+                    decoration:BoxDecoration(
+                      color: AppColour.lightGrey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.search_rounded, color: AppColour.lightGrey),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Search for products or categories',
+                          style: simple_text_style(
+                            color: AppColour.lightGrey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+              ],
+            ),
+          ),
         );
       },
     );

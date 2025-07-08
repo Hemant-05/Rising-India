@@ -24,6 +24,13 @@ class UserAuthenticated extends UserState {
   List<Object?> get props => [user];
 }
 
+class UserLocationLoading extends UserState {}
+class UserLocationSuccess extends UserState {
+  final String address;
+  UserLocationSuccess(this.address);
+  @override
+  List<Object?> get props => [address];
+}
 class UserUnauthenticated extends UserState {}
 
 class UserError extends UserState {

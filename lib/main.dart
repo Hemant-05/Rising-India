@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/image_cubit.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/product_bloc/product_bloc.dart';
+import 'package:raising_india/features/user/search/bloc/product_search_bloc/product_search_bloc.dart';
 import 'package:raising_india/screens/splash_screen.dart';
 import 'features/auth/bloc/auth_bloc.dart';
 import 'features/auth/services/auth_service.dart';
@@ -29,6 +31,11 @@ class MyApp extends StatelessWidget {
           create: (_) => ProductBloc(),
         ),
         BlocProvider<ImageSelectionCubit>(create: (_) => ImageSelectionCubit()),
+        BlocProvider<ProductSearchBloc>(
+          create: (context) => ProductSearchBloc(
+            firestore: FirebaseFirestore.instance,
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'Raising India',

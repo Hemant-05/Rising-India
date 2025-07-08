@@ -7,8 +7,6 @@ import '../services/auth_service.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
-
-
 class UserBloc extends Bloc<UserEvent, UserState> {
   final AuthService authService;
   UserBloc(this.authService) : super(UserInitial()) {
@@ -164,6 +162,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(ResetPasswordError(res!));
       }
     });
+
+  on<UserLocationRequested> (
+      (event, emit) async {
+        emit(UserLocationLoading());
+        try {
+          final address = await authService.updateUserLocation(event.uid);
+          emit(UserLocationSuccess(address!));
+        } catch (e) {
+          emit(UserError('Failed to get user location: $e'));
+        }
+      }
+  );
 
     /*    on<UserGoogleSignIn>((event, emit) async {
       emit(UserLoading());

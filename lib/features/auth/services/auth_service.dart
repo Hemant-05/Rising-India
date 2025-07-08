@@ -182,10 +182,10 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUserLocation(String userId) async {
+  Future<String?> updateUserLocation(String userId) async {
     // Get current position
     final position = await LocationService.getCurrentPosition();
-    if (position == null) return;
+    if (position == null) return 'Location not available';
 
     // Get human-readable address
     final address = await LocationService.getAddressFromLatLng(
@@ -198,6 +198,7 @@ class AuthService extends ChangeNotifier {
       'currentLocation': GeoPoint(position.latitude, position.longitude),
       'address': address,
     });
+    return address;
   }
 
   Future<AppUser?> getCurrentUser() async {

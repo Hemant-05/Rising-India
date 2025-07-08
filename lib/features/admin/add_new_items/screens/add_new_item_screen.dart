@@ -201,6 +201,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                   name: itemName,
                   description: itemDescription,
                   category: category,
+                  rating: 0.0,
                   quantity: double.parse(quantity),
                   measurement: measurement,
                   photos_list: photos_list_urls,
