@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:raising_india/models/product_model.dart';
+import 'package:uuid/uuid.dart';
 
 class ProductServices {
   final FirebaseFirestore _firebase = FirebaseFirestore.instance;
@@ -82,7 +83,8 @@ class ProductServices {
   // Example method to add a new product
   Future<String> addProduct(ProductModel product) async {
     try {
-      await _firebase.collection('products').add(product.toMap());
+      String pid = product.pid;
+      await _firebase.collection('products').doc(pid).set(product.toMap());
       return 'Product added successfully';
     } on FirebaseException catch (e) {
      return 'Error adding product: ${e.message}';

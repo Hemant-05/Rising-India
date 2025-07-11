@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
+import 'package:raising_india/features/user/cart/screens/cart_screen.dart';
 import 'package:raising_india/features/user/search/bloc/product_search_bloc/product_search_bloc.dart';
-
 import '../../../../constant/ConPath.dart';
 
 class ProductSearchScreen extends StatefulWidget {
@@ -54,7 +53,11 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                 color: AppColour.black,
                 borderRadius: BorderRadius.circular(40),
               ),
-              child: SvgPicture.asset(cart_svg, width: 22, height: 22),
+              child: InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(),));
+                  },
+                  child: SvgPicture.asset(cart_svg, width: 22, height: 22)),
             ),
           ],
         ),

@@ -10,5 +10,6 @@ TextStyle simple_text_style({
     fontSize: fontSize,
     color: color,
     fontWeight: fontWeight,
+    overflow: TextOverflow.ellipsis,
   );
 }

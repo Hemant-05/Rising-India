@@ -5,7 +5,11 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/auth/services/auth_service.dart';
-import 'package:raising_india/features/user/search/screens/product_search_screen.dart';
+import 'package:raising_india/features/user/cart/screens/cart_screen.dart';
+import 'package:raising_india/features/user/home/bloc/user_product_bloc/user_product_bloc.dart';
+import 'package:raising_india/features/user/home/widgets/categories_section.dart';
+import 'package:raising_india/features/user/home/widgets/product_grid.dart';
+import 'package:raising_india/features/user/home/widgets/search_bar_widget.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 
 class HomeScreenU extends StatefulWidget {
@@ -17,15 +21,18 @@ class HomeScreenU extends StatefulWidget {
 
 class _HomeScreenUState extends State<HomeScreenU> {
   AuthService authService = AuthService();
+  String address = 'Fetching address...';
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<UserProductBloc>(context).add(FetchBestSellingProducts());
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
-        String name = '';
-        String address = 'Fetching address...';
         if (state is UserAuthenticated) {
-          name = state.user.name;
           final uid = state.user.uid;
           context.read<UserBloc>().add(UserLocationRequested(uid));
         } else if (state is UserLocationSuccess) {
@@ -37,7 +44,6 @@ class _HomeScreenUState extends State<HomeScreenU> {
         }
         return Scaffold(
           backgroundColor: AppColour.white,
-          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: AppColour.white,
             title: Row(
@@ -62,12 +68,15 @@ class _HomeScreenUState extends State<HomeScreenU> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      address,
-                      style: simple_text_style(
-                        color: AppColour.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        address,
+                        style: simple_text_style(
+                          color: AppColour.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ],
@@ -79,65 +88,79 @@ class _HomeScreenUState extends State<HomeScreenU> {
                     color: AppColour.black,
                     borderRadius: BorderRadius.circular(40),
                   ),
-                  child: SvgPicture.asset(cart_svg, width: 22, height: 22),
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CartScreen(),));
+                    },
+                      child: SvgPicture.asset(cart_svg, width: 22, height: 22)),
                 ),
               ],
             ),
           ),
           body: Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RichText(
-                  text: TextSpan(
-                    text: 'Hey ${name},',
-                    style: simple_text_style(
-                      color: AppColour.black,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: 'Welcome to Raising India',
-                        style: simple_text_style(
-                          color: AppColour.primary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                      text: 'Hey there, ',
+                      style: simple_text_style(
+                        color: AppColour.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => ProductSearchScreen()));
-                  },
-                  child: Container(
-                    decoration:BoxDecoration(
-                      color: AppColour.lightGrey.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
                       children: [
-                        Icon(Icons.search_rounded, color: AppColour.lightGrey),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Search for products or categories',
+                        TextSpan(
+                          text: 'Welcome to Raising India',
                           style: simple_text_style(
-                            color: AppColour.lightGrey,
+                            color: AppColour.primary,
                             fontSize: 14,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-
-              ],
+                  const SizedBox(height: 16),
+                  search_bar_widget(context),
+                  const SizedBox(height: 16),
+                  categories_section(context),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Best Products',
+                    style: simple_text_style(
+                      color: AppColour.black,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  BlocBuilder<UserProductBloc, UserProductState>(
+                    builder: (context, state) {
+                      if (state.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state.bestSellingProducts.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No Best Selling Products Available',
+                            style: simple_text_style(
+                              color: AppColour.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      } else if (state.error != null) {
+                        return Center(child: Text(state.error!));
+                      } else {
+                        return ProductGrid(products: state.bestSellingProducts);
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -38,10 +38,10 @@ class ProductImageSelector extends StatelessWidget {
       child: Container(
         width: 100,
         height: 100,
-        decoration: BoxDecoration(border: Border.all(), borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
         child: imageFile != null
-            ? CircleAvatar(
-          radius: 8,
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(8),
             child: Image.file(imageFile, fit: BoxFit.cover))
             : Icon(Icons.add_a_photo, size: 40),
       ),

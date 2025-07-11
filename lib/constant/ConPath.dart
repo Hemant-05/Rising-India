@@ -1,5 +1,8 @@
 final String appLogo = "assets/app_logo/raising_india_logo.png";
 
+final String vegitable_image = 'assets/images/utility/vegitable_image.jpeg';
+final String fruit_image = 'assets/images/utility/fruties_image.jpeg';
+final String dairy_product_image = 'assets/images/utility/dairy_product_image.jpeg';
 
 final String back_vector_svg = "assets/images/background/background_vector.svg";
 
@@ -30,3 +33,7 @@ final String menu_svg = "assets/icons/menu_icon.svg";
 final String withdrawal_history_svg = "assets/icons/withdrawal_history.svg";
 final String cart_svg = "assets/icons/cart_icon.svg";
 final String search_svg = "assets/icons/search_icon.svg";
+final String clock_svg = "assets/icons/clock_icon.svg";
+final String delivery_svg = "assets/icons/delivery_icon.svg";
+final String filled_heart_svg = "assets/icons/filled_heart_icon.svg";
+final String border_heart_svg = "assets/icons/border_heart_icon.svg";
