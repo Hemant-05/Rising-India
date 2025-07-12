@@ -36,7 +36,7 @@ class WelcomeScreen extends StatelessWidget {
                     ],
                   ),
                   ElevatedButton(
-                    style: elevated_button_style(200),
+                    style: elevated_button_style(width: 200),
                     onPressed: () {
                       Navigator.push(
                         context,

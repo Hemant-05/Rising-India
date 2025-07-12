@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:raising_india/features/services/location_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -188,9 +189,12 @@ class AuthService extends ChangeNotifier {
     if (position == null) return 'Location not available';
 
     // Get human-readable address
-    final address = await LocationService.getAddressFromLatLng(
+    /*final address = await LocationService.getAddressFromLatLng(
       position.latitude,
       position.longitude,
+    );*/
+    final address = await LocationService.getReadableAddress(
+      LatLng(position.latitude, position.longitude),
     );
 
     // Update user in Firestore

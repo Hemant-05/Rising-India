@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationService {
   // Check and request location permissions
@@ -20,8 +21,33 @@ class LocationService {
     if (permission == LocationPermission.deniedForever) {
       return false;
     }
-
     return true;
+  }
+
+  static Future<String> getReadableAddress(LatLng latLng) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        latLng.latitude,
+        latLng.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        final placemark = placemarks.first;
+
+        // Filter out numeric name or subThoroughfare if needed
+        String city = placemark.locality ?? "";
+        String state = placemark.administrativeArea ?? "";
+        String postalCode = placemark.postalCode ?? "";
+        String country = placemark.country ?? "";
+
+        return "$city, $state, $postalCode, $country";
+      } else {
+        return "Location not found";
+      }
+    } catch (e) {
+      print("Error getting address: $e");
+      return "Unable to fetch address";
+    }
   }
 
   // Get current position

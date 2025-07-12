@@ -96,7 +96,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton(
-            style: elevated_button_style(double.infinity),
+            style: elevated_button_style(),
             onPressed: () {
               isLastPage
                   ? Navigator.pushAndRemoveUntil(

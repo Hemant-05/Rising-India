@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
+import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
+import 'package:raising_india/features/user/payment/screens/payment_screen.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
 import 'package:raising_india/models/product_model.dart';
 
@@ -46,7 +49,9 @@ class _CartScreenState extends State<CartScreen> {
                         return;
                       }
                       context.read<ProductFunBloc>().add(ClearCartPressed());
-                      context.read<ProductFunBloc>().add(GetCartProductPressed());
+                      context.read<ProductFunBloc>().add(
+                        GetCartProductPressed(),
+                      );
                     },
                     child: Text(
                       'CLEAR CART',
@@ -293,7 +298,7 @@ class _CartScreenState extends State<CartScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Total: ₹${state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int))}',
+                                'Total: ₹${state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString()}',
                                 style: simple_text_style(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -301,8 +306,64 @@ class _CartScreenState extends State<CartScreen> {
                               ),
                               const SizedBox(height: 16),
                               ElevatedButton(
-                                onPressed: () {
-                                  // Handle checkout logic here
+                                onPressed: () async {
+                                  if (state.getCartProduct.isNotEmpty) {
+                                    final result = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            SelectAddressScreen(),
+                                      ),
+                                    );
+                                    if (result != null) {
+                                      LatLng location = result['latLng'];
+                                      String address = result['address'];
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => PaymentScreen(
+                                            address: address,
+                                            addressCode: location,
+                                            cartProducts: state.getCartProduct,
+                                            total: state.getCartProduct
+                                                .fold(
+                                                  0,
+                                                  (total, product) =>
+                                                      total +
+                                                      ((product['product']
+                                                                      .price)
+                                                                  .toInt() *
+                                                              product['quantity']
+                                                          as int),
+                                                )
+                                                .toString(),
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: AppColour.white,
+                                          content: Text(
+                                            'Location Not Fetched !!',
+                                            style: simple_text_style(),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: AppColour.white,
+                                        content: Text(
+                                          'Add Product then continue !!',
+                                          style: simple_text_style(),
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 },
                                 style: elevated_button_style(),
                                 child: Text(

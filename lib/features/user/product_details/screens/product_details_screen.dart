@@ -26,9 +26,9 @@ class ProductDetailsScreen extends StatelessWidget {
             backgroundColor: AppColour.white,
             title: Row(
               children: [
-               back_button(),
+                back_button(),
                 const SizedBox(width: 10),
-                Text("Details", style: simple_text_style(fontSize: 20,),),
+                Text("Details", style: simple_text_style(fontSize: 20)),
                 const Spacer(),
                 /*Container(
               padding: EdgeInsets.all(10),
@@ -104,9 +104,21 @@ class ProductDetailsScreen extends StatelessWidget {
                       SizedBox(height: 10),
                       Row(
                         children: [
-                          details_card(icon: clock_svg, title: '20 mins',isIcon: true,),
-                          details_card(icon: delivery_svg, title: 'Fast Delivery',isIcon: true,),
-                          details_card(icon: product.quantity.toString(), title: product.measurement,isIcon: false,),
+                          details_card(
+                            icon: clock_svg,
+                            title: '20 mins',
+                            isIcon: true,
+                          ),
+                          details_card(
+                            icon: delivery_svg,
+                            title: 'Fast Delivery',
+                            isIcon: true,
+                          ),
+                          details_card(
+                            icon: product.quantity.toString(),
+                            title: product.measurement,
+                            isIcon: false,
+                          ),
                         ],
                       ),
                     ],
@@ -122,6 +134,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                       )
                     : Container(
+                  alignment: Alignment.center,
                         padding: EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
@@ -130,16 +143,14 @@ class ProductDetailsScreen extends StatelessWidget {
                           ),
                           color: AppColour.lightGrey.withOpacity(0.2),
                         ),
-                        child: Column(
+                        child: product.isAvailable? Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  product.isAvailable
-                                      ? '₹ $totalPrice'
-                                      : 'Out of Stock',
+                                  '₹ $totalPrice',
                                   style: simple_text_style(
                                     fontSize: 26,
                                     fontWeight: FontWeight.bold,
@@ -249,7 +260,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                     ),
                                   ),
                           ],
-                        ),
+                        ) : Text('OUT OF STOCK !!!',style: simple_text_style(fontWeight: FontWeight.bold,fontSize: 20),),
                       ),
               ),
             ],
