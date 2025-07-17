@@ -77,7 +77,6 @@ class ProductFunBloc extends Bloc<ProductFunEvent, ProductFunState> {
       emit(state.copyWith(isUpdatingProductQuantity: true));
       try {
         List<Map<String, dynamic>> updateCartProducts = await _services.updateCartProductQuantity(event.productId, event.quantity);
-        print("Updated Cart Products: $updateCartProducts");
         emit(state.copyWith(isUpdatingProductQuantity: false, isUpdatedProductQuantity: true, getCartProduct: updateCartProducts));
       } catch (e) {
         emit(state.copyWith(isUpdatingProductQuantity: false, error: e.toString()));

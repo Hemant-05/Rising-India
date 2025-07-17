@@ -1,4 +1,6 @@
 final String appLogo = "assets/app_logo/raising_india_logo.png";
+final String cod_png = "assets/icons/cash_on_delivery_icon.png";
+final String pay_now_png = "assets/icons/pay_now_icon.png";
 
 final String vegitable_image = 'assets/images/utility/vegitable_image.jpeg';
 final String fruit_image = 'assets/images/utility/fruties_image.jpeg';

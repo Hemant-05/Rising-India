@@ -5,8 +5,9 @@ import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
+import 'package:raising_india/features/auth/services/auth_service.dart';
 import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
-import 'package:raising_india/features/user/payment/screens/payment_screen.dart';
+import 'package:raising_india/features/user/payment/screens/payment_details_screen.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
 import 'package:raising_india/models/product_model.dart';
 
@@ -307,6 +308,7 @@ class _CartScreenState extends State<CartScreen> {
                               const SizedBox(height: 16),
                               ElevatedButton(
                                 onPressed: () async {
+                                  AuthService authService = AuthService();
                                   if (state.getCartProduct.isNotEmpty) {
                                     final result = await Navigator.push(
                                       context,
@@ -318,25 +320,18 @@ class _CartScreenState extends State<CartScreen> {
                                     if (result != null) {
                                       LatLng location = result['latLng'];
                                       String address = result['address'];
+                                      final user = await authService.getCurrentUser();
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => PaymentScreen(
+                                          builder: (context) => PaymentDetailsScreen(
                                             address: address,
                                             addressCode: location,
-                                            cartProducts: state.getCartProduct,
-                                            total: state.getCartProduct
-                                                .fold(
-                                                  0,
-                                                  (total, product) =>
-                                                      total +
-                                                      ((product['product']
-                                                                      .price)
-                                                                  .toInt() *
-                                                              product['quantity']
-                                                          as int),
-                                                )
-                                                .toString(),
+                                            total: state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int),).toString(),
+                                            email: user!.email,
+                                            contact: user.number,
+                                            name: user.name,
+                                            cartProductList: state.getCartProduct,
                                           ),
                                         ),
                                       );

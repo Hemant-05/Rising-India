@@ -5,7 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
-import 'package:raising_india/features/user/payment/screens/payment_screen.dart';
+import 'package:raising_india/features/user/payment/screens/payment_details_screen.dart';
 
 class SelectAddressScreen extends StatefulWidget {
   const SelectAddressScreen({super.key});

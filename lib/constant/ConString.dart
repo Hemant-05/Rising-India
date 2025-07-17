@@ -1,6 +1,21 @@
 final String welcome = 'Welcome';
 final String admin = 'ADMIN';
 final String user = 'USER';
+
+final String OrderStatusCreated = 'created';
+final String OrderStatusConfirmed = 'confirmed';
+final String OrderStatusPreparing = 'preparing';
+final String OrderStatusDispatch = 'dispatch';
+final String OrderStatusDeliverd = 'delivered';
+final String OrderStatusCancelled = 'cancelled';
+
+final String PayMethodPrepaid = 'prepaid';
+final String PayMethodCOD = 'cod';
+
+final String PayStatusPending = 'pending';
+final String PayStatusPaid = 'paid';
+final String PayStatusFailed = 'failed';
+
 final String welcomeDescription = 'We are glad to have you here. Let\'s get started with your journey towards making a difference in your life.';
 
 final String first_on_boarding_title = 'Simple & Easy to Use';

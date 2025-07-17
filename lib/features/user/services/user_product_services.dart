@@ -17,7 +17,6 @@ class UserProductServices {
           .set({
             'productId': productId,
             'quantity': quantity,
-            'timestamp': FieldValue.serverTimestamp(),
           });
       return true;
     } catch (e) {
