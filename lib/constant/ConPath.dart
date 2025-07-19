@@ -1,6 +1,6 @@
 final String appLogo = "assets/app_logo/raising_india_logo.png";
-final String cod_png = "assets/icons/cash_on_delivery_icon.png";
-final String pay_now_png = "assets/icons/pay_now_icon.png";
+final String cod_png = "assets/icons/cash_on_delivery.png";
+final String pay_now_png = "assets/icons/pay_now.png";
 
 final String vegitable_image = 'assets/images/utility/vegitable_image.jpeg';
 final String fruit_image = 'assets/images/utility/fruties_image.jpeg';
@@ -26,6 +26,7 @@ final String add_new_item_svg = "assets/icons/add_icon.svg";
 final String order_icon_svg = "assets/icons/order_icon.svg";
 
 final String logout_svg = "assets/icons/logout_icon.svg";
+final String map_svg = "assets/icons/map_icon.svg";
 final String dropdown_svg = "assets/icons/drop_down_icon.svg";
 final String review_svg = "assets/icons/reviews_icon.svg";
 final String settings_svg = "assets/icons/settings_icon.svg";

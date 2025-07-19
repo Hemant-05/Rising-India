@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/features/services/location_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,11 +23,7 @@ class AuthService extends ChangeNotifier {
     if (firebaseUser == null) {
       _user = null;
     } else {
-      await Future.delayed(Duration(milliseconds: 500));
-      final doc = await _db.collection('users').doc(firebaseUser.uid).get();
-      if (doc.exists) {
-        _user = AppUser.fromMap(doc.data()!,doc.id);
-      }
+      _user = await getCurrentUser();
     }
     notifyListeners();
   }
@@ -52,20 +49,24 @@ class AuthService extends ChangeNotifier {
           number: number,
           role: role,
         );
-        await _db.collection('users').doc(user.uid).set(appUser.toMap());
+        if (admin == role) {
+          await _db.collection('admin').doc(user.uid).set(appUser.toMap());
+        } else {
+          await _db.collection('users').doc(user.uid).set(appUser.toMap());
+        }
         _user = appUser;
         notifyListeners();
         return null;
       }
       return "User creation failed";
     } on FirebaseAuthException catch (e) {
-      if(e.code == 'email-already-in-use') {
+      if (e.code == 'email-already-in-use') {
         return "Email is already in use";
       } else if (e.code == 'weak-password') {
         return "Password is too weak";
-      } else if(e.code == 'invalid-email') {
+      } else if (e.code == 'invalid-email') {
         return "Invalid email format";
-      } else if(e.code == 'network-request-failed') {
+      } else if (e.code == 'network-request-failed') {
         return "Network error, please try again";
       } else {
         return e.message;
@@ -83,7 +84,7 @@ class AuthService extends ChangeNotifier {
       );
       return x.user != null ? null : "Invalid email or password";
     } on FirebaseAuthException catch (e) {
-      if(e.code == 'user-not-found') {
+      if (e.code == 'user-not-found') {
         return "No user found with this email";
       } else if (e.code == 'wrong-password') {
         return "Incorrect password";
@@ -91,9 +92,9 @@ class AuthService extends ChangeNotifier {
         return "Invalid email format";
       } else if (e.code == 'network-request-failed') {
         return "Network error, please try again";
-      } else if( e.code == 'too-many-requests') {
+      } else if (e.code == 'too-many-requests') {
         return "Too many login attempts, please try again later";
-      }else if(e.code == 'invalid-credential') {
+      } else if (e.code == 'invalid-credential') {
         return "Invalid credentials provided";
       } else {
         return e.message;
@@ -103,40 +104,40 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<String?> sendVerificationCode(String email) async{
-    try{
+  Future<String?> sendVerificationCode(String email) async {
+    try {
       await _auth.sendPasswordResetEmail(email: email);
       return 'ok';
-    } on FirebaseAuthException catch(e){
+    } on FirebaseAuthException catch (e) {
       return e.message;
-    }catch (e){
+    } catch (e) {
       return "An Unknow error occurred $e";
     }
   }
 
-  Future<String?> verifyCode(String code) async{
-    try{
+  Future<String?> verifyCode(String code) async {
+    try {
       return await _auth.verifyPasswordResetCode(code);
-    } on FirebaseAuthException catch(e){
-      if(e.code == 'expired-action-code'){
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'expired-action-code') {
         return 'Code is Expired !!';
-      }else if(e.code == 'invalid-action-code'){
+      } else if (e.code == 'invalid-action-code') {
         return 'Code is Invalid !!';
-      }else{
+      } else {
         return 'Error occurred...';
       }
-    }catch (e){
+    } catch (e) {
       return "An Unknow error occurred $e";
     }
   }
 
-  Future<String?> resetPassword(String code,String newPass) async{
-    try{
+  Future<String?> resetPassword(String code, String newPass) async {
+    try {
       await _auth.confirmPasswordReset(code: code, newPassword: newPass);
       return 'ok';
-    } on FirebaseAuthException catch(e){
+    } on FirebaseAuthException catch (e) {
       return e.message;
-    }catch (e){
+    } catch (e) {
       return "An Unknow error occurred $e";
     }
   }
@@ -206,13 +207,16 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<AppUser?> getCurrentUser() async {
-    try{
+    try {
       final firebaseUser = _auth.currentUser;
-
       if (firebaseUser == null) return null;
-      final doc = await _db.collection('users').doc(firebaseUser.uid).get();
-      if (doc.exists) {
-        return AppUser.fromMap(doc.data()!,firebaseUser.uid);
+      final user = await _db.collection('users').doc(firebaseUser.uid).get();
+      if (user.exists) {
+        return AppUser.fromMap(user.data()!, firebaseUser.uid);
+      }
+      final admin = await _db.collection('admin').doc(firebaseUser.uid).get();
+      if (admin.exists) {
+        return AppUser.fromMap(admin.data()!, firebaseUser.uid);
       }
       return null;
     } catch (e) {

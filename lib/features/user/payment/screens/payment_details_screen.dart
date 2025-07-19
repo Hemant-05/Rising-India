@@ -62,7 +62,9 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
       'prefill': {'contact': contact, 'email': email},
     };
     try {
+      print('==================');
       _razorpay.open(options);
+      print('==============2');
     } catch (e) {
       print('----------------${e.toString()}');
     }

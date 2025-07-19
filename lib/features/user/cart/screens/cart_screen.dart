@@ -364,7 +364,7 @@ class _CartScreenState extends State<CartScreen> {
                                 child: Text(
                                   state.cartProductCount == 0
                                       ? 'NO ITEM'
-                                      : 'PLACE ORDER',
+                                      : 'SELECT DELIVERY ADDRESS',
                                   style: simple_text_style(
                                     color: AppColour.white,
                                     fontSize: 14,

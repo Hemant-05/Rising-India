@@ -11,6 +11,7 @@ import 'package:raising_india/features/user/home/bloc/user_product_bloc/user_pro
 import 'package:raising_india/features/user/home/widgets/categories_section.dart';
 import 'package:raising_india/features/user/home/widgets/product_grid.dart';
 import 'package:raising_india/features/user/home/widgets/search_bar_widget.dart';
+import 'package:raising_india/features/user/profile/screens/profile_screen.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 
 class HomeScreenU extends StatefulWidget {
@@ -23,6 +24,7 @@ class HomeScreenU extends StatefulWidget {
 class _HomeScreenUState extends State<HomeScreenU> {
   AuthService authService = AuthService();
   String address = 'Fetching address...';
+  String name = 'there';
   @override
   void initState() {
     super.initState();
@@ -35,6 +37,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
       builder: (context, state) {
         if (state is UserAuthenticated) {
           final uid = state.user.uid;
+          name = state.user.name;
           context.read<UserBloc>().add(UserLocationRequested(uid));
         } else if (state is UserLocationSuccess) {
           address = state.address;
@@ -49,13 +52,18 @@ class _HomeScreenUState extends State<HomeScreenU> {
             backgroundColor: AppColour.white,
             title: Row(
               children: [
-                Container(
-                  padding: EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: AppColour.primary,
-                    borderRadius: BorderRadius.circular(40),
+                InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: AppColour.primary,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: Icon(Icons.person, color: AppColour.white),
                   ),
-                  child: Image.asset(appLogo, width: 25, height: 25),
                 ),
                 const SizedBox(width: 10),
                 Column(
@@ -95,7 +103,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
                 children: [
                   RichText(
                     text: TextSpan(
-                      text: 'Hey there, ',
+                      text: 'Hey $name, ',
                       style: simple_text_style(
                         color: AppColour.black,
                         fontSize: 14,
