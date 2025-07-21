@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:raising_india/models/address_model.dart';
 
 class AppUser {
   final String uid;
@@ -8,6 +9,7 @@ class AppUser {
   final String role;
   final GeoPoint? currentLocation;
   final String? address;
+  final List<AddressModel> addressList;
 
   AppUser({
     required this.uid,
@@ -17,6 +19,7 @@ class AppUser {
     required this.role,
     this.currentLocation,
     this.address,
+    required this.addressList,
   });
 
   Map<String, dynamic> toMap() {
@@ -27,6 +30,7 @@ class AppUser {
       'role': role,
       'currentLocation': currentLocation,
       'address': address,
+      'addressList' : addressList,
     };
   }
 
@@ -39,6 +43,21 @@ class AppUser {
       role: map['role'],
       currentLocation: map['currentLocation'],
       address: map['address'],
+      addressList: _convertAddressList(map['addressList']),
     );
+  }
+  // Helper method to safely convert address list
+  static List<AddressModel> _convertAddressList(dynamic addressData) {
+    if (addressData == null) return [];
+
+    try {
+      final List<dynamic> dynamicList = addressData as List<dynamic>;
+      return dynamicList
+          .map((item) => AddressModel.fromMap(item as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      print('Error converting address list: $e');
+      return [];
+    }
   }
 }

@@ -31,6 +31,18 @@ class UserLocationSuccess extends UserState {
   @override
   List<Object?> get props => [address];
 }
+
+class AddLocationLoading extends UserState{}
+
+class AddLocationSuccess extends UserState{}
+
+class LocationListLoading extends UserState{}
+
+class LocationListSuccess extends UserState{
+  final List<AddressModel> addressList;
+  LocationListSuccess({required this.addressList});
+}
+
 class UserUnauthenticated extends UserState {}
 
 class UserError extends UserState {

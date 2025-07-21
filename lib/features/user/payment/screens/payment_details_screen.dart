@@ -139,8 +139,11 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     await firestore.collection('users').doc(auth.currentUser!.uid).collection('orders').add({
       'order_id' : createOrder.orderId,
     });
-    context.read<ProductFunBloc>().add(ClearCartPressed());
+    if(isPaymentSuccess){
+      context.read<ProductFunBloc>().add(ClearCartPressed());
+    }
     if(isCod){
+      context.read<ProductFunBloc>().add(ClearCartPressed());
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => PlaceOrderScreen()),

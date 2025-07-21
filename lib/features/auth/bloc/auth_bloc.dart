@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/constant/ConString.dart';
+import 'package:raising_india/features/services/location_service.dart';
+import 'package:raising_india/models/address_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/user_model.dart';
 import '../services/auth_service.dart';
@@ -163,17 +165,37 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
     });
 
-  on<UserLocationRequested> (
+  on<UserLocation> (
       (event, emit) async {
         emit(UserLocationLoading());
         try {
-          final address = await authService.updateUserLocation(event.uid);
+          final address = await authService.updateUserLocation();
           emit(UserLocationSuccess(address!));
         } catch (e) {
           emit(UserError('Failed to get user location: $e'));
         }
       }
   );
+
+  on<AddLocation> ((event, emit) async {
+    emit(AddLocationLoading());
+    try{
+      String? res = await authService.addLocation(event.model);
+      emit(AddLocationSuccess());
+    }catch (e){
+      emit(UserError('Failed to add user location $e'));
+    }
+  });
+
+  on<GetLocationList> ((event,emit) async {
+    emit(LocationListLoading());
+    try{
+      List<AddressModel> list = await authService.getLocationList();
+      emit(LocationListSuccess(addressList: list));
+    }catch (e){
+      emit(UserError('Failed to get Location list $e'));
+    }
+  });
 
     /*    on<UserGoogleSignIn>((event, emit) async {
       emit(UserLoading());

@@ -36,11 +36,8 @@ class _HomeScreenUState extends State<HomeScreenU> {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UserAuthenticated) {
-          final uid = state.user.uid;
-          name = state.user.name;
-          context.read<UserBloc>().add(UserLocationRequested(uid));
-        } else if (state is UserLocationSuccess) {
-          address = state.address;
+          address = state.user.addressList.isNotEmpty? state.user.addressList[0].address : 'No Address !!';
+          name = state.user.name.split(' ').first;
         } else if (state is UserUnauthenticated) {
           return Scaffold(
             body: Center(child: Text('Please log in to continue')),

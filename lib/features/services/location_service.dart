@@ -63,18 +63,4 @@ class LocationService {
       return null;
     }
   }
-
-  // Get human-readable address from coordinates
-  static Future<String?> getAddressFromLatLng(double lat, double lng) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
-      if (placemarks.isNotEmpty) {
-        Placemark place = placemarks.first;
-        return "${place.street}, ${place.locality}, ${place.country}";
-      }
-    } catch (e) {
-      print("Error getting address: $e");
-    }
-    return null;
-  }
 }

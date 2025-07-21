@@ -14,10 +14,16 @@ class UserLoggedIn extends UserEvent {
   List<Object?> get props => [user];
 }
 
-class UserLocationRequested extends UserEvent {
+class UserLocation extends UserEvent {
   final String uid;
-  UserLocationRequested(this.uid);
+  UserLocation(this.uid);
 }
+
+class AddLocation extends UserEvent{
+  final AddressModel model;
+  AddLocation({required this.model});
+}
+class GetLocationList extends UserEvent{}
 
 class UserLoggedOut extends UserEvent {}
 

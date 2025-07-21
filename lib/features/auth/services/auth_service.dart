@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/features/services/location_service.dart';
+import 'package:raising_india/models/address_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../models/user_model.dart';
@@ -48,6 +49,7 @@ class AuthService extends ChangeNotifier {
           email: email,
           number: number,
           role: role,
+          addressList: [],
         );
         if (admin == role) {
           await _db.collection('admin').doc(user.uid).set(appUser.toMap());
@@ -184,26 +186,33 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String?> updateUserLocation(String userId) async {
-    // Get current position
+  Future<String?> updateUserLocation() async {
+    String userId = _auth.currentUser!.uid;
     final position = await LocationService.getCurrentPosition();
     if (position == null) return 'Location not available';
 
-    // Get human-readable address
-    /*final address = await LocationService.getAddressFromLatLng(
-      position.latitude,
-      position.longitude,
-    );*/
     final address = await LocationService.getReadableAddress(
       LatLng(position.latitude, position.longitude),
     );
 
     // Update user in Firestore
     await _db.collection('users').doc(userId).update({
-      'currentLocation': GeoPoint(position.latitude, position.longitude),
-      'address': address,
+      'addressList': FieldValue.arrayUnion([{}])
     });
     return address;
+  }
+
+  Future<String?> addLocation(AddressModel address) async {
+    String userId = _auth.currentUser!.uid;
+    await _db.collection('users').doc(userId).update({
+      'addressList': FieldValue.arrayUnion([address.toMap()])
+    });
+    return 'ok';
+  }
+
+  Future<List<AddressModel>> getLocationList() async {
+    var user = await getCurrentUser();
+    return user!.addressList;
   }
 
   Future<AppUser?> getCurrentUser() async {
