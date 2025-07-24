@@ -36,6 +36,10 @@ class AddLocationLoading extends UserState{}
 
 class AddLocationSuccess extends UserState{}
 
+class DeleteLocationLoading extends UserState{}
+
+class DeleteLocationSuccess extends UserState{}
+
 class LocationListLoading extends UserState{}
 
 class LocationListSuccess extends UserState{

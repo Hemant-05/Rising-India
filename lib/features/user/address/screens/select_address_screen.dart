@@ -12,7 +12,8 @@ import 'package:raising_india/features/user/address/screens/map_screen.dart';
 import 'package:raising_india/models/address_model.dart';
 
 class SelectAddressScreen extends StatefulWidget {
-  const SelectAddressScreen({super.key});
+  const SelectAddressScreen({super.key,required this.isFromProfile});
+  final bool isFromProfile;
 
   @override
   _SelectAddressScreenState createState() => _SelectAddressScreenState();
@@ -22,11 +23,16 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
   bool isLoading = false;
   String? address;
   LatLng? latLng;
+  _refresh() {
+    context.read<UserBloc>().add(GetLocationList());
+  }
+
   @override
   void initState() {
     super.initState();
-    context.read<UserBloc>().add(GetLocationList());
+    _refresh();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,12 +51,27 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
                 onTap: () async {
                   var user = await AuthService().getCurrentUser();
                   var id = user!.uid;
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MapScreen(userId: id),
-                    ),
-                  );
+                  if (user.addressList.length < 5) {
+                    bool refresh = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MapScreen(userId: id),
+                      ),
+                    );
+                    if (refresh) {
+                      _refresh();
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: AppColour.primary,
+                        content: Text(
+                          'Maximum 5 Address can Add\nDelete other and try again... ',
+                          style: simple_text_style(color: AppColour.white),
+                        ),
+                      ),
+                    );
+                  }
                 },
                 child: Text(
                   'ADD LOCATION',
@@ -86,17 +107,53 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
                                 itemCount: state.addressList.length,
                                 itemBuilder: (context, index) {
                                   AddressModel model = state.addressList[index];
-                                  return ListTile(
-                                    onTap: (){
-                                      address = model.address;
-                                      latLng = LatLng(model.position.latitude, model.position.longitude);
-                                      Navigator.pop(context, {
-                                        'address': address,
-                                        'latLng': latLng,
-                                      });
-                                    },
-                                    title: Text('${model.title}',style: simple_text_style(fontSize: 20,fontWeight: FontWeight.bold),),
-                                    subtitle: Text('${model.address}',style: simple_text_style(),),
+                                  return Container(
+                                    margin: EdgeInsets.symmetric(vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: AppColour.lightGrey.withOpacity(
+                                        0.2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: ListTile(
+                                      /*leading: Container(
+                                        decoration: BoxDecoration(color: AppColour.white,borderRadius: BorderRadius.circular(50)),
+                                        padding: EdgeInsets.all(8.0),
+                                        child: SvgPicture.asset(map_svg,color: AppColour.primary,),),*/
+                                      onTap: () {
+                                        address = model.address;
+                                        latLng = LatLng(
+                                          model.position.latitude,
+                                          model.position.longitude,
+                                        );
+                                        Navigator.pop(context, {
+                                          'address': address,
+                                          'latLng': latLng,
+                                        });
+                                      },
+                                      trailing: IconButton(
+                                        onPressed: () {
+                                          context.read<UserBloc>().add(
+                                            DeleteLocation(index: index),
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.delete_outlined,
+                                          color: AppColour.primary,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        '${model.title}',
+                                        style: simple_text_style(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        '${model.address}',
+                                        style: TextStyle(fontFamily: 'Sen'),
+                                      ),
+                                    ),
                                   );
                                 },
                               )
@@ -108,45 +165,50 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
                                   ),
                                 ),
                               )
-                      : Center(
+                      : state is UserError
+                      ? Center(
                           child: Text(
-                            'Some issue',
+                            'Some issue ${state.message}',
                             style: simple_text_style(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                        )
+                      : Center(
+                          child: Text("Restart the app....", style: simple_text_style()),
                         ),
                 ),
                 SizedBox(height: 10),
-                ElevatedButton(
-                  style: elevated_button_style(),
-                  onPressed: () async {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    var currentPosition =
-                        await LocationService.getCurrentPosition();
-                    latLng = LatLng(
-                      currentPosition!.latitude,
-                      currentPosition.longitude,
-                    );
-                    address = await LocationService.getReadableAddress(
-                      latLng!,
-                    );
-                    Navigator.pop(context, {
-                      'address': address,
-                      'latLng': latLng,
-                    });
-                  },
-                  child: isLoading
-                      ? CircularProgressIndicator(color: AppColour.white)
-                      : Text(
-                          'Continue with current location',
-                          style: simple_text_style(
-                            color: AppColour.white,
-                            fontWeight: FontWeight.bold,
+                Visibility(
+                  visible: !widget.isFromProfile,
+                  child: ElevatedButton(
+                    style: elevated_button_style(),
+                    onPressed: () async {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      var currentPosition =
+                          await LocationService.getCurrentPosition();
+                      latLng = LatLng(
+                        currentPosition!.latitude,
+                        currentPosition.longitude,
+                      );
+                      address = await LocationService.getReadableAddress(latLng!);
+                      Navigator.pop(context, {
+                        'address': address,
+                        'latLng': latLng,
+                      });
+                    },
+                    child: isLoading
+                        ? CircularProgressIndicator(color: AppColour.white)
+                        : Text(
+                            'Continue with current location',
+                            style: simple_text_style(
+                              color: AppColour.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
+                  ),
                 ),
               ],
             ),

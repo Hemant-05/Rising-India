@@ -210,6 +210,31 @@ class AuthService extends ChangeNotifier {
     return 'ok';
   }
 
+  Future<String?> deleteLocationFromList(int index) async {
+    String userId = _auth.currentUser!.uid;
+    try {
+      // 1. Get the document
+      final doc = await FirebaseFirestore.instance
+          .collection('users').doc(userId)
+          .get();
+      // 2. Get the current list
+      List<dynamic> list = List.from(doc['addressList'] ?? []);
+      // 3. Check if index is valid
+      if (index >= 0 && index < list.length) {
+        // 4. Remove the item at index
+        list.removeAt(index);
+        // 5. Update the entire array
+        await doc.reference.update({
+          'addressList': list
+        });
+      }
+      return 'ok';
+    } catch (e) {
+      print('Error removing item: $e');
+      throw Exception('Failed to remove item');
+    }
+  }
+
   Future<List<AddressModel>> getLocationList() async {
     var user = await getCurrentUser();
     return user!.addressList;

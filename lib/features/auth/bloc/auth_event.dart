@@ -23,6 +23,12 @@ class AddLocation extends UserEvent{
   final AddressModel model;
   AddLocation({required this.model});
 }
+
+class DeleteLocation extends UserEvent{
+  final int index;
+  DeleteLocation({required this.index});
+}
+
 class GetLocationList extends UserEvent{}
 
 class UserLoggedOut extends UserEvent {}

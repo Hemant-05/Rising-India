@@ -19,7 +19,7 @@ class PlaceOrderScreen extends StatelessWidget  {
             ElevatedButton(
               style: elevated_button_style(),
                 onPressed: (){
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreenU()), (route) => false,);
+                  Navigator.popUntil(context, (route) => route.isFirst);
                 },
                 child: Text('Continue Shopping',style: simple_text_style(color: AppColour.white),))
           ],

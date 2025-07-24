@@ -314,7 +314,7 @@ class _CartScreenState extends State<CartScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            SelectAddressScreen(),
+                                            SelectAddressScreen(isFromProfile: false,),
                                       ),
                                     );
                                     if (result != null) {

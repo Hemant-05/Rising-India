@@ -52,6 +52,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColour.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
@@ -65,7 +66,7 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
       body: _currentLatLng == null
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: AppColour.primary,))
           : Stack(
         children: [
           GoogleMap(
@@ -146,7 +147,7 @@ class _MapScreenState extends State<MapScreen> {
               builder: (context, state) {
                 return ElevatedButton(
                   style: elevated_button_style(width: 200),
-                  child: state is UserError? Center(child: Text('${state.message}'),): state is UserLocationLoading
+                  child: state is UserLocationLoading
                       ? Center(
                     child: CircularProgressIndicator(
                       color: AppColour.white,
@@ -165,19 +166,22 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                   onPressed: () {
                     String title = _titleController.text.trim();
-                    AddressModel model = AddressModel(title: title, address: _selectedAddress, position: GeoPoint(_currentLatLng!.latitude, _currentLatLng!.longitude));
-                    context.read<UserBloc>().add(
-                            AddLocation(
-                            model: model,
-                            ),
-                          );
-                    if(state is AddLocationSuccess){
+                    if(title.isNotEmpty) {
+                      AddressModel model = AddressModel(title: title,
+                          address: _selectedAddress,
+                          position: GeoPoint(_currentLatLng!.latitude,
+                              _currentLatLng!.longitude));
                       context.read<UserBloc>().add(
-                        GetLocationList()
+                        AddLocation(
+                          model: model,
+                        ),
                       );
-                      Navigator.pop(context);
-                    }else if(state is UserError){
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error in adding location...${state.message}',style: simple_text_style(),),));
+                      Navigator.pop(context, true);
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: AppColour.primary,
+                            content: Text('Title is required...', style: simple_text_style(color: AppColour.white),),));
                     }
                   },
                 );

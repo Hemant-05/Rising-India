@@ -88,7 +88,7 @@ class ProfileScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SelectAddressScreen(),
+                        builder: (context) => SelectAddressScreen(isFromProfile: true,),
                       ),
                     );
                   }),
