@@ -9,6 +9,7 @@ import 'package:raising_india/features/admin/add_new_items/bloc/product_bloc/pro
 import 'package:raising_india/features/user/home/bloc/user_product_bloc/user_product_bloc.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
+import 'package:raising_india/features/user/profile/bloc/profile_bloc.dart';
 import 'package:raising_india/features/user/search/bloc/product_search_bloc/product_search_bloc.dart';
 import 'package:raising_india/features/user/services/user_product_services.dart';
 import 'package:raising_india/screens/splash_screen.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<UserProductBloc>(create: (context) =>UserProductBloc(services: UserProductServices())..add(FetchBestSellingProducts())),
         BlocProvider<ProductFunBloc>(create: (context) => ProductFunBloc()),
         BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
+        BlocProvider<ProfileBloc>(create: (context) => ProfileBloc(),),
       ],
       child: MaterialApp(
         title: 'Raising India',

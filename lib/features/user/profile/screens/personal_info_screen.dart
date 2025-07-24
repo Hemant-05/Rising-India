@@ -3,8 +3,8 @@ import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 
-class NotificationScreen extends StatelessWidget {
-  const NotificationScreen({super.key});
+class PersonalInfoScreen extends StatelessWidget {
+  const PersonalInfoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +16,16 @@ class NotificationScreen extends StatelessWidget {
           children: [
             back_button(),
             const SizedBox(width: 8),
-            Text('Notification', style: simple_text_style(fontSize: 18)),
+            Text('Details', style: simple_text_style(fontSize: 18)),
             const Spacer(),
           ],
         ),
         backgroundColor: AppColour.white,
       ),
-      body: Center(child: Text('Notification Working...', style: simple_text_style())),
+      body:  Container(
+        alignment: Alignment.center,
+        child: Text('Working on Profile..'),
+      )
     );
   }
 }

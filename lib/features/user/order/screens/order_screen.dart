@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
@@ -15,6 +16,13 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   int index = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<OrderBloc>().add(LoadUserCompletedOrderEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,53 +124,80 @@ class _OrderScreenState extends State<OrderScreen> {
             : ListView.builder(
                 itemCount: list.length,
                 itemBuilder: (context, index) {
-                  return Container(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              height: 80,
-                              width: 80,
-                              margin: EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: AppColour.lightGrey,
-                                borderRadius: BorderRadius.circular(15)
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 80,
+                            width: 80,
+                            margin: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColour.lightGrey,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Apple, Banana',
+                                style: simple_text_style(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Apple, Banana, Potato',
-                                  style: simple_text_style(fontWeight: FontWeight.bold),
+                              SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  Text(
+                                    '${list[index].total}',
+                                    style: simple_text_style(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Container(
+                                    height: 14,
+                                    width: 2,
+                                    color: AppColour.lightGrey,
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    '${list[index].items.length}',
+                                    style: simple_text_style(
+                                      color: AppColour.lightGrey,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 6),
+                              Text(
+                                DateFormat('hh:mm a').format(list[index].createdAt),
+                                style: simple_text_style(
+                                  color: AppColour.lightGrey,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                SizedBox(height: 6,),
-                                Row(
-                                  children: [
-                                    Text('120',style: simple_text_style(fontWeight: FontWeight.bold,fontSize: 14,),),
-                                    SizedBox(width: 8,),
-                                    Container(height: 14,width: 2,color: AppColour.lightGrey,),
-                                    SizedBox(width: 8,),
-                                    Text('3 Items',style: simple_text_style(color: AppColour.lightGrey,fontSize: 12,fontWeight: FontWeight.w600),),
-                                    ],
-                                ),
-                                SizedBox(height: 6,),
-                                Text('3:56 PM',style: simple_text_style(color: AppColour.lightGrey,fontSize: 12,fontWeight: FontWeight.w600),)
-                              ],
-                            ),
-                          ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        style: elevated_button_style(),
+                        onPressed: () {},
+                        child: Text(
+                          'Cancel',
+                          style: simple_text_style(
+                            color: AppColour.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        SizedBox(height: 6,),
-                        ElevatedButton(
-                          style: elevated_button_style(),
-                          onPressed: () {
-
-                          },
-                          child: Text('Cancel',style: simple_text_style(color: AppColour.white,fontWeight: FontWeight.bold),),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   );
                 },
               ),

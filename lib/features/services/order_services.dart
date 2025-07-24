@@ -17,6 +17,7 @@ class OrderServices{
         list.add(model);
       }
     }
+    list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return list;
   }
   Future<List<OrderModel>> getAllOnGoingOrders() async {
@@ -28,6 +29,7 @@ class OrderServices{
         list.add(model);
       }
     }
+    list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return list;
   }
   Future<List<OrderModel>> getUserCompletedOrders() async {
@@ -40,6 +42,7 @@ class OrderServices{
         list.add(model);
       }
     }
+    list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return list;
   }
   Future<List<OrderModel>> getUserOnGoingOrders() async {
@@ -52,6 +55,7 @@ class OrderServices{
         list.add(model);
       }
     }
+    list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
     return list;
   }
   Future<void> placeOrder(OrderModel model)async {

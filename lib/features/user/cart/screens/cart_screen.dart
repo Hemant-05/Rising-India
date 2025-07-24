@@ -131,6 +131,7 @@ class _CartScreenState extends State<CartScreen> {
                                               width: 50,
                                               height: 50,
                                               fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) => Icon(Icons.error_outline_rounded),
                                             ),
                                           ),
                                           title: Text(

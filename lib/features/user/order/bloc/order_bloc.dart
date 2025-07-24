@@ -19,6 +19,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     on<LoadUserOngoingOrderEvent>((event, emit) async {
       emit(OrderLoadingState());
       final list = await _services.getUserOnGoingOrders();
+      print('---------------------------');
+      print(list[1].items);
       emit(OrderLoadedState(orderList: list));
     });
     on<CancelOrderEvent>((event, emit) async {

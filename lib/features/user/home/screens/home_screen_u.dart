@@ -11,6 +11,7 @@ import 'package:raising_india/features/user/home/bloc/user_product_bloc/user_pro
 import 'package:raising_india/features/user/home/widgets/categories_section.dart';
 import 'package:raising_india/features/user/home/widgets/product_grid.dart';
 import 'package:raising_india/features/user/home/widgets/search_bar_widget.dart';
+import 'package:raising_india/features/user/profile/bloc/profile_bloc.dart';
 import 'package:raising_india/features/user/profile/screens/profile_screen.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 
@@ -51,6 +52,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
               children: [
                 InkWell(
                   onTap: (){
+                    context.read<ProfileBloc>().add(OnProfileOpened());
                     Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen(),));
                   },
                   child: Container(

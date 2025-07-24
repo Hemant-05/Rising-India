@@ -5,7 +5,8 @@ import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
-import 'package:raising_india/features/admin/profile/screens/personal_info_screen.dart';
+import 'package:raising_india/features/user/profile/bloc/profile_bloc.dart';
+import 'package:raising_india/features/user/profile/screens/personal_info_screen.dart';
 import 'package:raising_india/features/auth/bloc/auth_bloc.dart';
 import 'package:raising_india/features/auth/screens/login_screen.dart';
 import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
@@ -35,60 +36,79 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(18),
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: 150,
               width: double.infinity,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 130,
-                    width: 130,
-                    decoration: BoxDecoration(
-                      color: AppColour.primary,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Icon(
-                      Icons.person_outline,
-                      color: AppColour.white,
-                      size: 50,
-                    ),
-                  ),
-                  SizedBox(width: 30),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'User Name',
-                        style: simple_text_style(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'user bio',
-                        style: simple_text_style(color: AppColour.lightGrey),
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                ],
+              child: BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, state) {
+                  return state is OnProfileLoading
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: AppColour.primary,
+                          ),
+                        )
+                      : state is OnProfileLoaded? Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: AppColour.primary,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Icon(
+                                Icons.person_outline,
+                                color: AppColour.white,
+                                size: 50,
+                              ),
+                            ),
+                            SizedBox(width: 15),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${state.user?.name}',
+                                  style: simple_text_style(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  '${state.user?.email}',
+                                  style: simple_text_style(
+                                    color: AppColour.lightGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                          ],
+                        ) : Center(child: Text('Restart the app.....',style: simple_text_style()),);
+                },
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 16),
             customContainer(
               Column(
                 children: [
                   optionListTile(profile_svg, 'Personal Info', () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => PersonalInfoScreen(),));
+                    context.read<ProfileBloc>().add(OnProfileOpened());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PersonalInfoScreen(),
+                      ),
+                    );
                   }),
                   optionListTile(map_svg, 'Addresses', () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SelectAddressScreen(isFromProfile: true,),
+                        builder: (context) =>
+                            SelectAddressScreen(isFromProfile: true),
                       ),
                     );
                   }),
@@ -99,14 +119,17 @@ class ProfileScreen extends StatelessWidget {
               Column(
                 children: [
                   optionListTile(notification_svg, 'Notifications', () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen(),));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NotificationScreen(),
+                      ),
+                    );
                   }),
                   optionListTile(receipt_svg, 'My Orders', () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => OrderScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => OrderScreen()),
                     );
                   }),
                 ],
@@ -117,7 +140,7 @@ class ProfileScreen extends StatelessWidget {
                 context.read<UserBloc>().add(UserLoggedOut());
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(SnackBar(content: Text('Logged out : ')));
+                ).showSnackBar(SnackBar(content: Text('Logged out...')));
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (_) => const LoginScreen()),
