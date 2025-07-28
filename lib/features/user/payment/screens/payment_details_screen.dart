@@ -62,11 +62,9 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
       'prefill': {'contact': contact, 'email': email},
     };
     try {
-      print('==================');
       _razorpay.open(options);
-      print('==============2');
     } catch (e) {
-      print('----------------${e.toString()}');
+      print('=================${e.toString()}');
     }
   }
 
@@ -80,7 +78,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    placeOrder(false,true,response.paymentId);
+    placeOrder(false, true, response.paymentId);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -93,7 +91,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
-    placeOrder(false,false,null);
+    placeOrder(false, false, null);
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -109,10 +107,16 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     print(response.walletName);
   }
 
-  void placeOrder(bool isCod,bool isPaymentSuccess,String? transactionId) async {
+  void placeOrder(
+    bool isCod,
+    bool isPaymentSuccess,
+    String? transactionId,
+  ) async {
     List<Map<String, dynamic>> list = widget.cartProductList.map((map) {
       return {
         'productId': map['productId'],
+        'name' : (map['product'] as ProductModel).name,
+        'image' : (map['product'] as ProductModel).photos_list[0],
         'quantity': map['quantity'].toString(),
       };
     }).toList();
@@ -123,10 +127,14 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
       items: list,
       subtotal: double.parse(widget.total),
       deliveryFee: 0,
-      transactionId: isPaymentSuccess? transactionId : 'NA' ,
+      transactionId: isPaymentSuccess ? transactionId : 'NA',
       total: double.parse(widget.total),
       paymentMethod: isCod ? PayMethodCOD : PayMethodPrepaid,
-      paymentStatus: isCod ? PayStatusPending : isPaymentSuccess ? PayStatusPaid : PayStatusFailed,
+      paymentStatus: isCod
+          ? PayStatusPending
+          : isPaymentSuccess
+          ? PayStatusPaid
+          : PayStatusFailed,
       orderStatus: OrderStatusCreated,
       address: DeliveryAddress(
         widget.address,
@@ -135,14 +143,19 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
       ),
     );
 
-    await firestore.collection('orders').doc(createOrder.orderId).set(createOrder.toMap());
-    await firestore.collection('users').doc(auth.currentUser!.uid).collection('orders').add({
-      'order_id' : createOrder.orderId,
-    });
-    if(isPaymentSuccess){
+    await firestore
+        .collection('orders')
+        .doc(createOrder.orderId)
+        .set(createOrder.toMap());
+    await firestore
+        .collection('users')
+        .doc(auth.currentUser!.uid)
+        .collection('orders')
+        .add({'order_id': createOrder.orderId});
+    if (isPaymentSuccess) {
       context.read<ProductFunBloc>().add(ClearCartPressed());
     }
-    if(isCod){
+    if (isCod) {
       context.read<ProductFunBloc>().add(ClearCartPressed());
       Navigator.push(
         context,
@@ -196,7 +209,10 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                   ),
                 ],
               ),
-              child: Text('Don\'t use wallet !!!', style: simple_text_style(color: AppColour.red)),
+              child: Text(
+                'Don\'t use wallet !!!',
+                style: simple_text_style(color: AppColour.red),
+              ),
             ),
             const SizedBox(height: 20),
             Text('Address', style: simple_text_style()),
@@ -223,7 +239,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
             Text('Payment Method', style: simple_text_style()),
             const SizedBox(height: 4),
             SizedBox(
-              height: 120,
+              height: 100,
               width: double.infinity,
               child: Row(
                 children: [
@@ -327,11 +343,12 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
               child: ListView.builder(
                 itemCount: widget.cartProductList.length,
                 itemBuilder: (context, index) {
-                  ProductModel product = widget.cartProductList[index]['product'];
+                  ProductModel product =
+                      widget.cartProductList[index]['product'];
                   int quantity = widget.cartProductList[index]['quantity'];
                   return Container(
                     padding: EdgeInsets.symmetric(vertical: 4),
-                    margin: EdgeInsets.symmetric(vertical: 8),
+                    margin: EdgeInsets.symmetric(vertical: 8,horizontal: 4),
                     decoration: BoxDecoration(
                       color: AppColour.white,
                       borderRadius: BorderRadius.circular(10),
@@ -377,7 +394,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
             ElevatedButton(
               style: elevated_button_style(),
               onPressed: () {
-                isCOD ? placeOrder(true,false,null) : _openCheckOut();
+                isCOD ? placeOrder(true, false, null) : _openCheckOut();
               },
               child: Text(
                 isCOD ? "PLACE ORDER" : "PROCEED & PAY ₹${widget.total}",

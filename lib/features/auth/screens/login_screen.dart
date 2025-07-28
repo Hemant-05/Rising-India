@@ -35,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     setStatusBarColor();
   }
+
   void setStatusBarColor() {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -51,7 +52,11 @@ class _LoginScreenState extends State<LoginScreen> {
         if (state is UserAuthenticated) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => state.user.role == admin? const MainScreenA(): const HomeScreenU()),
+            MaterialPageRoute(
+              builder: (_) => state.user.role == admin
+                  ? const MainScreenA()
+                  : const HomeScreenU(),
+            ),
             (route) => false,
           );
         } else if (state is UserError) {
@@ -130,11 +135,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                       });
                                     },
                                     activeColor: AppColour.primary,
-                                    side: MaterialStateBorderSide.resolveWith((states) {
-                                      if (states.contains(MaterialState.selected)) {
-                                        return BorderSide(color: AppColour.primary); // Checked border color
+                                    side: MaterialStateBorderSide.resolveWith((
+                                      states,
+                                    ) {
+                                      if (states.contains(
+                                        MaterialState.selected,
+                                      )) {
+                                        return BorderSide(
+                                          color: AppColour.primary,
+                                        ); // Checked border color
                                       }
-                                      return BorderSide(color: AppColour.lightGrey); // Unchecked border color
+                                      return BorderSide(
+                                        color: AppColour.lightGrey,
+                                      ); // Unchecked border color
                                     }),
                                   ),
                                   Text(
@@ -171,16 +184,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               _error!,
                               style: simple_text_style(color: AppColour.red),
                             ),
-                            const SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           BlocBuilder<UserBloc, UserState>(
                             builder: (context, state) {
-                              if (state is UserLoading) {
-                                return SizedBox(
-                                  height: 50,
-                                  width: 50,
-                                  child: const CircularProgressIndicator(),
-                                );
-                              }
                               return ElevatedButton(
                                 onPressed: () {
                                   BlocProvider.of<UserBloc>(context).add(
@@ -192,13 +198,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 },
                                 style: elevated_button_style(),
-                                child: Text(
-                                  'LOG IN',
-                                  style: simple_text_style(
-                                    color: AppColour.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                child: state is UserLoading
+                                    ? Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColour.white,
+                                        ),
+                                      )
+                                    : Text(
+                                        'LOG IN',
+                                        style: simple_text_style(
+                                          color: AppColour.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               );
                             },
                           ),
@@ -212,14 +224,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               );
                             },
-                            child : RichText(
+                            child: RichText(
                               text: TextSpan(
                                 text: 'Don\'t have an account? ',
                                 style: simple_text_style(color: AppColour.grey),
                                 children: [
                                   TextSpan(
                                     text: 'SIGN UP',
-                                    style: simple_text_style(color: AppColour.primary,fontWeight: FontWeight.bold),
+                                    style: simple_text_style(
+                                      color: AppColour.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),

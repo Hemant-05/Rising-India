@@ -36,6 +36,7 @@ class _SignupScreenState extends State<SignupScreen> {
     super.initState();
     setStatusBarColor();
   }
+
   void setStatusBarColor() {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -44,6 +45,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<UserBloc, UserState>(
@@ -51,7 +53,11 @@ class _SignupScreenState extends State<SignupScreen> {
         if (state is UserAuthenticated) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (_) => state.user.role == admin? const MainScreenA(): const HomeScreenU()),
+            MaterialPageRoute(
+              builder: (_) => state.user.role == admin
+                  ? const MainScreenA()
+                  : const HomeScreenU(),
+            ),
             (route) => false,
           );
         } else if (state is UserError) {
@@ -81,30 +87,33 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       Row(
                         children: [
-                           Container(
-                              height: 40,
-                              width: 40,
-                             margin: const EdgeInsets.only(top : 20,left: 20),
-                              decoration: BoxDecoration(
-                                color: AppColour.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Icon(
-                                  size: 16,
-                                  Icons.arrow_back_ios_rounded,
-                                  color: AppColour.black,
-                                ),
+                          Container(
+                            height: 40,
+                            width: 40,
+                            margin: const EdgeInsets.only(top: 20, left: 20),
+                            decoration: BoxDecoration(
+                              color: AppColour.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(
+                                size: 16,
+                                Icons.arrow_back_ios_rounded,
+                                color: AppColour.black,
                               ),
                             ),
+                          ),
                         ],
                       ),
                       Column(
                         children: [
-                          Text('Sign Up', style: bold_text_style(AppColour.white)),
+                          Text(
+                            'Sign Up',
+                            style: bold_text_style(AppColour.white),
+                          ),
                           const SizedBox(height: 10),
                           Text(
                             'Please sign up to get started',
@@ -171,13 +180,6 @@ class _SignupScreenState extends State<SignupScreen> {
                           if (_error != null) const SizedBox(height: 20),
                           BlocBuilder<UserBloc, UserState>(
                             builder: (context, state) {
-                              if (state is UserLoading) {
-                                return SizedBox(
-                                  height: 50,
-                                  width: 50,
-                                  child: const CircularProgressIndicator(),
-                                );
-                              }
                               return ElevatedButton(
                                 style: elevated_button_style(),
                                 onPressed: () {
@@ -194,18 +196,25 @@ class _SignupScreenState extends State<SignupScreen> {
                                       email: email.split('#').last,
                                       number: _numberController.text,
                                       password: _passwordController.text,
-                                      confirmPassword: _confirmPasswordController.text,
+                                      confirmPassword:
+                                          _confirmPasswordController.text,
                                       role: _role,
                                     ),
                                   );
                                 },
-                                child: Text(
-                                  'Sign Up',
-                                  style: simple_text_style(
-                                    color: AppColour.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                child: state is UserLoading
+                                    ? Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColour.white,
+                                        ),
+                                      )
+                                    : Text(
+                                        'Sign Up',
+                                        style: simple_text_style(
+                                          color: AppColour.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               );
                             },
                           ),

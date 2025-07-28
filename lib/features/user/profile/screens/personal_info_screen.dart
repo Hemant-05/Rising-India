@@ -16,7 +16,7 @@ class PersonalInfoScreen extends StatelessWidget {
           children: [
             back_button(),
             const SizedBox(width: 8),
-            Text('Details', style: simple_text_style(fontSize: 18)),
+            Text('Persona Info', style: simple_text_style(fontSize: 18)),
             const Spacer(),
           ],
         ),

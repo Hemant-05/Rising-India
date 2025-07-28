@@ -44,7 +44,15 @@ class PaymentResultScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.popUntil(context, (route) => route.isFirst);
               },
-              child: Text(isSuccess? "Continue Shopping..." : "Sorry for trouble \n Back to home",style: simple_text_style(color: AppColour.white,fontWeight: FontWeight.bold),),
+              child: Text(
+                isSuccess
+                    ? "Continue Shopping"
+                    : "Sorry for trouble \n Back to home",
+                style: simple_text_style(
+                  color: AppColour.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         ),

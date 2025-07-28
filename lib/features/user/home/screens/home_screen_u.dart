@@ -137,7 +137,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
                   BlocBuilder<UserProductBloc, UserProductState>(
                     builder: (context, state) {
                       if (state.isLoading) {
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(child: CircularProgressIndicator(color: AppColour.primary,));
                       } else if (state.bestSellingProducts.isEmpty) {
                         return Center(
                           child: Text(

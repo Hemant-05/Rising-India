@@ -82,6 +82,13 @@ class ProfileScreen extends StatelessWidget {
                                     color: AppColour.lightGrey,
                                   ),
                                 ),
+                                SizedBox(height: 10,),
+                                Text(
+                                  '${state.user?.number}',
+                                  style: simple_text_style(
+                                    color: AppColour.lightGrey,
+                                  ),
+                                ),
                               ],
                             ),
                             Spacer(),
@@ -92,28 +99,15 @@ class ProfileScreen extends StatelessWidget {
             ),
             SizedBox(height: 16),
             customContainer(
-              Column(
-                children: [
-                  optionListTile(profile_svg, 'Personal Info', () {
-                    context.read<ProfileBloc>().add(OnProfileOpened());
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PersonalInfoScreen(),
-                      ),
-                    );
-                  }),
-                  optionListTile(map_svg, 'Addresses', () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            SelectAddressScreen(isFromProfile: true),
-                      ),
-                    );
-                  }),
-                ],
-              ),
+              optionListTile(map_svg, 'Addresses', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SelectAddressScreen(isFromProfile: true),
+                  ),
+                );
+              }),
             ),
             customContainer(
               Column(

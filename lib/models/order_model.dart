@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:raising_india/models/product_model.dart';
 
 import '../constant/ConString.dart';
 class OrderModel {
@@ -98,11 +99,9 @@ class DeliveryAddress {
   final String contactNumber;
   final GeoPoint? location;
 
-  DeliveryAddress(
-    this.fullAddress,
-    this.contactNumber,
-    this.location,
-  ); // For map integration
+  DeliveryAddress(this.fullAddress,
+      this.contactNumber,
+      this.location,); // For map integration
   Map<String, dynamic> toMap() {
     return {
       'fullAddress': fullAddress,
