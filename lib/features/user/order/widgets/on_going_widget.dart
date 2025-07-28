@@ -5,6 +5,7 @@ import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
+import 'package:raising_india/features/user/order/screens/order_details_screen.dart';
 import 'package:raising_india/features/user/order/widgets/order_cancel_dialog.dart';
 import 'package:raising_india/models/order_model.dart';
 
@@ -139,25 +140,47 @@ Widget onGoingWidget(List<OrderModel> list) {
                         ),
                       ],
                     ),
-                    ElevatedButton(
-                      style: elevated_button_style(),
-                      onPressed: () {
-                        showCancelOrderDialog(context, (reason) {
-                          context.read<OrderBloc>().add(
-                            CancelOrderEvent(
-                              orderId: list[index].orderId,
-                              cancellationReason: reason,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            style: elevated_button_style(),
+                            onPressed: () {
+                              showCancelOrderDialog(context, (reason) {
+                                context.read<OrderBloc>().add(
+                                  CancelOrderEvent(
+                                    orderId: list[index].orderId,
+                                    cancellationReason: reason,
+                                  ),
+                                );
+                              });
+                            },
+                            child: Text(
+                              'Cancel',
+                              style: simple_text_style(
+                                color: AppColour.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          );
-                        });
-                      },
-                      child: Text(
-                        'Cancel',
-                        style: simple_text_style(
-                          color: AppColour.white,
-                          fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
+                        SizedBox(width: 12,),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: elevated_button_style(),
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsScreen(order: list[index]),));
+                            },
+                            child: Text(
+                              'Details',
+                              style: simple_text_style(
+                                color: AppColour.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 );

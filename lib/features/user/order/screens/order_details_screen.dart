@@ -3,9 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
+import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/models/order_model.dart';
 
-// For illustration, your models might differ slightly in names.
 class OrderDetailsScreen extends StatelessWidget {
   final OrderModel order;
 
@@ -37,14 +37,10 @@ class OrderDetailsScreen extends StatelessWidget {
             children: [
               Text(
                 _statusText(order.orderStatus),
-                style: TextStyle(
-                  color: statusColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+                style: simple_text_style()
               ),
               Text(DateFormat('MMM d, h:mm a').format(order.createdAt),
-                  style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                  style: simple_text_style(color: AppColour.grey)),
             ],
           ),
           if (order.orderStatus == 'cancelled' && order.cancellationReason != null)
@@ -56,12 +52,12 @@ class OrderDetailsScreen extends StatelessWidget {
                     color: Colors.red[50], borderRadius: BorderRadius.circular(6)),
                 child: Row(
                   children: [
-                    Icon(Icons.info, color: Colors.red.shade400, size: 18),
+                    Icon(Icons.info, color: AppColour.red, size: 18),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Cancelled: ${order.cancellationReason}',
-                        style: TextStyle(color: Colors.red[700]),
+                        style: simple_text_style(color: AppColour.red),
                       ),
                     ),
                   ],
@@ -79,7 +75,7 @@ class OrderDetailsScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 order.paymentMethod == "prepaid" ? "Prepaid" : "COD",
-                style: const TextStyle(fontWeight: FontWeight.w600),
+                style: simple_text_style(fontWeight: FontWeight.w600),
               ),
               const SizedBox(width: 14),
               Icon(
@@ -90,7 +86,7 @@ class OrderDetailsScreen extends StatelessWidget {
               const SizedBox(width: 5),
               Text(
                 _paymentStatusText(order.paymentStatus),
-                style: TextStyle(
+                style: simple_text_style(
                     color: _paymentStatusColor(order.paymentStatus),
                     fontSize: 13),
               ),
@@ -98,7 +94,7 @@ class OrderDetailsScreen extends StatelessWidget {
           ),
           const Divider(height: 32),
           // Items List
-          Text('Items', style: Theme.of(context).textTheme.titleMedium),
+          Text('Items', style: simple_text_style(fontWeight: FontWeight.bold,fontSize: 18)),
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -121,19 +117,20 @@ class OrderDetailsScreen extends StatelessWidget {
                   Expanded(
                     child: Text(
                       product["name"] ?? "Unknown",
-                      style: const TextStyle(fontSize: 16),
+                      style: simple_text_style(),
                     ),
                   ),
-                  Text("x${product["quantity"]}", style: const TextStyle(fontSize: 15, color: Colors.grey)),
+                  Text("x${product["quantity"]}", style: simple_text_style(color: AppColour.grey)),
                 ],
               );
             },
           ),
-          const Divider(height: 32),
+          const Divider(height: 12),
           // Price Details
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
-            child: Text('Order Summary', style: Theme.of(context).textTheme.titleMedium),
+            child: Text('Order Summary', style: simple_text_style(fontWeight: FontWeight.bold,fontSize: 18),
+            ),
           ),
           _orderSummaryRow("Subtotal", order.subtotal),
           _orderSummaryRow("Delivery Fee", order.deliveryFee),
@@ -141,14 +138,14 @@ class OrderDetailsScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Total', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text('Total', style: simple_text_style(fontWeight: FontWeight.bold,fontSize: 18)),
               Text("₹${order.total.toStringAsFixed(2)}",
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  style: simple_text_style(fontWeight: FontWeight.bold)),
             ],
           ),
           const Divider(height: 30),
           // Address
-          Text('Delivery Address', style: Theme.of(context).textTheme.titleMedium),
+          Text('Delivery Address', style: simple_text_style(fontWeight: FontWeight.bold,fontSize: 18)),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10),
             padding: const EdgeInsets.all(13),
@@ -156,7 +153,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 color: Colors.grey[100], borderRadius: BorderRadius.circular(7)),
             child: Text(
               order.address.fullAddress,  // make sure your DeliveryAddress has a `fullAddress` getter
-              style: const TextStyle(fontSize: 15, color: Colors.black87),
+              style: simple_text_style(),
             ),
           ),
           // Transaction & timestamps (optional)
@@ -178,8 +175,8 @@ class OrderDetailsScreen extends StatelessWidget {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(color: Colors.black87)),
-        Text("₹${value.toStringAsFixed(2)}", style: const TextStyle(color: Colors.black54, fontSize: 14)),
+        Text(label, style: simple_text_style()),
+        Text("₹${value.toStringAsFixed(2)}", style: simple_text_style(fontSize: 14,color: AppColour.grey)),
       ],
     ),
   );
@@ -188,8 +185,8 @@ class OrderDetailsScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 2),
       child: Row(
         children: [
-          Text("$label: ", style: const TextStyle(color: Colors.black54, fontSize: 13)),
-          Expanded(child: Text(value, style: const TextStyle(color: Colors.black, fontSize: 13))),
+          Text("$label: ", style: simple_text_style(fontSize: 13),),
+          Expanded(child: Text(value, style: simple_text_style(fontSize: 13),)),
         ],
       ));
 }
@@ -197,53 +194,53 @@ class OrderDetailsScreen extends StatelessWidget {
 // --- Helper utils for status/icons/text/colors ---
 String _statusText(String s) {
   switch (s) {
-    case "created": return "Order Placed";
-    case "confirmed": return "Order Confirmed";
-    case "preparing": return "Preparing";
-    case "dispatched": return "Out For Delivery";
-    case "delivered": return "Delivered";
-    case "cancelled": return "Cancelled";
+    case OrderStatusCreated : return "Order Placed At";
+    case OrderStatusConfirmed : return "Order Confirmed";
+    case OrderStatusPreparing : return "Preparing";
+    case OrderStatusDispatch : return "Out For Delivery";
+    case OrderStatusDeliverd : return "Delivered";
+    case OrderStatusCancelled : return "Cancelled";
     default: return s;
   }
 }
 
 Color _statusColor(String s) {
   switch (s) {
-    case "delivered": return Colors.green;
-    case "cancelled": return Colors.red;
-    case "preparing": return Colors.orange;
-    case "dispatched": return Colors.blue;
-    case "confirmed": return Colors.teal;
+    case OrderStatusDeliverd : return Colors.green;
+    case OrderStatusCancelled : return Colors.red;
+    case OrderStatusPreparing : return Colors.orange;
+    case OrderStatusDispatch : return Colors.blue;
+    case OrderStatusConfirmed : return Colors.teal;
     default: return Colors.grey;
   }
 }
 
 IconData _paymentStatusIcon(String s) {
   switch (s) {
-    case "paid": return Icons.check_circle;
-    case "pending": return Icons.hourglass_empty;
-    case "failed": return Icons.cancel;
-    case "refunded": return Icons.refresh;
+    case PayStatusPaid : return Icons.check_circle;
+    case PayStatusPending : return Icons.hourglass_empty;
+    case PayStatusFailed : return Icons.cancel;
+    case PayStatusRefunded : return Icons.refresh;
     default: return Icons.info;
   }
 }
 
 Color _paymentStatusColor(String s) {
   switch (s) {
-    case "paid": return Colors.green;
-    case "pending": return Colors.orange;
-    case "failed": return Colors.red;
-    case "refunded": return Colors.blueGrey;
+    case PayStatusPaid : return Colors.green;
+    case PayStatusPending : return Colors.orange;
+    case PayStatusFailed : return Colors.red;
+    case PayStatusRefunded : return Colors.blueGrey;
     default: return Colors.grey;
   }
 }
 
 String _paymentStatusText(String s) {
   switch (s) {
-    case "paid": return "Paid";
-    case "pending": return "Pending";
-    case "failed": return "Failed";
-    case "refunded": return "Refunded";
+    case PayStatusPaid : return "Paid";
+    case PayStatusPending : return "Pending";
+    case PayStatusFailed : return "Failed";
+    case PayStatusRefunded : return "Refunded";
     default: return s;
   }
 }

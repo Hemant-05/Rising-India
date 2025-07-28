@@ -2,19 +2,20 @@ final String welcome = 'Welcome';
 final String admin = 'ADMIN';
 final String user = 'USER';
 
-final String OrderStatusCreated = 'created';
-final String OrderStatusConfirmed = 'confirmed';
-final String OrderStatusPreparing = 'preparing';
-final String OrderStatusDispatch = 'dispatch';
-final String OrderStatusDeliverd = 'delivered';
-final String OrderStatusCancelled = 'cancelled';
+const String OrderStatusCreated = 'created';
+const String OrderStatusConfirmed = 'confirmed';
+const String OrderStatusPreparing = 'preparing';
+const String OrderStatusDispatch = 'dispatch';
+const String OrderStatusDeliverd = 'delivered';
+const String OrderStatusCancelled = 'cancelled';
 
-final String PayMethodPrepaid = 'prepaid';
-final String PayMethodCOD = 'cod';
+const String PayMethodPrepaid = 'prepaid';
+const String PayMethodCOD = 'cod';
 
-final String PayStatusPending = 'pending';
-final String PayStatusPaid = 'paid';
-final String PayStatusFailed = 'failed';
+const String PayStatusPending = 'pending';
+const String PayStatusPaid = 'paid';
+const String PayStatusFailed = 'failed';
+const String PayStatusRefunded = 'refunded';
 
 final String welcomeDescription = 'We are glad to have you here. Let\'s get started with your journey towards making a difference in your life.';
 
