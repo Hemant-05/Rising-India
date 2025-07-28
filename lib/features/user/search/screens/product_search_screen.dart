@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/cart_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/user/cart/screens/cart_screen.dart';
+import 'package:raising_india/features/user/product_details/screens/product_details_screen.dart';
 import 'package:raising_india/features/user/search/bloc/product_search_bloc/product_search_bloc.dart';
 import '../../../../constant/ConPath.dart';
 
@@ -26,27 +28,9 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
         leading: null,
         title: Row(
           children: [
-            Container(
-              height: 40,
-              width: 40,
-              // margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColour.lightGrey.withOpacity(0.25),
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(
-                  size: 14,
-                  Icons.arrow_back_ios_rounded,
-                  color: AppColour.black,
-                ),
-              ),
-            ),
+            back_button(),
             const SizedBox(width: 10),
-            Text("Search", style: TextStyle(fontSize: 18)),
+            Text("Search", style: simple_text_style(fontSize: 18)),
             const Spacer(),
             cart_button(),
           ],
@@ -87,16 +71,19 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
               child: BlocBuilder<ProductSearchBloc, ProductSearchState>(
                 builder: (context, state) {
                   if (state is ProductSearchLoading) {
-                    return Center(child: CircularProgressIndicator());
+                    return Center(child: CircularProgressIndicator(color: AppColour.primary,));
                   } else if (state is ProductSearchLoaded) {
                     if (state.results.isEmpty) {
-                      return Center(child: Text("No products found."));
+                      return Center(child: Text("No products found.",style: simple_text_style(),));
                     }
                     return ListView.builder(
                       itemCount: state.results.length,
                       itemBuilder: (context, index) {
                         final product = state.results[index];
                         return ListTile(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(product: product),));
+                          },
                           leading: ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Image.network(

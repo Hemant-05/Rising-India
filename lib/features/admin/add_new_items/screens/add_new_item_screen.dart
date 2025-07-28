@@ -199,6 +199,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                 ProductModel newItem = ProductModel(
                   price: double.parse(price),
                   name: itemName,
+                  name_lower: itemName.toLowerCase(),
                   description: itemDescription,
                   category: category,
                   rating: 0.0,

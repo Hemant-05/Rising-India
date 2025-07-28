@@ -22,13 +22,12 @@ class ProductSearchBloc extends Bloc<ProductSearchEvent, ProductSearchState> {
       emit(ProductSearchLoading());
 
       final queryText = event.query.trim().toLowerCase();
-      final nextQuery = queryText.substring(0, queryText.length - 1) +
-          String.fromCharCode(queryText.codeUnitAt(queryText.length - 1) + 1);
 
       final querySnapshot = await firestore
           .collection('products')
-          .where('name', isGreaterThanOrEqualTo: queryText)
-          .where('name', isLessThan: nextQuery)
+          .orderBy('name_lower')                   // ensure lowercase index
+          .startAt([queryText])
+          .endAt(['$queryText\uf8ff'])                  // highest Unicode char
           .get();
 
       final products = querySnapshot.docs.map((doc) {
