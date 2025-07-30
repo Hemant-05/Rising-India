@@ -43,6 +43,10 @@ class _HomeScreenUState extends State<HomeScreenU> {
           return Scaffold(
             body: Center(child: Text('Please log in to continue')),
           );
+        }else if(state is UserError){
+          return Scaffold(
+            body: Center(child: Text('Error :- ${state.message}')),
+          );
         }
         return Scaffold(
           backgroundColor: AppColour.white,

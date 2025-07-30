@@ -197,7 +197,7 @@ class AuthService extends ChangeNotifier {
 
     // Update user in Firestore
     await _db.collection('users').doc(userId).update({
-      'addressList': FieldValue.arrayUnion([{}])
+      'addressList': FieldValue.arrayUnion([{}]),
     });
     return address;
   }
@@ -205,7 +205,7 @@ class AuthService extends ChangeNotifier {
   Future<String?> addLocation(AddressModel address) async {
     String userId = _auth.currentUser!.uid;
     await _db.collection('users').doc(userId).update({
-      'addressList': FieldValue.arrayUnion([address.toMap()])
+      'addressList': FieldValue.arrayUnion([address.toMap()]),
     });
     return 'ok';
   }
@@ -215,7 +215,8 @@ class AuthService extends ChangeNotifier {
     try {
       // 1. Get the document
       final doc = await FirebaseFirestore.instance
-          .collection('users').doc(userId)
+          .collection('users')
+          .doc(userId)
           .get();
       // 2. Get the current list
       List<dynamic> list = List.from(doc['addressList'] ?? []);
@@ -224,9 +225,7 @@ class AuthService extends ChangeNotifier {
         // 4. Remove the item at index
         list.removeAt(index);
         // 5. Update the entire array
-        await doc.reference.update({
-          'addressList': list
-        });
+        await doc.reference.update({'addressList': list});
       }
       return 'ok';
     } catch (e) {
@@ -241,20 +240,18 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<AppUser?> getCurrentUser() async {
-    try {
-      final firebaseUser = _auth.currentUser;
-      if (firebaseUser == null) return null;
-      final user = await _db.collection('users').doc(firebaseUser.uid).get();
-      if (user.exists) {
-        return AppUser.fromMap(user.data()!, firebaseUser.uid);
-      }
-      final admin = await _db.collection('admin').doc(firebaseUser.uid).get();
-      if (admin.exists) {
-        return AppUser.fromMap(admin.data()!, firebaseUser.uid);
-      }
-      return null;
-    } catch (e) {
-      return null;
+    final firebaseUser = _auth.currentUser;
+    if (firebaseUser == null) return null;
+    final user = await _db.collection('users').doc(firebaseUser.uid).get();
+    if (user.exists) {
+      return AppUser.fromMap(user.data()!, firebaseUser.uid);
     }
+    final admin = await _db.collection('admin').doc(firebaseUser.uid).get();
+    if (admin.exists) {
+      final admin0 = AppUser.fromMap(admin.data()!, firebaseUser.uid);
+      return admin0;
+    }
+    print('returning null');
+    return null;
   }
 }

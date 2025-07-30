@@ -39,7 +39,7 @@ class AppUser {
       uid: uid,
       name: map['name'],
       email: map['email'],
-      number: map['number'],
+      number: map['number'].toString(),
       role: map['role'],
       currentLocation: map['currentLocation'],
       address: map['address'],

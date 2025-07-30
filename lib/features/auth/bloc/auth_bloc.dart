@@ -93,16 +93,20 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final error = await authService.signIn(event.email, event.password);
       if (error == null) {
         final user = await authService.getCurrentUser();
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setBool('isAdmin', user?.role == admin);
-        if (event.rememberMe) {
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setBool('rememberMe', true);
-        } else {
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setBool('rememberMe', false);
+        if(user != null){
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setBool('isAdmin', user.role == admin);
+          if (event.rememberMe) {
+            SharedPreferences pref = await SharedPreferences.getInstance();
+            pref.setBool('rememberMe', true);
+          } else {
+            SharedPreferences pref = await SharedPreferences.getInstance();
+            pref.setBool('rememberMe', false);
+          }
+          emit(UserAuthenticated(user));
+        }else{
+          emit(UserError('user is null'));
         }
-        emit(UserAuthenticated(user!));
       } else {
         emit(UserError(error));
       }
