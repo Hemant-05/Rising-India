@@ -32,11 +32,13 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColour.white,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        backgroundColor: AppColour.white,
         title: Row(
           children: [
-            Text('Add New Item', style: simple_text_style()),
+            Text('Add New Item', style: simple_text_style(fontSize: 20)),
             Spacer(),
             TextButton(
               onPressed: () {
@@ -97,6 +99,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                 Text('Available', style: simple_text_style(fontSize: 16)),
                 Spacer(),
                 Switch(
+                  activeColor: AppColour.primary,
                   value: isAvailable,
                   onChanged: (value) {
                     isAvailable = value;
@@ -110,7 +113,9 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
               controller: _itemNameController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Enter item name',
+                hintText: 'Enter product name',
+                hintStyle: simple_text_style(color: AppColour.lightGrey),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColour.primary,width: 2)),
               ),
             ),
             SizedBox(height: 12),
@@ -121,24 +126,22 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                     controller: _priceController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      label: Text(
-                        'Price',
-                        style: simple_text_style(fontSize: 16),
+                      border: OutlineInputBorder(
                       ),
+                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColour.primary,width: 2)),
+                        hintText: 'Price',
+                        hintStyle: simple_text_style(color: AppColour.lightGrey)
                     ),
                   ),
                 ),
                 SizedBox(width: 12),
                 DropdownMenu(
                   controller: _categoryController,
-                  textStyle: simple_text_style(),
+                  textStyle: simple_text_style(color: AppColour.lightGrey),
                   hintText: 'Category',
+                  menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.all(AppColour.white)),
                   dropdownMenuEntries: [
-                    DropdownMenuEntry(
-                      value: 'Vegetable',
-                      label: 'Vegetable',
-                    ),
+                    DropdownMenuEntry(value: 'Vegetable', label: 'Vegetable'),
                     DropdownMenuEntry(value: 'Fruit', label: 'Fruit'),
                     DropdownMenuEntry(value: 'Dairy', label: 'Dairy'),
                   ],
@@ -155,14 +158,17 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Enter quantity',
+                      hintStyle: simple_text_style(color: AppColour.lightGrey),
+                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColour.primary,width: 2)),
                     ),
                   ),
                 ),
                 SizedBox(width: 12),
                 DropdownMenu(
                   controller: _measurementController,
-                  textStyle: simple_text_style(),
+                  textStyle: simple_text_style(color: AppColour.lightGrey),
                   hintText: 'Measurement',
+                  menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.all(AppColour.white)),
                   dropdownMenuEntries: [
                     DropdownMenuEntry(value: 'KG', label: 'kg'),
                     DropdownMenuEntry(value: 'GM', label: 'gm'),
@@ -180,6 +186,8 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'Enter item description (100 words max)',
+                hintStyle: simple_text_style(color: AppColour.lightGrey),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColour.primary,width: 2)),
               ),
             ),
             SizedBox(height: 12),

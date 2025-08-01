@@ -77,7 +77,7 @@ class HomeScreenA extends StatelessWidget {
               Column(
                 children: [
                   SizedBox(
-                    height: 110,
+                    height: 90,
                     width: double.infinity,
                     child: Row(
                       children: [
@@ -91,7 +91,7 @@ class HomeScreenA extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   SizedBox(
-                    height: 110,
+                    height: 90,
                     width: double.infinity,
                     child: Row(
                       children: [
@@ -101,20 +101,20 @@ class HomeScreenA extends StatelessWidget {
                         ),
                         // put real data here
                         SizedBox(width: 10),
-                        info_card(state.totalOrders.toString(), 'ALL'),
+                        info_card(state.cancelledOrders.toString(), 'CANCELLED'),
                         // put real data here
                       ],
                     ),
                   ),
                   SizedBox(height: 10),
                   SizedBox(
-                    height: 110,
+                    height: 90,
                     width: double.infinity,
                     child: Row(
                       children: [
                         info_card(
-                          state.cancelledOrders.toString(),
-                          'CANCELLED',
+                          state.totalOrders.toString(),
+                          'ALL ORDERS',
                         ),
                         // put real data here
                       ],

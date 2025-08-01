@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/image_cubit.dart';
 import 'package:raising_india/features/admin/services/image_services.dart';
 
@@ -38,7 +39,9 @@ class ProductImageSelector extends StatelessWidget {
       child: Container(
         width: 100,
         height: 100,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+          color: AppColour.primary.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(8)),
         child: imageFile != null
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(8),
