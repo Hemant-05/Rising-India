@@ -35,9 +35,9 @@ class ProductModel {
       description: map['description'] ?? '',
       isAvailable: map['isAvailable'],
       name_lower: map['name_lower'],
-      rating: (map['rating'] as num?)?.toDouble() ?? 0.0, // Default rating if not provided
-      price: (map['price'] as num?)?.toDouble() ?? 0.0,
-      quantity: (map['quantity'] as num?)?.toDouble() ?? 0.0,
+      rating: (double.parse(map['rating'].toString())), // Default rating if not provided
+      price: (double.parse(map['price'].toString())),
+      quantity: (double.parse(map['quantity'].toString())),
       measurement: map['measurement'] ?? '',
       photos_list: List<String>.from(map['photos_list'] ?? []),
       uid: uid,

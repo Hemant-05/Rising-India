@@ -4,8 +4,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/image_cubit.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/product_bloc/product_bloc.dart';
+import 'package:raising_india/features/admin/all_product_list/bloc/products_cubit.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
 import 'package:raising_india/features/user/home/bloc/user_product_bloc/user_product_bloc.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
@@ -43,10 +45,18 @@ class MyApp extends StatelessWidget {
         BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
         BlocProvider<ProfileBloc>(create: (context) => ProfileBloc(),),
         BlocProvider<OrderStatsCubit>(create: (context)=>OrderStatsCubit(FirebaseFirestore.instance),),
+        BlocProvider<ProductsCubit>(create: (context) => ProductsCubit(FirebaseFirestore.instance)..fetchProducts()),
       ],
       child: MaterialApp(
         title: 'Raising India',
         debugShowCheckedModeBanner: false,
+        theme : ThemeData(
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: AppColour.primary, // Cursor color
+            selectionColor: AppColour.primary.withOpacity(0.5), // Highlight background
+            selectionHandleColor: AppColour.primary, // This changes the handle color
+          ),
+        ),
         home: const SplashScreen(),
       ),
     );
