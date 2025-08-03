@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationService {
   // Check and request location permissions
-  static Future<bool> _checkPermissions() async {
+  static Future<bool> checkPermissions() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return false;
@@ -52,7 +52,7 @@ class LocationService {
 
   // Get current position
   static Future<Position?> getCurrentPosition() async {
-    if (!await _checkPermissions()) return null;
+    if (!await checkPermissions()) return null;
 
     try {
       return await Geolocator.getCurrentPosition(

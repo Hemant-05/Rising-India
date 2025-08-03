@@ -51,7 +51,8 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
                 onTap: () async {
                   var user = await AuthService().getCurrentUser();
                   var id = user!.uid;
-                  if (user.addressList.length < 5) {
+                  bool isPermission = await LocationService.checkPermissions();
+                  if (isPermission && user.addressList.length < 5) {
                     bool refresh = await Navigator.push(
                       context,
                       MaterialPageRoute(

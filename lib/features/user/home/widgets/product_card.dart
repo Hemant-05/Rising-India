@@ -45,6 +45,7 @@ class product_card extends StatelessWidget {
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Center(child: Icon(Icons.error_outline_outlined,size: 40,)),
                     ),
                   ),
                 ),

@@ -25,9 +25,9 @@ Widget onGoingWidget(List<OrderModel> list) {
                 for (int i = 0; i < itemList.length; i++) {
                   var element = itemList[i];
                   title +=
-                      element['name'] +
+                      (element['name']?? 'Not define') +
                       ((i < itemList.length - 1) ? ', ' : ' ');
-                  imageList.add(element['image']);
+                  element['image'] != null? imageList.add(element['image']) : print('Image not found');
                 }
                 return Column(
                   children: [

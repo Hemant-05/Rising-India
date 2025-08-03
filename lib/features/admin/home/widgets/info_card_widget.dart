@@ -24,7 +24,7 @@ Widget info_card(String text, String sub_text) {
           Text(
             text,
             style: simple_text_style(
-              fontSize: 50,
+              fontSize: 45,
               fontWeight: FontWeight.bold,
             ),
           ),

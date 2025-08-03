@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:raising_india/constant/AppColour.dart';
 
 class NotificationScreenA extends StatefulWidget {
   const NotificationScreenA({super.key});
@@ -11,7 +12,9 @@ class _NotificationScreenAState extends State<NotificationScreenA> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColour.white,
       appBar: AppBar(
+        backgroundColor: AppColour.white,
         title: const Text('Notifications'),
       ),
     );
