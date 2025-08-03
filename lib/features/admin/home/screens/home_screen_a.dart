@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,14 +9,34 @@ import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
 import 'package:raising_india/features/admin/home/widgets/info_card_widget.dart';
 import 'package:raising_india/features/admin/home/widgets/review_tile_widget.dart';
+import 'package:raising_india/services/admin_notification_service.dart';
 import '../../../../comman/simple_text_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeScreenA extends StatelessWidget {
+class HomeScreenA extends StatefulWidget {
   const HomeScreenA({super.key});
 
+  @override
+  State<HomeScreenA> createState() => _HomeScreenAState();
+}
+
+class _HomeScreenAState extends State<HomeScreenA> {
+  @override
+  void initState() {
+    super.initState();
+    _initializeNotifications();
+  }
+
+  void _initializeNotifications() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        AdminNotificationService.initializeAdminNotifications();
+        AdminNotificationService.setupAdminMessageHandler();
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

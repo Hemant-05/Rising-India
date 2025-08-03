@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/features/admin/pagination/main_screen_a.dart';
 import 'package:raising_india/features/auth/services/auth_service.dart';
 import 'package:raising_india/features/on_boarding/screens/welcome_screen.dart';
-import 'package:raising_india/services/notification_service.dart';
+import 'package:raising_india/services/admin_notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constant/ConPath.dart';
 import '../features/admin/home/screens/home_screen_a.dart';
