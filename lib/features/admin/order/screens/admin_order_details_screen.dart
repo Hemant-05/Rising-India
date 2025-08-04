@@ -1,9 +1,6 @@
-// lib/screens/admin_order_details_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:raising_india/features/admin/order/bloc/admin_order_details_cubit.dart';
-import 'package:raising_india/models/order_model.dart';
 
 class AdminOrderDetailsScreen extends StatelessWidget {
   final String orderId;
@@ -16,8 +13,12 @@ class AdminOrderDetailsScreen extends StatelessWidget {
       create: (_) => AdminOrderDetailsCubit(orderId),
       child: BlocBuilder<AdminOrderDetailsCubit, AdminOrderDetailsState>(
         builder: (context, state) {
-          if (state.loading) return Scaffold(body: Center(child: CircularProgressIndicator()));
-          if (state.error != null) return Scaffold(body: Center(child: Text(state.error!)));
+          if (state.loading) {
+            return Scaffold(body: Center(child: CircularProgressIndicator()));
+          }
+          if (state.error != null) {
+            return Scaffold(body: Center(child: Text(state.error!)));
+          }
 
           final order = state.order!;
           return Scaffold(
@@ -32,22 +33,47 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Order Status', style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          'Order Status',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
                           value: order.orderStatus,
-                          decoration: const InputDecoration(border: OutlineInputBorder()),
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
                           items: const [
-                            DropdownMenuItem(value: 'created', child: Text('Order Placed')),
-                            DropdownMenuItem(value: 'confirmed', child: Text('Confirmed')),
-                            DropdownMenuItem(value: 'preparing', child: Text('Preparing')),
-                            DropdownMenuItem(value: 'dispatched', child: Text('Dispatched')),
-                            DropdownMenuItem(value: 'delivered', child: Text('Delivered')),
-                            DropdownMenuItem(value: 'cancelled', child: Text('Cancelled')),
+                            DropdownMenuItem(
+                              value: 'created',
+                              child: Text('Order Placed'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'confirmed',
+                              child: Text('Confirmed'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'preparing',
+                              child: Text('Preparing'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'dispatched',
+                              child: Text('Dispatched'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'delivered',
+                              child: Text('Delivered'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'cancelled',
+                              child: Text('Cancelled'),
+                            ),
                           ],
                           onChanged: (value) {
                             if (value != null) {
-                              context.read<AdminOrderDetailsCubit>().updateOrderStatus(value);
+                              context
+                                  .read<AdminOrderDetailsCubit>()
+                                  .updateOrderStatus(value);
                             }
                           },
                         ),
@@ -63,20 +89,39 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Payment Status', style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          'Payment Status',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
                           value: order.paymentStatus,
-                          decoration: const InputDecoration(border: OutlineInputBorder()),
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
                           items: const [
-                            DropdownMenuItem(value: 'pending', child: Text('Pending')),
-                            DropdownMenuItem(value: 'paid', child: Text('Paid')),
-                            DropdownMenuItem(value: 'failed', child: Text('Failed')),
-                            DropdownMenuItem(value: 'refunded', child: Text('Refunded')),
+                            DropdownMenuItem(
+                              value: 'pending',
+                              child: Text('Pending'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'paid',
+                              child: Text('Paid'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'failed',
+                              child: Text('Failed'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'refunded',
+                              child: Text('Refunded'),
+                            ),
                           ],
                           onChanged: (value) {
                             if (value != null) {
-                              context.read<AdminOrderDetailsCubit>().updatePaymentStatus(value);
+                              context
+                                  .read<AdminOrderDetailsCubit>()
+                                  .updatePaymentStatus(value);
                             }
                           },
                         ),
@@ -92,19 +137,41 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Order Items', style: Theme.of(context).textTheme.titleMedium),
+                        Text(
+                          'Order Items',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                         const SizedBox(height: 12),
-                        ...order.items.map((item) => ListTile(
-                          leading: Image.network(item['image'] ?? '', width: 40, height: 40, fit: BoxFit.cover),
-                          title: Text(item['name'] ?? 'Unknown'),
-                          trailing: Text('x${item['quantity']}'),
-                        )),
+                        ...order.items.map(
+                          (item) => ListTile(
+                            leading: Image.network(
+                              item['image'] ?? '',
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Center(
+                                    child: Icon(Icons.error_outline_rounded),
+                                  ),
+                            ),
+                            title: Text(item['name'] ?? 'Unknown'),
+                            trailing: Text('x${item['quantity']}'),
+                          ),
+                        ),
                         const Divider(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Total:', style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('₹${order.total}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                            const Text(
+                              'Total:',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '₹${order.total}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ],

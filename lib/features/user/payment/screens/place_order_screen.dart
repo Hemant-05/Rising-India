@@ -5,8 +5,8 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import '../../../../constant/ConPath.dart';
 
-class PlaceOrderScreen extends StatelessWidget  {
-  const PlaceOrderScreen({super.key});
+class OrderPlacedScreen extends StatelessWidget  {
+  const OrderPlacedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

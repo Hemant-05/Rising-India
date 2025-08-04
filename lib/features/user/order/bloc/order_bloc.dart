@@ -13,18 +13,18 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     on<OrderEvent>((event, emit) {});
     on<LoadUserCompletedOrderEvent>((event, emit) async {
       emit(OrderLoadingState());
-      final list = await _services.getUserCompletedOrders();
+      final list = await _services.fetchUserHistoryOrders();
       emit(OrderLoadedState(orderList: list));
     });
     on<LoadUserOngoingOrderEvent>((event, emit) async {
       emit(OrderLoadingState());
-      final list = await _services.getUserOnGoingOrders();
+      final list = await _services.fetchUserOngoingOrders();
       emit(OrderLoadedState(orderList: list));
     });
     on<CancelOrderEvent>((event, emit) async {
       emit(OrderLoadingState());
       await _services.cancelOrder(event.orderId,event.cancellationReason);
-      final list = await _services.getUserOnGoingOrders();
+      final list = await _services.fetchUserOngoingOrders();
       emit(OrderLoadedState(orderList: list));
     });
     on<PlaceOrderEvent>((event, emit) async {

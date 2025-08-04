@@ -84,42 +84,62 @@ class OrderServices {
     return list;
   }
 
-  Future<List<OrderModel>> getUserCompletedOrders() async {
-    List<OrderModel> list = [];
-    final uid = _auth.currentUser!.uid;
-    var res = await _firestore
-        .collection('orders')
-        .where('userId', isEqualTo: uid)
-        // .where('orderStatus', isEqualTo: OrderStatusDeliverd)
-        .where('orderStatus', isEqualTo: OrderStatusCancelled)
-        .get();
-    for (var element in res.docs) {
-      final model = OrderModel.fromMap(element.data());
-      list.add(model);
+  Future<List<OrderModel>> fetchUserHistoryOrders() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('orders')
+          .where('userId', isEqualTo: uid)
+          .where(
+            'orderStatus',
+            whereIn: ['delivered', 'cancelled'],
+          ) // ✅ Efficient whereIn query
+          .orderBy(
+            'createdAt',
+            descending: true,
+          ) // ✅ Direct ordering by timestamp
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => OrderModel.fromMap(doc.data()..['orderId'] = doc.id))
+          .toList();
+    } catch (e) {
+      print('Error fetching history orders: $e');
+      return [];
     }
-    list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    return list;
   }
 
-  Future<List<OrderModel>> getUserOnGoingOrders() async {
-    List<OrderModel> list = [];
-    final uid = _auth.currentUser!.uid;
-    var res = await _firestore
-        .collection('orders')
-        .where('userId', isEqualTo: uid)
-        .where('orderStatus', isNotEqualTo: OrderStatusDeliverd)
-        .orderBy('createdAt', descending: false)
-        .get();
-    for (var element in res.docs) {
-      final model = OrderModel.fromMap(element.data());
-      list.add(model);
+  Future<List<OrderModel>> fetchUserOngoingOrders() async {
+    try {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('orders')
+          .where('userId', isEqualTo: uid)
+          .where(
+            'orderStatus',
+            whereIn: ['created', 'confirmed', 'preparing', 'dispatched'],
+          ) //
+          .orderBy('createdAt', descending: true) //
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => OrderModel.fromMap(doc.data()..['orderId'] = doc.id))
+          .toList();
+    } catch (e) {
+      print('Error fetching ongoing orders: $e');
+      return [];
     }
-    list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    return list;
   }
 
   Future<void> placeOrder(OrderModel model) async {
     await _firestore.collection('orders').doc(model.orderId).set(model.toMap());
+    await _firestore
+        .collection('users')
+        .doc(_auth.currentUser!.uid)
+        .collection('orders')
+        .add({'order_id': model.orderId});
   }
 
   Future<OrderModel> getOrderById(String orderId) async {

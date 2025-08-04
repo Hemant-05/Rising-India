@@ -10,6 +10,7 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/constant/ConString.dart';
+import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
 import 'package:raising_india/features/user/payment/screens/place_order_screen.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
 import 'package:raising_india/models/order_model.dart';
@@ -120,7 +121,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
         'quantity': map['quantity'].toString(),
       };
     }).toList();
-    final createOrder = OrderModel(
+    final newOrder = OrderModel(
       orderId: Uuid().v4(),
       userId: auth.currentUser!.uid,
       createdAt: DateTime.now(),
@@ -142,16 +143,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
         GeoPoint(widget.addressCode.latitude, widget.addressCode.longitude),
       ),
     );
-
-    await firestore
-        .collection('orders')
-        .doc(createOrder.orderId)
-        .set(createOrder.toMap());
-    await firestore
-        .collection('users')
-        .doc(auth.currentUser!.uid)
-        .collection('orders')
-        .add({'order_id': createOrder.orderId});
+    context.read<OrderBloc>().add(PlaceOrderEvent(model: newOrder));
     if (isPaymentSuccess) {
       context.read<ProductFunBloc>().add(ClearCartPressed());
     }
@@ -159,7 +151,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
       context.read<ProductFunBloc>().add(ClearCartPressed());
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PlaceOrderScreen()),
+        MaterialPageRoute(builder: (context) => OrderPlacedScreen()),
       );
     }
   }

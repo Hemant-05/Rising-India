@@ -41,7 +41,7 @@ class product_card extends StatelessWidget {
                   child: Hero(
                     tag: '${product.pid}',
                     child: Image.network(
-                      product.photos_list[1],
+                      product.photos_list[0],
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,

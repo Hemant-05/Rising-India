@@ -6,6 +6,7 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/auth/services/auth_service.dart';
+import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
 import 'package:raising_india/features/user/cart/screens/cart_screen.dart';
 import 'package:raising_india/features/user/home/bloc/user_product_bloc/user_product_bloc.dart';
 import 'package:raising_india/features/user/home/widgets/categories_section.dart';
@@ -37,7 +38,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
     return BlocBuilder<UserBloc, UserState>(
       builder: (context, state) {
         if (state is UserAuthenticated) {
-          address = state.user.addressList.isNotEmpty? state.user.addressList[0].address : 'No Address !!';
+          address = state.user.addressList.isNotEmpty? state.user.addressList[0].address : '';
           name = state.user.name.split(' ').first;
         } else if (state is UserUnauthenticated) {
           return Scaffold(
@@ -82,12 +83,24 @@ class _HomeScreenUState extends State<HomeScreenU> {
                     ),
                     SizedBox(
                       width: 200,
-                      child: Text(
+                      child: address.isNotEmpty? Text(
                         address,
                         style: simple_text_style(
                           color: AppColour.black,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
+                        ),
+                      ) : InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SelectAddressScreen(isFromProfile: true),));
+                        },
+                        child: Text(
+                          'Tap to add address..',
+                          style: simple_text_style(
+                            color: AppColour.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),

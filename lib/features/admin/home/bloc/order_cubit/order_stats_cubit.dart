@@ -21,30 +21,33 @@ class OrderStatsCubit extends Cubit<OrderStatsState> {
       final now = DateTime.now();
       final today = DateFormat('yyyy-MM-dd').format(now);
       int running = 0, cancelled = 0, delivered = 0, todayCount = 0;
-      List<OrderModel> runningList = [];
-
       for (final doc in snap.docs) {
         final data = doc.data();
         final model = OrderModel.fromMap(data..['orderId'] = doc.id);
+
         switch (model.orderStatus) {
-          case 'cancelled': cancelled++; break;
-          case 'delivered': delivered++; break;
+          case 'cancelled':
+            cancelled++;
+            break;
+          case 'delivered':
+            delivered++;
+            break;
           default:
             running++;
-            runningList.add(model);
         }
         if (DateFormat('yyyy-MM-dd').format(model.createdAt) == today) {
           todayCount++;
         }
       }
-      emit(OrderStatsState(
-        runningOrders: running,
-        cancelledOrders: cancelled,
-        deliveredOrders: delivered,
-        todaysOrders: todayCount,
-        totalOrders: snap.size,
-        runningList: runningList,
-      ));
+      emit(
+        OrderStatsState(
+          runningOrders: running,
+          cancelledOrders: cancelled,
+          deliveredOrders: delivered,
+          todayOrders: todayCount,
+          totalOrders: snap.size,
+        ),
+      );
     });
   }
 
