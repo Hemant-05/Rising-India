@@ -8,6 +8,7 @@ import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/imag
 import 'package:raising_india/features/admin/add_new_items/bloc/product_bloc/product_bloc.dart';
 import 'package:raising_india/features/admin/all_product_list/bloc/products_cubit.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
+import 'package:raising_india/features/admin/order/bloc/admin_order_details_cubit.dart';
 import 'package:raising_india/features/admin/services/order_repository.dart';
 import 'package:raising_india/features/user/home/bloc/user_product_bloc/user_product_bloc.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<ProfileBloc>(create: (context) => ProfileBloc(),),
           BlocProvider<OrderStatsCubit>(create: (context)=>OrderStatsCubit(FirebaseFirestore.instance),),
           BlocProvider<ProductsCubit>(create: (context) => ProductsCubit(FirebaseFirestore.instance)..fetchProducts()),
+          BlocProvider<AdminOrderDetailsCubit>(create: (context) => AdminOrderDetailsCubit(),),
         ],
         child: MaterialApp(
           title: 'Raising India',

@@ -4,6 +4,7 @@ import 'package:raising_india/models/product_model.dart';
 import '../constant/ConString.dart';
 class OrderModel {
   final String orderId; // Unique order ID
+  final String? name;
   final String userId; // Firebase UID
   final DateTime createdAt;
   final DateTime? scheduledTime; // For scheduled deliveries
@@ -37,11 +38,13 @@ class OrderModel {
     this.cancellationReason,
     this.deliveredAt,
     this.paidAt,
+    this.name,
   });
   Map<String, dynamic> toMap() {
     return {
       'orderId': orderId,
       'userId': userId,
+      'name': name,
       'createdAt': Timestamp.fromDate(createdAt),
       'scheduledTime': scheduledTime != null
           ? Timestamp.fromDate(scheduledTime!)
@@ -68,6 +71,7 @@ class OrderModel {
     return OrderModel(
       orderId: map['orderId'] ?? '',
       userId: map['userId'] ?? '',
+      name: map['name'],
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       scheduledTime: map['scheduledTime'] != null
           ? (map['scheduledTime'] as Timestamp).toDate()
@@ -97,7 +101,7 @@ class OrderModel {
 class DeliveryAddress {
   final String fullAddress;
   final String contactNumber;
-  final GeoPoint? location;
+  final GeoPoint location;
 
   DeliveryAddress(this.fullAddress,
       this.contactNumber,
@@ -115,7 +119,7 @@ class DeliveryAddress {
     return DeliveryAddress(
       map['fullAddress'] ?? '',
       map['contactNumber'] ?? '',
-      map['location'] as GeoPoint?,
+      map['location'] as GeoPoint,
     );
   }
 }

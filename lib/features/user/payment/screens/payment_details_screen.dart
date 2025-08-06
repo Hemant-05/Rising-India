@@ -124,6 +124,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
     final newOrder = OrderModel(
       orderId: Uuid().v4(),
       userId: auth.currentUser!.uid,
+      name: widget.name,
       createdAt: DateTime.now(),
       items: list,
       subtotal: double.parse(widget.total),
@@ -131,6 +132,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
       transactionId: isPaymentSuccess ? transactionId : 'NA',
       total: double.parse(widget.total),
       paymentMethod: isCod ? PayMethodCOD : PayMethodPrepaid,
+      paidAt: isPaymentSuccess? DateTime.now() : null,
       paymentStatus: isCod
           ? PayStatusPending
           : isPaymentSuccess

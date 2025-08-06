@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
@@ -33,12 +34,12 @@ class AdminOrderCard extends StatelessWidget {
      ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => isRunning? Navigator.push(
+        onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => AdminOrderDetailsScreen(orderId: order.orderId),
+            builder: (_) => AdminOrderDetailScreen(orderWithProducts: orderWithProducts, isRunning: isRunning,),
           ),
-        ) : print('Nothing to do....'),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

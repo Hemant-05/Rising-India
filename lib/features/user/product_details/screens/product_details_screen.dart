@@ -32,14 +32,6 @@ class ProductDetailsScreen extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text("Details", style: simple_text_style(fontSize: 20)),
                 const Spacer(),
-                /*Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppColour.black,
-                borderRadius: BorderRadius.circular(40),
-              ),
-              child: SvgPicture.asset(border_heart_svg, width: 18, height: 18),
-            ),*/
               ],
             ),
           ),
@@ -112,16 +104,13 @@ class ProductDetailsScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 10),
-                        Container(
-                          constraints: BoxConstraints(maxHeight: 50),
-                          child: Text(
-                            product.description,
-                            style: TextStyle(
-                              fontFamily: 'Sen',
-                              fontSize: 16,
-                              color: AppColour.lightGrey,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        Text(
+                          product.description,
+                          style: TextStyle(
+                            fontFamily: 'Sen',
+                            fontSize: 16,
+                            color: AppColour.lightGrey,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         SizedBox(height: 10),

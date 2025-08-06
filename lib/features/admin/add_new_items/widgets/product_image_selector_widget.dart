@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/image_cubit.dart';
 import 'package:raising_india/features/admin/services/image_services.dart';
@@ -54,11 +55,12 @@ class ProductImageSelector extends StatelessWidget {
   void _showImageSourceDialog(BuildContext context, int imageSlot) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: AppColour.white,
       builder: (ctx) => Wrap(
         children: [
           ListTile(
             leading: Icon(Icons.photo),
-            title: Text('Pick from gallery'),
+            title: Text('Pick from gallery',style: simple_text_style(),),
             onTap: () async {
               final image = await _imageServices.pickFromGallery();
               if (image != null) {
@@ -69,7 +71,7 @@ class ProductImageSelector extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.camera_alt),
-            title: Text('Take a photo'),
+            title: Text('Take a photo',style: simple_text_style(),),
             onTap: () async {
               final image = await _imageServices.pickFromCamera();
               if (image != null) {
