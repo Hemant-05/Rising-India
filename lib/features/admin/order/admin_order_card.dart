@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
+import 'package:raising_india/features/admin/order/bloc/admin_order_details_cubit.dart';
 import 'package:raising_india/models/order_with_product_model.dart';
 import 'package:raising_india/models/ordered_product.dart';
 
@@ -29,17 +31,20 @@ class AdminOrderCard extends StatelessWidget {
       margin: EdgeInsets.zero,
       color: AppColour.white,
       elevation: 4,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-     ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => AdminOrderDetailScreen(orderWithProducts: orderWithProducts, isRunning: isRunning,),
-          ),
-        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => AdminOrderDetailScreen(
+                orderWithProducts: orderWithProducts,
+                isRunning: isRunning,
+              ),
+            ),
+          );
+        },
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -51,18 +56,28 @@ class AdminOrderCard extends StatelessWidget {
                 children: [
                   Text(
                     'Order #${order.orderId.substring(0, 8)}',
-                    style: simple_text_style(fontWeight: FontWeight.bold,fontSize: 18)
+                    style: simple_text_style(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(order.orderStatus).withOpacity(0.1),
+                      color: _getStatusColor(
+                        order.orderStatus,
+                      ).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: _getStatusColor(order.orderStatus)),
+                      border: Border.all(
+                        color: _getStatusColor(order.orderStatus),
+                      ),
                     ),
                     child: Text(
                       _getStatusText(order.orderStatus),
-                        style: simple_text_style(fontSize: 14)
+                      style: simple_text_style(fontSize: 14),
                     ),
                   ),
                 ],
@@ -87,7 +102,10 @@ class AdminOrderCard extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           '${items.length} items • ₹${order.total.toStringAsFixed(0)}',
-                            style: simple_text_style(color: AppColour.lightGrey,fontSize: 14)
+                          style: simple_text_style(
+                            color: AppColour.lightGrey,
+                            fontSize: 14,
+                          ),
                         ),
                       ],
                     ),
@@ -112,7 +130,9 @@ class AdminOrderCard extends StatelessWidget {
 
                   // Payment Method
                   _buildStatusChip(
-                    icon: order.paymentMethod == 'prepaid' ? Icons.credit_card : Icons.money,
+                    icon: order.paymentMethod == 'prepaid'
+                        ? Icons.credit_card
+                        : Icons.money,
                     label: order.paymentMethod == 'prepaid' ? 'Prepaid' : 'COD',
                     color: Colors.blue,
                   ),
@@ -126,16 +146,26 @@ class AdminOrderCard extends StatelessWidget {
                       if (showTime) ...[
                         Text(
                           DateFormat('h:mm a').format(order.createdAt),
-                            style: simple_text_style(fontSize: 14,color: AppColour.black,fontWeight: FontWeight.bold)
+                          style: simple_text_style(
+                            fontSize: 14,
+                            color: AppColour.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text(
                           DateFormat('MMM d').format(order.createdAt),
-                            style: simple_text_style(fontSize: 12,color: AppColour.grey)
+                          style: simple_text_style(
+                            fontSize: 12,
+                            color: AppColour.grey,
+                          ),
                         ),
                       ] else ...[
                         Text(
                           DateFormat('MMM d, h:mm a').format(order.createdAt),
-                            style: simple_text_style(fontSize: 12,color: AppColour.grey)
+                          style: simple_text_style(
+                            fontSize: 12,
+                            color: AppColour.grey,
+                          ),
                         ),
                       ],
                     ],
@@ -157,44 +187,48 @@ class AdminOrderCard extends StatelessWidget {
       height: 60,
       child: imagesToShow.length == 1
           ? ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Image.network(
-          imagesToShow.first.product?.photos_list.first ?? '',
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
               borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.fastfood, color: Colors.grey),
-          ),
-        ),
-      )
+              child: Image.network(
+                imagesToShow.first.product?.photos_list.first ?? '',
+                width: 60,
+                height: 60,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.fastfood, color: Colors.grey),
+                ),
+              ),
+            )
           : GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.zero,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 2,
-          crossAxisSpacing: 2,
-        ),
-        itemCount: imagesToShow.length,
-        itemBuilder: (_, i) => ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: Image.network(
-            imagesToShow[i].product?.photos_list.first ?? '',
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              color: Colors.grey.shade200,
-              child: const Icon(Icons.fastfood, size: 16, color: Colors.grey),
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.zero,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 2,
+                crossAxisSpacing: 2,
+              ),
+              itemCount: imagesToShow.length,
+              itemBuilder: (_, i) => ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.network(
+                  imagesToShow[i].product?.photos_list.first ?? '',
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    color: Colors.grey.shade200,
+                    child: const Icon(
+                      Icons.fastfood,
+                      size: 16,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -214,10 +248,7 @@ class AdminOrderCard extends StatelessWidget {
         children: [
           Icon(icon, size: 12, color: color),
           const SizedBox(width: 4),
-          Text(
-            label,
-              style: simple_text_style(fontSize: 12)
-          ),
+          Text(label, style: simple_text_style(fontSize: 12)),
         ],
       ),
     );
@@ -235,54 +266,82 @@ class AdminOrderCard extends StatelessWidget {
   // Helper methods for status colors and text
   Color _getStatusColor(String status) {
     switch (status) {
-      case 'delivered': return Colors.green;
-      case 'cancelled': return Colors.red;
-      case 'dispatched': return Colors.blue;
-      case 'preparing': return Colors.orange;
-      case 'confirmed': return Colors.teal;
-      default: return Colors.grey;
+      case 'delivered':
+        return Colors.green;
+      case 'cancelled':
+        return Colors.red;
+      case 'dispatched':
+        return Colors.blue;
+      case 'preparing':
+        return Colors.orange;
+      case 'confirmed':
+        return Colors.teal;
+      default:
+        return Colors.grey;
     }
   }
 
   String _getStatusText(String status) {
     switch (status) {
-      case 'created': return 'Placed';
-      case 'confirmed': return 'Confirmed';
-      case 'preparing': return 'Preparing';
-      case 'dispatched': return 'Dispatched';
-      case 'delivered': return 'Delivered';
-      case 'cancelled': return 'Cancelled';
-      default: return status;
+      case 'created':
+        return 'Placed';
+      case 'confirmed':
+        return 'Confirmed';
+      case 'preparing':
+        return 'Preparing';
+      case 'dispatched':
+        return 'Dispatched';
+      case 'delivered':
+        return 'Delivered';
+      case 'cancelled':
+        return 'Cancelled';
+      default:
+        return status;
     }
   }
 
   IconData _getPaymentIcon(String status) {
     switch (status) {
-      case 'paid': return Icons.check_circle;
-      case 'pending': return Icons.hourglass_empty;
-      case 'failed': return Icons.cancel;
-      case 'refunded': return Icons.refresh;
-      default: return Icons.info;
+      case 'paid':
+        return Icons.check_circle;
+      case 'pending':
+        return Icons.hourglass_empty;
+      case 'failed':
+        return Icons.cancel;
+      case 'refunded':
+        return Icons.refresh;
+      default:
+        return Icons.info;
     }
   }
 
   Color _getPaymentColor(String status) {
     switch (status) {
-      case 'paid': return Colors.green;
-      case 'pending': return Colors.orange;
-      case 'failed': return Colors.red;
-      case 'refunded': return Colors.blueGrey;
-      default: return Colors.grey;
+      case 'paid':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'failed':
+        return Colors.red;
+      case 'refunded':
+        return Colors.blueGrey;
+      default:
+        return Colors.grey;
     }
   }
 
   String _getPaymentText(String status) {
     switch (status) {
-      case 'paid': return 'Paid';
-      case 'pending': return 'Pending';
-      case 'failed': return 'Failed';
-      case 'refunded': return 'Refunded';
-      default: return status;
+      case 'paid':
+        return 'Paid';
+      case 'pending':
+        return 'Pending';
+      case 'failed':
+        return 'Failed';
+      case 'refunded':
+        return 'Refunded';
+      default:
+        return status;
     }
   }
 }

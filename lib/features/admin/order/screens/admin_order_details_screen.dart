@@ -258,10 +258,13 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
     shareContent += '📦 Order ID: #${order.orderId.substring(0, 8)}\n\n';
     shareContent += '🧑🏻 Name : ${order.name ?? 'Unknown User'}\n\n';
     shareContent += '📱 Contact: ${order.address.contactNumber}\n\n';
-    shareContent += '🏡 Address:https://www.google.com/maps/search/?api=1&query=${order.address.location.latitude},${order.address.location.longitude}\n\n';
-    shareContent += '💰 Payment Status: ${_getStatusLabel(order.paymentStatus)}\n\n';
+    shareContent +=
+        '🏡 Address:https://www.google.com/maps/search/?api=1&query=${order.address.location.latitude},${order.address.location.longitude}\n\n';
+    shareContent +=
+        '💰 Payment Status: ${_getStatusLabel(order.paymentStatus)}\n\n';
     shareContent += '💵 Total Amount: ₹${order.total.toStringAsFixed(2)}\n\n';
-    shareContent += '📅 Order Date: ${DateFormat('MMM d, yyyy • h:mm a').format(order.createdAt)}\n\n';
+    shareContent +=
+        '📅 Order Date: ${DateFormat('MMM d, yyyy • h:mm a').format(order.createdAt)}\n\n';
     Share.share(
       shareContent,
       subject: 'Order Details - #${order.orderId.substring(0, 8)}',
@@ -383,9 +386,7 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                       ),
                     ),
                     Text(
-                      DateFormat(
-                        'd/MM/yy • h:mm a',
-                      ).format(order.createdAt),
+                      DateFormat('d/MM/yy • h:mm a').format(order.createdAt),
                       style: simple_text_style(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -807,113 +808,123 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
             const SizedBox(height: 20),
 
             // Status Timeline
-            if (orderIsRunning)
-              Column(
-                children: orderStatusStages.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final stage = entry.value;
-                  final isCompleted = index <= currentStatusIndex;
-                  final isCurrent = index == currentStatusIndex;
-                  final canAdvance = canAdvanceToStatus(index);
+            orderIsRunning
+                ? Column(
+                    children: orderStatusStages.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final stage = entry.value;
+                      final isCompleted = index <= currentStatusIndex;
+                      final isCurrent = index == currentStatusIndex;
+                      final canAdvance = canAdvanceToStatus(index);
 
-                  return GestureDetector(
-                    onTap: canAdvance && !isUpdating
-                        ? () => _updateOrderStatus(stage['key'])
-                        : null,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      child: Row(
-                        children: [
-                          // Timeline indicator
-                          Column(
+                      return GestureDetector(
+                        onTap: canAdvance && !isUpdating
+                            ? () => _updateOrderStatus(stage['key'])
+                            : null,
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: Row(
                             children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: isCompleted
-                                      ? Colors.orange.shade600
-                                      : canAdvance
-                                      ? Colors.orange.shade200
-                                      : Colors.grey.shade300,
-                                  shape: BoxShape.circle,
-                                  border: isCurrent
-                                      ? Border.all(
-                                          color: Colors.orange.shade600,
-                                          width: 3,
-                                        )
-                                      : null,
-                                ),
-                                child: Icon(
-                                  isCompleted ? Icons.check : stage['icon'],
-                                  color: isCompleted
-                                      ? Colors.white
-                                      : canAdvance
-                                      ? Colors.orange.shade600
-                                      : Colors.grey.shade600,
-                                  size: 20,
-                                ),
-                              ),
-                              if (index < orderStatusStages.length - 1)
-                                Container(
-                                  width: 2,
-                                  height: 20,
-                                  color: isCompleted
-                                      ? Colors.orange.shade600
-                                      : Colors.grey.shade300,
-                                ),
-                            ],
-                          ),
-                          const SizedBox(width: 16),
-
-                          // Status label
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              // Timeline indicator
+                              Column(
                                 children: [
-                                  Text(
-                                    stage['label'],
-                                    style: simple_text_style(
-                                      fontWeight: isCurrent
-                                          ? FontWeight.w600
-                                          : FontWeight.w500,
-                                      fontSize: 16,
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
                                       color: isCompleted
-                                          ? Colors.black
+                                          ? Colors.orange.shade600
+                                          : canAdvance
+                                          ? Colors.orange.shade200
+                                          : Colors.grey.shade300,
+                                      shape: BoxShape.circle,
+                                      border: isCurrent
+                                          ? Border.all(
+                                              color: Colors.orange.shade600,
+                                              width: 3,
+                                            )
+                                          : null,
+                                    ),
+                                    child: Icon(
+                                      isCompleted ? Icons.check : stage['icon'],
+                                      color: isCompleted
+                                          ? Colors.white
+                                          : canAdvance
+                                          ? Colors.orange.shade600
                                           : Colors.grey.shade600,
+                                      size: 20,
                                     ),
                                   ),
-                                  if (canAdvance)
-                                    Text(
-                                      'Tap to check',
-                                      style: simple_text_style(
-                                        fontSize: 12,
-                                        color: AppColour.primary,
-                                      ),
+                                  if (index < orderStatusStages.length - 1)
+                                    Container(
+                                      width: 2,
+                                      height: 20,
+                                      color: isCompleted
+                                          ? Colors.orange.shade600
+                                          : Colors.grey.shade300,
                                     ),
                                 ],
                               ),
-                            ),
-                          ),
+                              const SizedBox(width: 16),
 
-                          // Loading indicator
-                          if (isUpdating && canAdvance)
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColour.primary,
+                              // Status label
+                              Expanded(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        stage['label'],
+                                        style: simple_text_style(
+                                          fontWeight: isCurrent
+                                              ? FontWeight.w600
+                                              : FontWeight.w500,
+                                          fontSize: 16,
+                                          color: isCompleted
+                                              ? Colors.black
+                                              : Colors.grey.shade600,
+                                        ),
+                                      ),
+                                      if (canAdvance)
+                                        Text(
+                                          'Tap to check',
+                                          style: simple_text_style(
+                                            fontSize: 12,
+                                            color: AppColour.primary,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+
+                              // Loading indicator
+                              if (isUpdating && canAdvance)
+                                SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColour.primary,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  )
+                : Text(
+                    widget.orderWithProducts.order.orderStatus ==
+                            OrderStatusCancelled
+                        ? 'Reason : ${widget.orderWithProducts.order.cancellationReason}'
+                        : 'Delivered At : ${DateFormat('d/MM/yy • h:mm a').format(widget.orderWithProducts.order.deliveredAt??DateTime.now())}',
+                    style: simple_text_style(),
+                  ),
           ],
         ),
       ),

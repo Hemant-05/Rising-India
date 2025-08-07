@@ -64,33 +64,6 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
     }
   }
 
-/*  Future<void> _onLoadOrders(LoadOrders event, Emitter<OrderListState> emit) async {
-    emit(state.copyWith(loading: true, error: null));
-    _currentFilter = event.filterType;
-
-    try {
-      await _subscription?.cancel();
-
-      Query query = _buildQuery(event.filterType);
-
-      if (event.filterType == OrderFilterType.all) {
-        // For "All Orders" - use pagination
-        _subscription = query.limit(30).snapshots().listen(
-              (snapshot) => _handleSnapshot(snapshot, emit, isPaginated: true),
-          onError: (error) => emit(state.copyWith(error: error.toString(), loading: false)),
-        );
-      } else {
-        // For filtered orders - real-time without pagination
-        _subscription = query.snapshots().listen(
-              (snapshot) => _handleSnapshot(snapshot, emit, isPaginated: false),
-          onError: (error) => emit(state.copyWith(error: error.toString(), loading: false)),
-        );
-      }
-    } catch (e) {
-      emit(state.copyWith(error: e.toString(), loading: false));
-    }
-  }*/
-
   Future<void> _onLoadMoreOrders(LoadMoreOrders event, Emitter<OrderListState> emit) async {
     if (!state.hasMore || state.loadingMore || _currentFilter != OrderFilterType.all) return;
 
@@ -142,21 +115,6 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
             .where('createdAt', isLessThan: Timestamp.fromDate(endOfDay));
       case OrderFilterType.all:
         return query;
-    }
-  }
-
-  void _handleSnapshot(QuerySnapshot snapshot, Emitter<OrderListState> emit, {required bool isPaginated}) async {
-    try {
-      final orders = await _convertToOrderWithProducts(snapshot.docs);
-        emit(state.copyWith(
-          orders: orders,
-          loading: false,
-          hasMore: isPaginated ? snapshot.docs.length >= 30 : false,
-          lastDocument: isPaginated && snapshot.docs.isNotEmpty ? snapshot.docs
-              .last : null,
-        ));
-    } catch (e) {
-      emit(state.copyWith(error: e.toString(), loading: false));
     }
   }
 
