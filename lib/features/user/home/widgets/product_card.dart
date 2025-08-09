@@ -24,6 +24,9 @@ class product_card extends StatelessWidget {
             context.read<ProductFunBloc>().add(
               CheckIsInCart(productId: product.pid),
             );
+            context.read<ProductFunBloc>().add(
+              GetProductByID(productId: product.pid),
+            );
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -38,15 +41,12 @@ class product_card extends StatelessWidget {
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(18),
-                  child: Hero(
-                    tag: '${product.pid}',
-                    child: Image.network(
-                      product.photos_list[0],
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Center(child: Icon(Icons.error_outline_outlined,size: 40,)),
-                    ),
+                  child: Image.network(
+                    product.photos_list[0],
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Center(child: Icon(Icons.error_outline_outlined,size: 40,)),
                   ),
                 ),
               ),

@@ -8,7 +8,7 @@ import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/auth/services/auth_service.dart';
 import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
 import 'package:raising_india/features/user/cart/screens/cart_screen.dart';
-import 'package:raising_india/features/user/home/bloc/user_product_bloc/user_product_bloc.dart';
+import 'package:raising_india/features/user/home/bloc/user_product_bloc/category_product_bloc.dart';
 import 'package:raising_india/features/user/home/widgets/categories_section.dart';
 import 'package:raising_india/features/user/home/widgets/product_grid.dart';
 import 'package:raising_india/features/user/home/widgets/search_bar_widget.dart';
@@ -30,7 +30,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<UserProductBloc>(context).add(FetchBestSellingProducts());
+    BlocProvider.of<CategoryProductBloc>(context).add(FetchBestSellingProducts());
   }
 
   @override
@@ -151,7 +151,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  BlocBuilder<UserProductBloc, UserProductState>(
+                  BlocBuilder<CategoryProductBloc, CategoryProductState>(
                     builder: (context, state) {
                       if (state.isLoading) {
                         return Center(child: CircularProgressIndicator(color: AppColour.primary,));

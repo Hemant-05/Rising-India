@@ -63,7 +63,7 @@ class AllProductListA extends StatelessWidget {
                     style: simple_text_style(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    "₹${prod.price} • ${prod.measurement}",
+                    "₹${prod.price} | ${prod.quantity.toStringAsFixed(0)} ${prod.measurement}",
                     style: simple_text_style(),
                   ),
                   trailing: Switch(

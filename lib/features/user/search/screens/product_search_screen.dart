@@ -6,6 +6,7 @@ import 'package:raising_india/comman/cart_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/user/cart/screens/cart_screen.dart';
+import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
 import 'package:raising_india/features/user/product_details/screens/product_details_screen.dart';
 import 'package:raising_india/features/user/search/bloc/product_search_bloc/product_search_bloc.dart';
 import '../../../../constant/ConPath.dart';
@@ -82,6 +83,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                         final product = state.results[index];
                         return ListTile(
                           onTap: (){
+                            context.read<ProductFunBloc>().add(GetProductByID(productId: product.pid));
                             Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(product: product),));
                           },
                           leading: ClipRRect(

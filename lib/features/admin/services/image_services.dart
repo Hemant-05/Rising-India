@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageServices {
@@ -12,9 +13,16 @@ class ImageServices {
     await Future.delayed(Duration(seconds: 2));
     for (var image in images) {
       if (image != null) {
+        /*final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+        final Reference ref = FirebaseStorage.instance.ref().child('products/$fileName');
+
+        final UploadTask uploadTask = ref.putFile(image);
+        final TaskSnapshot snapshot = await uploadTask;
+
+        await snapshot.ref.getDownloadURL();*/
         imageUrls.add('https://example.com/${image.path.split('/').last}');
       } else {
-        imageUrls.add('error while adding image');
+        imageUrls.add('');
       }
     }
     return imageUrls;

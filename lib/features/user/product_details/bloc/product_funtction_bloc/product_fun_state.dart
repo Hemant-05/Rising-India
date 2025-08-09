@@ -15,6 +15,8 @@ class ProductFunState {
   final bool isCartCleared;
   final bool isCheckingIsInCart;
   final bool isInCart;
+  final bool isLoadingProductDetails;
+  final ProductModel? product;
   final bool isGettingCartProductCount;
   final int cartProductCount;
   final String? error;
@@ -27,6 +29,8 @@ class ProductFunState {
     required this.isRemovedToCart,
     required this.isLoadingCartProduct,
     required this.getCartProduct,
+    required this.product,
+    required this.isLoadingProductDetails,
     required this.isUpdatingProductQuantity,
     required this.isUpdatedProductQuantity,
     required this.isCartClearing,
@@ -47,6 +51,8 @@ class ProductFunState {
       isRemovedToCart: false,
       isLoadingCartProduct: false,
       getCartProduct: const [],
+      product: null,
+      isLoadingProductDetails: false,
       isUpdatingProductQuantity: false,
       isUpdatedProductQuantity: false,
       isCartClearing: false,
@@ -67,6 +73,8 @@ class ProductFunState {
     bool? isRemovedToCart,
     bool? isLoadingCartProduct,
     List<Map<String, dynamic>>? getCartProduct,
+    ProductModel? product,
+    bool? isLoadingProductDetails,
     bool? isUpdatingProductQuantity,
     bool? isUpdatedProductQuantity,
     bool? isCartClearing,
@@ -86,6 +94,9 @@ class ProductFunState {
       isRemovedToCart: isRemovedToCart ?? this.isRemovedToCart,
       isLoadingCartProduct: isLoadingCartProduct ?? this.isLoadingCartProduct,
       getCartProduct: getCartProduct ?? this.getCartProduct,
+      product: product?? this.product,
+      isLoadingProductDetails:
+          isLoadingProductDetails ?? this.isLoadingProductDetails,
       isUpdatingProductQuantity:
           isUpdatingProductQuantity ?? this.isUpdatingProductQuantity,
       isUpdatedProductQuantity:

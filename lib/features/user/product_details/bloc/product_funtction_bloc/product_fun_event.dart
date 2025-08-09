@@ -21,6 +21,11 @@ class CheckIsInCart extends ProductFunEvent {
   CheckIsInCart({required this.productId});
 }
 
+class GetProductByID extends ProductFunEvent{
+  String productId;
+  GetProductByID({required this.productId});
+}
+
 class UpdateProductQuantityPressed extends ProductFunEvent {
   String productId;
   int quantity;

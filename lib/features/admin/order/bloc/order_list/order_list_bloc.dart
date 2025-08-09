@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
+import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/features/admin/order/OrderFilterType.dart';
 import 'package:raising_india/features/admin/services/order_repository.dart';
 import 'package:raising_india/models/order_model.dart';
@@ -101,11 +102,11 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
 
     switch (filterType) {
       case OrderFilterType.running:
-        return query.where('orderStatus', whereIn: ['created', 'confirmed', 'preparing', 'dispatched']);
+        return query.where('orderStatus', whereIn: [OrderStatusCreated, OrderStatusConfirmed, OrderStatusPreparing, OrderStatusDispatch]);
       case OrderFilterType.delivered:
-        return query.where('orderStatus', isEqualTo: 'delivered');
+        return query.where('orderStatus', isEqualTo: OrderStatusDeliverd);
       case OrderFilterType.cancelled:
-        return query.where('orderStatus', isEqualTo: 'cancelled');
+        return query.where('orderStatus', isEqualTo: OrderStatusCancelled);
       case OrderFilterType.today:
         final today = DateTime.now();
         final startOfDay = DateTime(today.year, today.month, today.day);

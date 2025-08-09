@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
+import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
+import 'package:raising_india/features/admin/category/screens/admin_categories_screen.dart';
 import 'package:raising_india/features/admin/profile/widgets/option_list_tile_widget.dart';
 import 'package:raising_india/features/admin/profile/widgets/upper_widget.dart';
 import 'package:raising_india/features/admin/review/screens/review_screen_a.dart';
@@ -49,15 +51,16 @@ class _ProfileScreenAState extends State<ProfileScreenA> {
                         ),
                         optionsListTileWidget(
                               () {
+                                context.read<CategoryBloc>().add(LoadCategories());
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const ReviewScreenA(),
+                                builder: (_) => const AdminCategoriesScreen(),
                               ),
                             );
                           },
-                          review_svg,
-                          'Reviews',
+                          category_svg,
+                          'Categories',
                           Icon(
                             Icons.arrow_forward_ios_rounded,
                             color: AppColour.grey,

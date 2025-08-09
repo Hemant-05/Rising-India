@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:raising_india/features/user/services/user_product_services.dart';
+import 'package:raising_india/models/product_model.dart';
 
 part 'product_fun_event.dart';
 part 'product_fun_state.dart';
@@ -28,6 +29,16 @@ class ProductFunBloc extends Bloc<ProductFunEvent, ProductFunState> {
         return;
       }
       emit(state.copyWith(isAddingToCart: false, isAddedToCart: true));
+    });
+
+    on<GetProductByID>((event, emit) async {
+      emit(state.copyWith(isLoadingProductDetails: true));
+      try{
+        ProductModel product = await _services.getProductById(event.productId);
+        emit(state.copyWith(product: product, isLoadingProductDetails: false));
+      }catch(e){
+        emit(state.copyWith(isLoadingProductDetails: false, error: e.toString()));
+      }
     });
 
     on<RemoveFromCartPressed>((event, emit) async {

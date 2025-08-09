@@ -24,6 +24,16 @@ class UserProductServices {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getCategories() async {
+    try {
+      print('hello');
+      final querySnapshot = await _firestore.collection('categories').get();
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch categories: $e');
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getCartProducts() async {
     try {
       String uid = _auth.currentUser!.uid;

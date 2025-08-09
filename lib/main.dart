@@ -7,10 +7,12 @@ import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/image_cubit.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/product_bloc/product_bloc.dart';
 import 'package:raising_india/features/admin/all_product_list/bloc/products_cubit.dart';
+import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
 import 'package:raising_india/features/admin/order/bloc/admin_order_details_cubit.dart';
+import 'package:raising_india/features/admin/services/category_repository.dart';
 import 'package:raising_india/features/admin/services/order_repository.dart';
-import 'package:raising_india/features/user/home/bloc/user_product_bloc/user_product_bloc.dart';
+import 'package:raising_india/features/user/home/bloc/user_product_bloc/category_product_bloc.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
 import 'package:raising_india/features/user/profile/bloc/profile_bloc.dart';
@@ -35,6 +37,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<CategoryRepository>(
+          create: (_) => CategoryRepositoryImpl(),
+        ),
         RepositoryProvider<OrderRepository>(create: (_) => OrderRepository(firestore: FirebaseFirestore.instance)),
       ],
       child: MultiBlocProvider(
@@ -43,7 +48,8 @@ class MyApp extends StatelessWidget {
           BlocProvider<ProductBloc>(create: (_) => ProductBloc()),
           BlocProvider<ImageSelectionCubit>(create: (_) => ImageSelectionCubit()),
           BlocProvider<ProductSearchBloc>(create: (context) => ProductSearchBloc(firestore: FirebaseFirestore.instance),),
-          BlocProvider<UserProductBloc>(create: (context) =>UserProductBloc(services: UserProductServices())..add(FetchBestSellingProducts())),
+          BlocProvider<CategoryProductBloc>(create: (context) =>CategoryProductBloc(services: UserProductServices())..add(FetchBestSellingProducts())),
+          BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repository: CategoryRepositoryImpl(),)..add(LoadCategories()),),
           BlocProvider<ProductFunBloc>(create: (context) => ProductFunBloc()),
           BlocProvider<OrderBloc>(create: (context) => OrderBloc()),
           BlocProvider<ProfileBloc>(create: (context) => ProfileBloc(),),
