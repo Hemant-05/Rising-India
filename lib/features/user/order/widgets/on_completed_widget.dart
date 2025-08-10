@@ -91,7 +91,7 @@ Widget onCompletedWidget(List<OrderModel> list) {
                                 Row(
                                   children: [
                                     Text(
-                                      '${list[index].total}',
+                                      '${list[index].total.toStringAsFixed(0)}',
                                       style: simple_text_style(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
@@ -121,7 +121,7 @@ Widget onCompletedWidget(List<OrderModel> list) {
                                     SizedBox(width: 6),
                                     Text(
                                       DateFormat(
-                                        'MMMMd | hh:mm a',
+                                        'd/M/yy | hh:mm a',
                                       ).format(list[index].createdAt),
                                       style: simple_text_style(
                                         color: AppColour.lightGrey,

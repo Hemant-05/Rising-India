@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
+import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
 
 class PaymentResultScreen extends StatelessWidget {
   final bool isSuccess;
@@ -42,6 +44,7 @@ class PaymentResultScreen extends StatelessWidget {
             ElevatedButton(
               style: elevated_button_style(),
               onPressed: () {
+                BlocProvider.of<OrderBloc>(context).add(LoadUserOngoingOrderEvent());
                 Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: Text(

@@ -45,7 +45,7 @@ class _OrderScreenState extends State<OrderScreen> {
         builder: (context, state) {
           return Column(
             children: [
-              Container(
+              SizedBox(
                 height: 50,
                 width: double.infinity,
                 child: Row(
@@ -98,10 +98,10 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
               ),
               Divider(color: AppColour.lightGrey.withOpacity(0.5)),
-              state is OrderLoadedState
-                  ? index == 0
-                        ? onGoingWidget(state.orderList)
-                        : onCompletedWidget(state.orderList)
+              state is OngoingOrderLoadedState
+                  ? onGoingWidget(state.orderList)
+                  : state is CompletedOrderLoadedState
+                  ? onCompletedWidget(state.orderList)
                   : Expanded(
                       child: Center(
                         child: CircularProgressIndicator(

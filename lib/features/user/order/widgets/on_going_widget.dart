@@ -6,6 +6,7 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
 import 'package:raising_india/features/user/order/screens/order_details_screen.dart';
+import 'package:raising_india/features/user/order/screens/order_tracking_screen.dart';
 import 'package:raising_india/features/user/order/widgets/order_cancel_dialog.dart';
 import 'package:raising_india/models/order_model.dart';
 
@@ -29,160 +30,165 @@ Widget onGoingWidget(List<OrderModel> list) {
                       ((i < itemList.length - 1) ? ', ' : ' ');
                   element['image'] != null? imageList.add(element['image']) : print('Image not found');
                 }
-                return Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 80,
-                          width: 80,
-                          margin: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppColour.lightGrey,
-                            borderRadius: BorderRadius.circular(15),
+                return InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsScreen(order: list[index]),));
+                  },
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            height: 80,
+                            width: 80,
+                            margin: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColour.lightGrey,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: imageList.isNotEmpty
+                                ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: Image.network(
+                                          imageList[0],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: list[index].items.length > 1,
+                                        child: Container(
+                                          height: 20,
+                                          width: 80,
+                                          alignment: Alignment.center,
+                                          color: AppColour.lightGrey,
+                                          child: Text('+${list[index].items.length - 1} more',style: simple_text_style(fontSize: 12),),
+                                        ),
+                                      ),
+                                    ],
+                                ),
+                            )
+                                : Center(
+                                    child: Text(
+                                      'Error',
+                                      style: simple_text_style(),
+                                    ),
+                                  ),
                           ),
-                          child: imageList.isNotEmpty
-                              ? ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Column(
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  title ?? 'Not Define',
+                                  style: simple_text_style(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 6),
+                                Row(
                                   children: [
-                                    Expanded(
-                                      child: Image.network(
-                                        imageList[0],
-                                        fit: BoxFit.cover,
+                                    Text(
+                                      '${list[index].total.toStringAsFixed(0)}',
+                                      style: simple_text_style(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
                                       ),
                                     ),
-                                    Visibility(
-                                      visible: list[index].items.length > 1,
-                                      child: Container(
-                                        height: 20,
-                                        width: 80,
-                                        alignment: Alignment.center,
+                                    SizedBox(width: 6),
+                                    Container(
+                                      height: 14,
+                                      width: 2,
+                                      color: AppColour.lightGrey,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      '${list[index].items.length} Items',
+                                      style: simple_text_style(
                                         color: AppColour.lightGrey,
-                                        child: Text('+${list[index].items.length - 1} more',style: simple_text_style(fontSize: 12),),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(width: 6),
+                                    Container(
+                                      height: 14,
+                                      width: 2,
+                                      color: AppColour.lightGrey,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      DateFormat(
+                                        'hh:mm a',
+                                      ).format(list[index].createdAt),
+                                      style: simple_text_style(
+                                        color: AppColour.lightGrey,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ],
-                              ),
-                          )
-                              : Center(
-                                  child: Text(
-                                    'Error',
-                                    style: simple_text_style(),
+                                ),
+                                SizedBox(height: 6),
+                                Text(
+                                  'Status : ${list[index].orderStatus}',
+                                  style: simple_text_style(
+                                    color: AppColour.grey,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title ?? 'Not Define',
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              style: elevated_button_style(),
+                              onPressed: () {
+                                showCancelOrderDialog(context, (reason) {
+                                  context.read<OrderBloc>().add(
+                                    CancelOrderEvent(
+                                      orderId: list[index].orderId,
+                                      cancellationReason: reason,
+                                    ),
+                                  );
+                                });
+                              },
+                              child: Text(
+                                'Cancel',
                                 style: simple_text_style(
+                                  color: AppColour.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 6),
-                              Row(
-                                children: [
-                                  Text(
-                                    '${list[index].total}',
-                                    style: simple_text_style(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  SizedBox(width: 6),
-                                  Container(
-                                    height: 14,
-                                    width: 2,
-                                    color: AppColour.lightGrey,
-                                  ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    '${list[index].items.length} Items',
-                                    style: simple_text_style(
-                                      color: AppColour.lightGrey,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  SizedBox(width: 6),
-                                  Container(
-                                    height: 14,
-                                    width: 2,
-                                    color: AppColour.lightGrey,
-                                  ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    DateFormat(
-                                      'hh:mm a',
-                                    ).format(list[index].createdAt),
-                                    style: simple_text_style(
-                                      color: AppColour.lightGrey,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 6),
-                              Text(
-                                'Status : ${list[index].orderStatus}',
+                            ),
+                          ),
+                          SizedBox(width: 12,),
+                          Expanded(
+                            child: ElevatedButton(
+                              style: elevated_button_style(),
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderTrackingScreen(orderId: list[index].orderId),));
+                              },
+                              child: Text(
+                                'Track',
                                 style: simple_text_style(
-                                  color: AppColour.grey,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                                  color: AppColour.white,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: elevated_button_style(),
-                            onPressed: () {
-                              showCancelOrderDialog(context, (reason) {
-                                context.read<OrderBloc>().add(
-                                  CancelOrderEvent(
-                                    orderId: list[index].orderId,
-                                    cancellationReason: reason,
-                                  ),
-                                );
-                              });
-                            },
-                            child: Text(
-                              'Cancel',
-                              style: simple_text_style(
-                                color: AppColour.white,
-                                fontWeight: FontWeight.bold,
-                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(width: 12,),
-                        Expanded(
-                          child: ElevatedButton(
-                            style: elevated_button_style(),
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsScreen(order: list[index]),));
-                            },
-                            child: Text(
-                              'Details',
-                              style: simple_text_style(
-                                color: AppColour.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 );
               },
             ),

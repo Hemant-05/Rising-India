@@ -199,6 +199,7 @@ class _CartScreenState extends State<CartScreen> {
                                                           CircularProgressIndicator(
                                                             color:
                                                                 AppColour.black,
+                                                            strokeWidth: 3,
                                                           ),
                                                     )
                                                   : Text(

@@ -138,7 +138,8 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
           : isPaymentSuccess
           ? PayStatusPaid
           : PayStatusFailed,
-      orderStatus: OrderStatusCreated,
+      orderStatus: isPaymentSuccess? OrderStatusCreated : OrderStatusCancelled,
+      cancellationReason: !isPaymentSuccess? 'Payment Failed' : null,
       address: DeliveryAddress(
         widget.address,
         widget.contact,

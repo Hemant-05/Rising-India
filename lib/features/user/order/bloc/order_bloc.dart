@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:raising_india/features/services/order_services.dart';
 import 'package:raising_india/models/order_model.dart';
@@ -14,18 +13,18 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     on<LoadUserCompletedOrderEvent>((event, emit) async {
       emit(OrderLoadingState());
       final list = await _services.fetchUserHistoryOrders();
-      emit(OrderLoadedState(orderList: list));
+      emit(CompletedOrderLoadedState(orderList: list));
     });
     on<LoadUserOngoingOrderEvent>((event, emit) async {
       emit(OrderLoadingState());
       final list = await _services.fetchUserOngoingOrders();
-      emit(OrderLoadedState(orderList: list));
+      emit(OngoingOrderLoadedState(orderList: list));
     });
     on<CancelOrderEvent>((event, emit) async {
       emit(OrderLoadingState());
       await _services.cancelOrder(event.orderId,event.cancellationReason);
       final list = await _services.fetchUserOngoingOrders();
-      emit(OrderLoadedState(orderList: list));
+      emit(OngoingOrderLoadedState(orderList: list));
     });
     on<PlaceOrderEvent>((event, emit) async {
       emit(OrderCreationState());

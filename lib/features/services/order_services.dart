@@ -93,7 +93,7 @@ class OrderServices {
           .where('userId', isEqualTo: uid)
           .where(
             'orderStatus',
-            whereIn: ['delivered', 'cancelled'],
+            whereIn: [OrderStatusDeliverd, OrderStatusCancelled],
           ) // ✅ Efficient whereIn query
           .orderBy(
             'createdAt',
@@ -119,7 +119,7 @@ class OrderServices {
           .where('userId', isEqualTo: uid)
           .where(
             'orderStatus',
-            whereIn: ['created', 'confirmed', 'preparing', 'dispatched'],
+            whereIn: [OrderStatusCreated, OrderStatusConfirmed, OrderStatusPreparing, OrderStatusDispatch],
           ) //
           .orderBy('createdAt', descending: true) //
           .get();
