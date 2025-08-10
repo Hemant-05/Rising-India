@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +8,7 @@ import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/image_cubit.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/product_bloc/product_bloc.dart';
 import 'package:raising_india/features/admin/add_new_items/widgets/product_image_selector_widget.dart';
+import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/models/product_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,13 +22,30 @@ class AddNewItemScreen extends StatefulWidget {
 class _AddNewItemScreenState extends State<AddNewItemScreen> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _itemNameController = TextEditingController();
-  final TextEditingController _itemDescriptionController = TextEditingController();
+  final TextEditingController _ratingController = TextEditingController();
+  final TextEditingController _stockQuantityController =
+      TextEditingController();
+  final TextEditingController _itemDescriptionController =
+      TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _measurementController = TextEditingController();
+  final TextEditingController _lowStockController = TextEditingController();
   final List<File?> photos_list = [];
   final List<String> photos_list_urls = [];
   bool isAvailable = true;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _priceController.dispose();
+    _itemNameController.dispose();
+    _itemDescriptionController.dispose();
+    _categoryController.dispose();
+    _quantityController.dispose();
+    _measurementController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,21 +110,6 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ProductImageSelector(),
-            SizedBox(height: 6),
-            Row(
-              children: [
-                Text('Available', style: simple_text_style(fontSize: 16)),
-                Spacer(),
-                Switch(
-                  activeColor: AppColour.primary,
-                  value: isAvailable,
-                  onChanged: (value) {
-                    isAvailable = value;
-                    context.read<ProductBloc>().add(ToggleAvailabilityEvent(value));
-                  },
-                ),
-              ],
-            ),
             SizedBox(height: 12),
             TextField(
               controller: _itemNameController,
@@ -115,7 +117,9 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                 border: OutlineInputBorder(),
                 hintText: 'Enter product name',
                 hintStyle: simple_text_style(color: AppColour.lightGrey),
-                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColour.primary,width: 2)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColour.primary, width: 2),
+                ),
               ),
             ),
             SizedBox(height: 12),
@@ -126,25 +130,49 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                     controller: _priceController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppColour.primary,
+                          width: 2,
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColour.primary,width: 2)),
-                        hintText: 'Price',
-                        hintStyle: simple_text_style(color: AppColour.lightGrey)
+                      hintText: 'Price',
+                      hintStyle: simple_text_style(color: AppColour.lightGrey),
                     ),
                   ),
                 ),
                 SizedBox(width: 12),
-                DropdownMenu(
-                  controller: _categoryController,
-                  textStyle: simple_text_style(color: AppColour.lightGrey),
-                  hintText: 'Category',
-                  menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.all(AppColour.white)),
-                  dropdownMenuEntries: [
-                    DropdownMenuEntry(value: 'Vegetable', label: 'Vegetable'),
-                    DropdownMenuEntry(value: 'Fruit', label: 'Fruit'),
-                    DropdownMenuEntry(value: 'Dairy', label: 'Dairy'),
-                  ],
+                BlocConsumer<CategoryBloc, CategoryState>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    return Expanded(
+                      child: DropdownMenu(
+                        width: double.infinity,
+                        controller: _categoryController,
+                        textStyle: TextStyle(
+                          fontFamily: 'Sen',
+                          color: AppColour.lightGrey,
+                        ),
+                        hintText: 'Category',
+                        menuStyle: MenuStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            AppColour.white,
+                          ),
+                        ),
+                        dropdownMenuEntries: state is CategoryLoaded
+                            ? state.categories
+                                  .map(
+                                    (category) => DropdownMenuEntry(
+                                      value: category.name,
+                                      label: category.name,
+                                    ),
+                                  )
+                                  .toList()
+                            : [],
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -157,37 +185,127 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Enter quantity',
+                      hintText: 'Selling Quantity',
                       hintStyle: simple_text_style(color: AppColour.lightGrey),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColour.primary,width: 2)),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppColour.primary,
+                          width: 2,
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(width: 12),
-                DropdownMenu(
-                  controller: _measurementController,
-                  textStyle: simple_text_style(color: AppColour.lightGrey),
-                  hintText: 'Measurement',
-                  menuStyle: MenuStyle(backgroundColor: MaterialStateProperty.all(AppColour.white)),
-                  dropdownMenuEntries: [
-                    DropdownMenuEntry(value: 'KG', label: 'kg'),
-                    DropdownMenuEntry(value: 'GM', label: 'gm'),
-                    DropdownMenuEntry(value: 'LITER', label: 'liter'),
-                    DropdownMenuEntry(value: 'ML', label: 'ml'),
-                    DropdownMenuEntry(value: 'PCS', label: 'pcs'),
-                  ],
+                Expanded(
+                  child: DropdownMenu(
+                    width: double.infinity,
+                    controller: _measurementController,
+                    textStyle: simple_text_style(color: AppColour.lightGrey),
+                    hintText: 'Measurement',
+                    menuStyle: MenuStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                        AppColour.white,
+                      ),
+                    ),
+                    dropdownMenuEntries: [
+                      DropdownMenuEntry(value: 'KG', label: 'kg'),
+                      DropdownMenuEntry(value: 'GM', label: 'gm'),
+                      DropdownMenuEntry(value: 'LITER', label: 'liter'),
+                      DropdownMenuEntry(value: 'ML', label: 'ml'),
+                      DropdownMenuEntry(value: 'PCS', label: 'pcs'),
+                      DropdownMenuEntry(value: 'Dar', label: 'darjan'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _stockQuantityController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Stock Quantity',
+                      hintStyle: simple_text_style(color: AppColour.lightGrey),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColour.primary, width: 2),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    controller: _lowStockController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Low Quantity Alert',
+                      hintStyle: simple_text_style(color: AppColour.lightGrey),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: AppColour.primary, width: 2),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _ratingController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Rating',
+                      hintStyle: simple_text_style(color: AppColour.lightGrey),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: AppColour.primary,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text('In Stock', style: simple_text_style(fontSize: 16)),
+                      Switch(
+                        activeColor: AppColour.primary,
+                        value: isAvailable,
+                        onChanged: (value) {
+                          isAvailable = value;
+                          context.read<ProductBloc>().add(
+                            ToggleAvailabilityEvent(value),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
             SizedBox(height: 12),
             TextField(
               controller: _itemDescriptionController,
-              maxLines: 4,
+              maxLines: 3,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Enter item description (100 words max)',
+                hintText: 'Enter product description (100 words max)',
                 hintStyle: simple_text_style(color: AppColour.lightGrey),
-                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppColour.primary,width: 2)),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppColour.primary, width: 2),
+                ),
               ),
             ),
             SizedBox(height: 12),
@@ -195,28 +313,39 @@ class _AddNewItemScreenState extends State<AddNewItemScreen> {
               style: elevated_button_style(),
               onPressed: () async {
                 String pid = Uuid().v4();
-                photos_list.addAll(context.read<ImageSelectionCubit>().state.images);
-                photos_list_urls.addAll(await context.read<ImageSelectionCubit>().getImageUrl(photos_list));
+                photos_list.addAll(
+                  context.read<ImageSelectionCubit>().state.images,
+                );
+                photos_list_urls.addAll(
+                  await context.read<ImageSelectionCubit>().getImageUrl(
+                    photos_list,
+                  ),
+                );
                 String uid = FirebaseAuth.instance.currentUser!.uid;
-                String price = _priceController.text.trim();
+                double price = double.parse(_priceController.text.trim());
                 String itemName = _itemNameController.text.trim();
                 String itemDescription = _itemDescriptionController.text.trim();
                 String category = _categoryController.text.trim();
-                String quantity = _quantityController.text.trim();
+                double sellQuantity = double.parse(_quantityController.text.trim());
                 String measurement = _measurementController.text.trim();
+                double rating = double.parse(_ratingController.text.trim());
+                double stockQuantity = double.parse(_stockQuantityController.text.trim(),);
+                double lowStockQuantity = double.parse(_lowStockController.text.trim());
                 ProductModel newItem = ProductModel(
-                  price: double.parse(price),
+                  price: price,
                   name: itemName,
                   name_lower: itemName.toLowerCase(),
                   description: itemDescription,
                   category: category,
-                  rating: 0.0,
-                  quantity: double.parse(quantity),
+                  rating: rating,
+                  quantity: sellQuantity,
                   measurement: measurement,
                   photos_list: photos_list_urls,
                   pid: pid,
                   uid: uid,
                   isAvailable: isAvailable,
+                  stockQuantity: stockQuantity,
+                  lowStockQuantity: lowStockQuantity,
                 );
                 BlocProvider.of<ProductBloc>(
                   context,

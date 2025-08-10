@@ -5,20 +5,21 @@ import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/features/admin/category/screens/admin_categories_screen.dart';
+import 'package:raising_india/features/admin/profile/screens/admin_profile_screen.dart';
 import 'package:raising_india/features/admin/profile/widgets/option_list_tile_widget.dart';
 import 'package:raising_india/features/admin/profile/widgets/upper_widget.dart';
 import 'package:raising_india/features/admin/review/screens/review_screen_a.dart';
 import 'package:raising_india/features/auth/bloc/auth_bloc.dart';
 import 'package:raising_india/features/auth/screens/login_screen.dart';
 
-class ProfileScreenA extends StatefulWidget {
-  const ProfileScreenA({super.key});
+class ProfileManageScreen extends StatefulWidget {
+  const ProfileManageScreen({super.key});
 
   @override
-  State<ProfileScreenA> createState() => _ProfileScreenAState();
+  State<ProfileManageScreen> createState() => _ProfileManageScreenState();
 }
 
-class _ProfileScreenAState extends State<ProfileScreenA> {
+class _ProfileManageScreenState extends State<ProfileManageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +40,12 @@ class _ProfileScreenAState extends State<ProfileScreenA> {
                       children: [
                         optionsListTileWidget(
                           () {
-                            print('Open Profile');
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AdminProfileScreen(),
+                              ),
+                            );
                           },
                           profile_svg,
                           'Profile',
@@ -50,8 +56,7 @@ class _ProfileScreenAState extends State<ProfileScreenA> {
                           ),
                         ),
                         optionsListTileWidget(
-                              () {
-                                context.read<CategoryBloc>().add(LoadCategories());
+                          () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -61,6 +66,23 @@ class _ProfileScreenAState extends State<ProfileScreenA> {
                           },
                           category_svg,
                           'Categories',
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: AppColour.grey,
+                            size: 16,
+                          ),
+                        ),
+                        optionsListTileWidget(
+                          () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const ReviewScreenA(),
+                              ),
+                            );
+                          },
+                          review_svg,
+                          'Reviews',
                           Icon(
                             Icons.arrow_forward_ios_rounded,
                             color: AppColour.grey,

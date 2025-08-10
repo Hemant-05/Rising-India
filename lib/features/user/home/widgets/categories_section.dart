@@ -4,6 +4,7 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/user/categories/screens/all_categories_screen.dart';
 import 'package:raising_india/features/user/home/bloc/user_product_bloc/category_product_bloc.dart';
+import 'package:raising_india/models/category_model.dart';
 import '../../../../constant/AppData.dart';
 import 'category_showing_widget.dart';
 
@@ -42,9 +43,9 @@ Widget categories_section(BuildContext context) {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            category_showing_widget(context, categories[0]),
-            category_showing_widget(context, categories[1]),
-            category_showing_widget(context, categories[2]),
+            category_showing_widget(context, CategoryModel.fromMap(categories[0], '')),
+            category_showing_widget(context, CategoryModel.fromMap(categories[1], '')),
+            category_showing_widget(context, CategoryModel.fromMap(categories[2], '')),
           ],
         ),
       ),

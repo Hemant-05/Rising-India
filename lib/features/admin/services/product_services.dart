@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:raising_india/models/category_model.dart';
 import 'package:raising_india/models/product_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -6,10 +7,7 @@ class ProductServices {
   final FirebaseFirestore _firebase = FirebaseFirestore.instance;
   final String _uid;
   ProductServices(this._uid);
-  // This class will contain methods to interact with product-related APIs
-  // For example, fetching products, adding a new product, updating a product, etc.
 
-  // Example method to fetch products
   Future<List<ProductModel>> fetchProducts() async {
     if (_uid.isEmpty) {
       return [];
@@ -25,6 +23,22 @@ class ProductServices {
       return Future.error('Error fetching products: ${e.message}');
     }
     return [];
+  }
+
+  Future<List<CategoryModel>> fetchCategories() async {
+    if (_uid.isEmpty) {
+      return [];
+    }
+    try {
+      final QuerySnapshot snapshot = await _firebase
+          .collection('categories')
+          .get();
+      return snapshot.docs.map((doc) {
+        return CategoryModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+    } on FirebaseException catch (e) {
+      return Future.error('Error fetching categories: ${e.message}');
+    }
   }
 
   // Example method to fetch products by user ID

@@ -4,20 +4,17 @@ import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/user/categories/screens/category_product_screen.dart';
 import 'package:raising_india/models/category_model.dart';
 
-Widget category_showing_widget(
-    BuildContext context,
-    CategoryModel category,
-    ) {
+Widget category_widget(BuildContext context, CategoryModel category) {
   return Container(
-    margin: const EdgeInsets.only(right: 10),
     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    height: 120,
     decoration: BoxDecoration(
       color: AppColour.white,
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: AppColour.lightGrey.withOpacity(0.5),
-          blurRadius: 5,
+          color: AppColour.grey.withOpacity(0.5),
+          blurRadius: 2,
           offset: Offset(0, 2),
         ),
       ],
@@ -27,7 +24,8 @@ Widget category_showing_widget(
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CategoryProductScreen(category: category.value),
+            builder: (context) =>
+                CategoryProductScreen(category: category.value),
           ),
         );
       },
@@ -36,12 +34,18 @@ Widget category_showing_widget(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(8),bottom: Radius.circular(2)),
+            child: Image.network(
               category.image,
-              width: 80,
-              height: 80,
+              width: double.infinity,
+              height: 90,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return SizedBox(
+                  height: 90,
+                    width: double.infinity,
+                    child: Icon(Icons.image_not_supported_rounded));
+              },
             ),
           ),
           const SizedBox(height: 4),

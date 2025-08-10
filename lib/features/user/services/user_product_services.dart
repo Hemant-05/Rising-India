@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:raising_india/models/category_model.dart';
 import 'package:raising_india/models/product_model.dart';
 
 class UserProductServices {
@@ -24,11 +25,10 @@ class UserProductServices {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getCategories() async {
+  Future<List<CategoryModel>> getCategories() async {
     try {
-      print('hello');
       final querySnapshot = await _firestore.collection('categories').get();
-      return querySnapshot.docs.map((doc) => doc.data()).toList();
+      return querySnapshot.docs.map((doc) => CategoryModel.fromMap(doc.data(), doc.id)).toList();
     } catch (e) {
       throw Exception('Failed to fetch categories: $e');
     }

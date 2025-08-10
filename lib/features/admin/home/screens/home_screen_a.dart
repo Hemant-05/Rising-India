@@ -6,7 +6,6 @@ import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
 import 'package:raising_india/features/admin/home/widgets/info_card_widget.dart';
-import 'package:raising_india/features/admin/home/widgets/review_tile_widget.dart';
 import 'package:raising_india/features/admin/order/OrderFilterType.dart';
 import 'package:raising_india/features/admin/order/screens/order_list_screen.dart';
 import 'package:raising_india/services/admin_notification_service.dart';
@@ -146,7 +145,6 @@ class _HomeScreenAState extends State<HomeScreenA> {
                     ),
                   ),
                   SizedBox(height: 10),
-                  review_tile(4.5, 24, context), // put real data here
                 ],
               ),
             ],

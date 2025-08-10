@@ -6,7 +6,7 @@ class CategoryProductState {
   final List<ProductModel> allProducts;
   final List<ProductModel> bestSellingProducts;
   final List<ProductModel> productsByCategory;
-  final List<Map<String,dynamic>> categories;
+  final List<CategoryModel> categories;
   final bool isLoading;
   final String? error;
 
@@ -32,7 +32,7 @@ class CategoryProductState {
     List<ProductModel>? allProducts,
     List<ProductModel>? productsByCategory,
     List<ProductModel>? bestSellingProducts,
-    List<Map<String,dynamic>>? categories,
+    List<CategoryModel>? categories,
     bool? isLoading,
     String? error,
   }) {

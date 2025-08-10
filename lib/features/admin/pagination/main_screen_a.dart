@@ -7,7 +7,7 @@ import 'package:raising_india/features/admin/add_new_items/screens/add_new_item_
 import 'package:raising_india/features/admin/all_product_list/screens/all_product_list_a.dart';
 import 'package:raising_india/features/admin/home/screens/home_screen_a.dart';
 import 'package:raising_india/features/admin/notification/screens/notification_screen_a.dart';
-import 'package:raising_india/features/admin/profile/screens/profile_screen_a.dart';
+import 'package:raising_india/features/admin/profile/screens/profile_manage_screen.dart';
 
 class MainScreenA extends StatefulWidget {
   const MainScreenA({super.key});
@@ -25,7 +25,7 @@ class _MainScreenAState extends State<MainScreenA> {
     const AllProductListA(),
     const AddNewItemScreen(),
     const NotificationScreenA(),
-    const ProfileScreenA(),
+    const ProfileManageScreen(),
   ];
 
   final NavBarStyle _navBarStyle = NavBarStyle.style12;

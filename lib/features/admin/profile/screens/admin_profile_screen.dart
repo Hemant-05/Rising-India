@@ -3,14 +3,9 @@ import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 
-class ReviewScreenA extends StatefulWidget {
-  const ReviewScreenA({super.key});
+class AdminProfileScreen extends StatelessWidget {
+  const AdminProfileScreen({super.key});
 
-  @override
-  State<ReviewScreenA> createState() => _ReviewScreenAState();
-}
-
-class _ReviewScreenAState extends State<ReviewScreenA> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,10 +17,11 @@ class _ReviewScreenAState extends State<ReviewScreenA> {
           children: [
             back_button(),
             const SizedBox(width: 8),
-            Text('Reviews',style: simple_text_style(fontSize: 20),),
+            Text('Profile',style: simple_text_style(fontSize: 20),),
           ],
         ),
       ),
+
     );
   }
 }

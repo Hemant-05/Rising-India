@@ -11,6 +11,8 @@ class ProductModel {
   final String measurement;
   final String category;
   final List<String> photos_list;
+  final double? stockQuantity;
+  final double? lowStockQuantity;
 
   ProductModel({
     required this.uid,
@@ -25,6 +27,8 @@ class ProductModel {
     required this.price,
     required this.quantity,
     required this.measurement,
+    this.stockQuantity,
+    this.lowStockQuantity,
   });
   // Factory constructor to create a ProductModel from a map
   factory ProductModel.fromMap(Map<String, dynamic> map,String uid) {
@@ -41,6 +45,8 @@ class ProductModel {
       measurement: map['measurement'] ?? '',
       photos_list: List<String>.from(map['photos_list'] ?? []),
       uid: uid,
+      stockQuantity: map['stockQuantity'],
+      lowStockQuantity: map['lowStockQuantity'],
     );
   }
   // Method to convert ProductModel to a map
@@ -58,6 +64,8 @@ class ProductModel {
       'quantity': quantity,
       'measurement': measurement,
       'photos_list': photos_list,
+      'stockQuantity': stockQuantity,
+      'lowStockQuantity': lowStockQuantity,
     };
   }
 }

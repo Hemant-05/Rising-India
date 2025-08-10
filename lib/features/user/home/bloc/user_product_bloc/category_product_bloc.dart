@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:raising_india/features/user/services/user_product_services.dart';
+import 'package:raising_india/models/category_model.dart';
 import 'package:raising_india/models/product_model.dart';
 part 'category_product_event.dart';
 part 'category_product_state.dart';
