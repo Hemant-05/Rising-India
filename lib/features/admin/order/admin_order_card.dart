@@ -55,7 +55,7 @@ class AdminOrderCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Order #${order.orderId.substring(0, 8)}',
+                    'Order #${order.orderId.substring(0, 6)}',
                     style: simple_text_style(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,

@@ -5,6 +5,8 @@ import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
+import 'package:raising_india/features/user/coupon/bloc/coupon_bloc.dart';
+import 'package:raising_india/features/user/coupon/screens/coupons_screen.dart';
 import 'package:raising_india/features/user/profile/bloc/profile_bloc.dart';
 import 'package:raising_india/features/user/profile/screens/personal_info_screen.dart';
 import 'package:raising_india/features/auth/bloc/auth_bloc.dart';
@@ -98,17 +100,31 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 16),
-            customContainer(
-              optionListTile(map_svg, 'Addresses', () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SelectAddressScreen(isFromProfile: true),
+                customContainer(
+                  Column(
+                    children: [
+                      optionListTile(map_svg, 'Addresses', () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SelectAddressScreen(isFromProfile: true),
+                          ),
+                        );
+                      }),
+                      optionListTile(coupon_svg, 'Coupons & Cashback\'s', () {
+                        context.read<CouponBloc>().add(LoadUserCoupons());
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                               CouponsScreen(),
+                          ),
+                        );
+                      }),
+                    ],
                   ),
-                );
-              }),
-            ),
+                ),
             customContainer(
               Column(
                 children: [

@@ -25,6 +25,7 @@ final String profile_svg = "assets/icons/profile_icon.svg";
 final String add_new_item_svg = "assets/icons/add_icon.svg";
 final String order_icon_svg = "assets/icons/order_icon.svg";
 final String category_svg = "assets/icons/category_icon.svg";
+final String coupon_svg = "assets/icons/coupon_icon.svg";
 
 final String logout_svg = "assets/icons/logout_icon.svg";
 final String map_svg = "assets/icons/map_icon.svg";

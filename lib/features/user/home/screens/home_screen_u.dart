@@ -124,33 +124,40 @@ class _HomeScreenUState extends State<HomeScreenU> {
               ],
             ),
           ),
-          body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Greeting Section
-                  _buildGreetingSection(),
-                  const SizedBox(height: 14),
+          body: RefreshIndicator(
+            color: AppColour.primary,
+            backgroundColor: AppColour.white,
+            onRefresh: () async {
+              context.read<OrderBloc>().add(LoadUserOngoingOrderEvent());
+            },
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Greeting Section
+                    _buildGreetingSection(),
+                    const SizedBox(height: 14),
 
-                  // Search Bar
-                  search_bar_widget(context),
-                  const SizedBox(height: 14),
+                    // Search Bar
+                    search_bar_widget(context),
+                    const SizedBox(height: 14),
 
-                  // Categories Section
-                  categories_section(context),
-                  const SizedBox(height: 20),
+                    // Categories Section
+                    categories_section(context),
+                    const SizedBox(height: 20),
 
-                  // Ongoing Orders Section
-                  _buildOngoingOrdersSection(),
-                  const SizedBox(height: 16),
+                    // Ongoing Orders Section
+                    _buildOngoingOrdersSection(),
+                    const SizedBox(height: 16),
 
-                  // Best Products Section
-                  _buildBestProductsSection(),
-                  const SizedBox(height: 20),
-                ],
+                    // Best Products Section
+                    _buildBestProductsSection(),
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
           ),
@@ -338,7 +345,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
 
   Widget _buildOrdersList(List<OrderModel> orders) {
     return SizedBox(
-      height: 110,
+      height: 120,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: orders.length,
@@ -382,6 +389,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
           padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               // Order ID and Status
               Row(

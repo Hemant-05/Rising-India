@@ -7,8 +7,9 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/auth/services/auth_service.dart';
 import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
-import 'package:raising_india/features/user/payment/screens/payment_details_screen.dart';
+import 'package:raising_india/features/user/payment/screens/payment_checkout_screen.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
+import 'package:raising_india/models/cart_model.dart';
 import 'package:raising_india/models/product_model.dart';
 
 class CartScreen extends StatefulWidget {
@@ -131,7 +132,14 @@ class _CartScreenState extends State<CartScreen> {
                                               width: 50,
                                               height: 50,
                                               fit: BoxFit.cover,
-                                              errorBuilder: (context, error, stackTrace) => Icon(Icons.error_outline_rounded),
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => Icon(
+                                                    Icons.error_outline_rounded,
+                                                  ),
                                             ),
                                           ),
                                           title: Text(
@@ -316,20 +324,43 @@ class _CartScreenState extends State<CartScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            SelectAddressScreen(isFromProfile: false,),
+                                            SelectAddressScreen(
+                                              isFromProfile: false,
+                                            ),
                                       ),
                                     );
                                     if (result != null) {
                                       LatLng location = result['latLng'];
                                       String address = result['address'];
-                                      final user = await authService.getCurrentUser();
+                                      final user = await authService
+                                          .getCurrentUser();
+                                      String totalPrice = state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString();
+                                      List<CartItem> cartItems = state
+                                          .getCartProduct
+                                          .map((map) {
+                                            return CartItem(
+                                              product: map['product'],
+                                              quantity: map['quantity'],
+                                            );
+                                          })
+                                          .toList();
+                                      /*Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => CombinedCheckoutScreen(
+                                            cartItems: cartItems,
+                                            subtotal: 70,
+                                            deliveryFee: 12,
+                                          ),
+                                        ),
+                                      );*/
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => PaymentDetailsScreen(
+                                          builder: (context) => PaymentCheckoutScreen(
                                             address: address,
                                             addressCode: location,
-                                            total: state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int),).toString(),
+                                            total: totalPrice,
                                             email: user!.email,
                                             contact: user.number,
                                             name: user.name,

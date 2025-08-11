@@ -12,11 +12,13 @@ import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_c
 import 'package:raising_india/features/admin/order/bloc/admin_order_details_cubit.dart';
 import 'package:raising_india/features/admin/services/category_repository.dart';
 import 'package:raising_india/features/admin/services/order_repository.dart';
+import 'package:raising_india/features/user/coupon/bloc/coupon_bloc.dart';
 import 'package:raising_india/features/user/home/bloc/user_product_bloc/category_product_bloc.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
 import 'package:raising_india/features/user/profile/bloc/profile_bloc.dart';
 import 'package:raising_india/features/user/search/bloc/product_search_bloc/product_search_bloc.dart';
+import 'package:raising_india/features/user/services/coupon_repository.dart';
 import 'package:raising_india/features/user/services/user_product_services.dart';
 import 'package:raising_india/screens/splash_screen.dart';
 import 'features/auth/bloc/auth_bloc.dart';
@@ -37,10 +39,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<CategoryRepository>(
-          create: (_) => CategoryRepositoryImpl(),
-        ),
+        RepositoryProvider<CategoryRepository>(create: (_) => CategoryRepositoryImpl(),),
         RepositoryProvider<OrderRepository>(create: (_) => OrderRepository(firestore: FirebaseFirestore.instance)),
+        RepositoryProvider<CouponRepository>(create: (_) => CouponRepositoryImpl(),),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<OrderStatsCubit>(create: (context)=>OrderStatsCubit(FirebaseFirestore.instance),),
           BlocProvider<ProductsCubit>(create: (context) => ProductsCubit(FirebaseFirestore.instance)..fetchProducts()),
           BlocProvider<AdminOrderDetailsCubit>(create: (context) => AdminOrderDetailsCubit(),),
+          BlocProvider<CouponBloc>(create: (context) => CouponBloc(couponRepository: context.read<CouponRepository>(),),),
         ],
         child: MaterialApp(
           title: 'Raising India',
