@@ -176,7 +176,7 @@ class OrderDetailsScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: simple_text_style()),
-        Text("₹${value.toStringAsFixed(2)}", style: simple_text_style(fontSize: 14,color: AppColour.grey)),
+        Text("${value.toStringAsFixed(2)}", style: simple_text_style(fontSize: 14,color: AppColour.grey)),
       ],
     ),
   );

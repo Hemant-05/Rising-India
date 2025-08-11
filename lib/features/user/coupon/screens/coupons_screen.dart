@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/user/coupon/bloc/coupon_bloc.dart';
 import 'package:raising_india/models/coupon_model.dart';
 
 class CouponsScreen extends StatefulWidget {
-  const CouponsScreen({super.key});
+  const CouponsScreen({super.key, required this.isSelectionMode});
+  final bool isSelectionMode;
 
   @override
   State<CouponsScreen> createState() => _CouponsScreenState();
 }
 
-class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateMixin {
+class _CouponsScreenState extends State<CouponsScreen>
+    with TickerProviderStateMixin {
   late TabController _tabController;
 
   final List<String> _filters = ['all', 'unused', 'used', 'expired'];
@@ -25,7 +29,9 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
     _tabController = TabController(length: _filterTitles.length, vsync: this);
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
-        context.read<CouponBloc>().add(FilterCoupons(_filters[_tabController.index]));
+        context.read<CouponBloc>().add(
+          FilterCoupons(_filters[_tabController.index]),
+        );
       }
     });
   }
@@ -35,14 +41,17 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        title: const Text(
-          'My Coupons',
-          style: TextStyle(fontWeight: FontWeight.w600),
+        backgroundColor: AppColour.white,
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            back_button(),
+            const SizedBox(width: 8),
+            Text('My Coupons', style: simple_text_style(fontSize: 20)),
+          ],
         ),
         bottom: TabBar(
+          labelStyle: simple_text_style(),
           controller: _tabController,
           labelColor: AppColour.primary,
           unselectedLabelColor: Colors.grey,
@@ -78,7 +87,9 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
           if (state is CouponLoaded) {
             return TabBarView(
               controller: _tabController,
-              children: _filterTitles.map((title) => _buildCouponList(state.filteredCoupons)).toList(),
+              children: _filterTitles
+                  .map((title) => _buildCouponList(state.filteredCoupons))
+                  .toList(),
             );
           }
 
@@ -125,10 +136,7 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
           const SizedBox(height: 8),
           Text(
             'Your coupons will appear here',
-            style: simple_text_style(
-              color: Colors.grey.shade500,
-              fontSize: 14,
-            ),
+            style: simple_text_style(color: Colors.grey.shade500, fontSize: 14),
           ),
         ],
       ),
@@ -145,7 +153,9 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isUsable ? AppColour.primary.withOpacity(0.3) : Colors.grey.shade300,
+          color: isUsable
+              ? AppColour.primary.withOpacity(0.3)
+              : Colors.grey.shade300,
           width: 1.5,
         ),
         boxShadow: [
@@ -184,7 +194,10 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColour.primary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(20),
@@ -199,11 +212,16 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: statusColor.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: statusColor.withOpacity(0.3)),
+                          border: Border.all(
+                            color: statusColor.withOpacity(0.3),
+                          ),
                         ),
                         child: Text(
                           _getStatusText(coupon),
@@ -226,7 +244,10 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
                     decoration: BoxDecoration(
                       color: Colors.grey.shade50,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade200, style: BorderStyle.solid),
+                      border: Border.all(
+                        color: Colors.grey.shade200,
+                        style: BorderStyle.solid,
+                      ),
                     ),
                     child: Column(
                       children: [
@@ -239,12 +260,15 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
                           ),
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          coupon.code,
-                          style: simple_text_style(
-                            color: AppColour.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                        GestureDetector(
+                          onLongPress: () => _copyCouponCode(coupon.code),
+                          child: Text(
+                            coupon.code,
+                            style: simple_text_style(
+                              color: AppColour.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
@@ -290,9 +314,13 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
                               ),
                             ),
                             Text(
-                              DateFormat('MMM d, h:mm a').format(coupon.expiresAt),
+                              DateFormat(
+                                'MMM d, h:mm a',
+                              ).format(coupon.expiresAt),
                               style: simple_text_style(
-                                color: coupon.isExpired ? Colors.red : AppColour.black,
+                                color: coupon.isExpired
+                                    ? Colors.red
+                                    : AppColour.black,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -305,26 +333,33 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
 
                   if (isUsable) ...[
                     const SizedBox(height: 16),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => _showUseCouponDialog(coupon),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColour.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: widget.isSelectionMode
+                                ? () => Navigator.pop(context, coupon)
+                                : () => _copyCouponCode(coupon.code),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColour.primary,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text(
+                              widget.isSelectionMode
+                                  ? 'Select Coupon'
+                                  : 'Copy Code',
+                              style: simple_text_style(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ),
-                        child: Text(
-                          'Use This Coupon',
-                          style: simple_text_style(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ],
@@ -348,34 +383,43 @@ class _CouponsScreenState extends State<CouponsScreen> with TickerProviderStateM
     return 'AVAILABLE';
   }
 
-  void _showUseCouponDialog(CouponModel coupon) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Use Coupon'),
-        content: Text('Use coupon ${coupon.code} for ₹${coupon.value.toStringAsFixed(2)} discount?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // Navigate to checkout or apply coupon logic
-              _applyCoupon(coupon);
-            },
-            child: const Text('Use Coupon'),
-          ),
-        ],
-      ),
-    );
-  }
+  Future<void> _copyCouponCode(String couponCode) async {
+    try {
+      await Clipboard.setData(ClipboardData(text: couponCode));
 
-  void _applyCoupon(CouponModel coupon) {
-    // Implement your coupon application logic here
-    // For example, navigate to checkout with applied coupon
-    Navigator.pop(context, coupon);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 8),
+                Text('Coupon "$couponCode" copied!'),
+              ],
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to copy coupon code'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      }
+    }
   }
 
   @override

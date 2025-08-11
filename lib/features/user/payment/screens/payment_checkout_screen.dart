@@ -53,6 +53,8 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
   bool isCOD = false;
   bool _isProcessingOrder = false;
 
+  late CouponBloc _couponBloc;
+
   // Coupon related variables
   final TextEditingController _couponController = TextEditingController();
   CouponModel? _appliedCoupon;
@@ -79,6 +81,8 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+
+    _couponBloc = context.read<CouponBloc>();
 
     // Animation setup
     _animationController = AnimationController(
@@ -127,6 +131,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
 
   void _handlePaymentError(PaymentFailureResponse response) {
     placeOrder(false, false, null);
+    _removeCoupon();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -191,13 +196,24 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
 
       // Generate cashback coupon
       final String userId = FirebaseAuth.instance.currentUser!.uid;
-      context.read<CouponBloc>().add(
+      _couponBloc.add(
         GenerateCashbackCoupon(
           userId: userId,
           orderId: newOrder.orderId,
           orderTotal: newOrder.total,
         ),
       );
+
+      // If coupon was applied, confirm its usage
+      if (_appliedCoupon != null && _userId != null) {
+        _couponBloc.add(
+          ConfirmCouponUsage(
+            userId: _userId!,
+            couponId: _appliedCoupon!.id,
+            orderId: newOrder.orderId,
+          ),
+        );
+      }
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
@@ -209,6 +225,16 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
     }
 
     if (isCod) {
+      // If coupon was applied, confirm its usage
+      if (_appliedCoupon != null && _userId != null) {
+        _couponBloc.add(
+          ConfirmCouponUsage(
+            userId: _userId!,
+            couponId: _appliedCoupon!.id,
+            orderId: newOrder.orderId,
+          ),
+        );
+      }
       context.read<ProductFunBloc>().add(ClearCartPressed());
       Navigator.push(
         context,
@@ -231,7 +257,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
     }
 
     if (_userId != null) {
-      context.read<CouponBloc>().add(
+      _couponBloc.add(
         ApplyCouponToCheckout(
           userId: _userId!,
           couponCode: _couponController.text.trim().toUpperCase(),
@@ -243,7 +269,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
 
   void _removeCoupon() {
     if (_appliedCoupon != null && _userId != null) {
-      context.read<CouponBloc>().add(
+      _couponBloc.add(
         CancelCouponApplication(
           userId: _userId!,
           couponId: _appliedCoupon!.id,
@@ -253,13 +279,13 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
   }
 
   void _navigateToMyCoupons() async {
-    context.read<CouponBloc>().add(LoadUserCoupons());
+    _couponBloc.add(LoadUserCoupons());
     final selectedCoupon = await Navigator.push<CouponModel>(
       context,
       MaterialPageRoute(
         builder: (_) => BlocProvider.value(
           value: BlocProvider.of<CouponBloc>(context),
-          child: const CouponsScreen(),
+          child: const CouponsScreen(isSelectionMode: true),
         ),
       ),
     );
@@ -302,19 +328,11 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
 
   @override
   void dispose() {
+    // Release coupon reservation if user leaves without completing order
+    _removeCoupon();
     _razorpay.clear();
     _couponController.dispose();
     _animationController.dispose();
-
-    // Release coupon reservation if user leaves without completing order
-    if (_appliedCoupon != null && _userId != null) {
-      context.read<CouponBloc>().add(
-        CancelCouponApplication(
-          userId: _userId!,
-          couponId: _appliedCoupon!.id,
-        ),
-      );
-    }
     super.dispose();
   }
 

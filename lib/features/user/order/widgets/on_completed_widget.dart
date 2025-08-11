@@ -91,7 +91,7 @@ Widget onCompletedWidget(List<OrderModel> list) {
                                 Row(
                                   children: [
                                     Text(
-                                      '${list[index].total.toStringAsFixed(0)}',
+                                      '₹${list[index].total.toStringAsFixed(0)}',
                                       style: simple_text_style(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,

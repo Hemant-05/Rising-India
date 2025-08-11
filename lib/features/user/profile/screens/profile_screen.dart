@@ -118,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                               CouponsScreen(),
+                               CouponsScreen(isSelectionMode: false,),
                           ),
                         );
                       }),
