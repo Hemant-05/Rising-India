@@ -8,7 +8,7 @@ import 'package:raising_india/features/admin/category/screens/admin_categories_s
 import 'package:raising_india/features/admin/profile/screens/admin_profile_screen.dart';
 import 'package:raising_india/features/admin/profile/widgets/option_list_tile_widget.dart';
 import 'package:raising_india/features/admin/profile/widgets/upper_widget.dart';
-import 'package:raising_india/features/admin/review/screens/review_screen_a.dart';
+import 'package:raising_india/features/admin/review/screens/admin_reviews_screen.dart';
 import 'package:raising_india/features/auth/bloc/auth_bloc.dart';
 import 'package:raising_india/features/auth/screens/login_screen.dart';
 
@@ -77,7 +77,7 @@ class _ProfileManageScreenState extends State<ProfileManageScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const ReviewScreenA(),
+                                builder: (_) => const AdminReviewsScreen(),
                               ),
                             );
                           },

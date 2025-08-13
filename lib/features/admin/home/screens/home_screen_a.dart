@@ -6,8 +6,10 @@ import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
 import 'package:raising_india/features/admin/home/widgets/info_card_widget.dart';
+import 'package:raising_india/features/admin/home/widgets/review_analytics_widget.dart';
 import 'package:raising_india/features/admin/order/OrderFilterType.dart';
 import 'package:raising_india/features/admin/order/screens/order_list_screen.dart';
+import 'package:raising_india/features/admin/review/bloc/admin_review_bloc.dart';
 import 'package:raising_india/services/admin_notification_service.dart';
 import '../../../../comman/simple_text_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
@@ -23,7 +25,8 @@ class _HomeScreenAState extends State<HomeScreenA> {
   @override
   void initState() {
     super.initState();
-    _initializeNotifications();
+    context.read<AdminReviewBloc>().add(LoadAllReviews());
+    // _initializeNotifications();
   }
 
   void _initializeNotifications() {
@@ -34,11 +37,17 @@ class _HomeScreenAState extends State<HomeScreenA> {
       }
     });
   }
-  
-  void navigateToOrderListScreen(String title,OrderFilterType orderType){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => OrderListScreen(title: title, orderType: orderType),));
+
+  void navigateToOrderListScreen(String title, OrderFilterType orderType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            OrderListScreen(title: title, orderType: orderType),
+      ),
+    );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,10 +113,26 @@ class _HomeScreenAState extends State<HomeScreenA> {
                     width: double.infinity,
                     child: Row(
                       children: [
-                        info_card(state.runningOrders.toString(), 'RUNNING', AppColour.primary.withOpacity(0.6),()=>navigateToOrderListScreen('Running',OrderFilterType.running)),
+                        info_card(
+                          state.runningOrders.toString(),
+                          'RUNNING',
+                          AppColour.primary.withOpacity(0.6),
+                          () => navigateToOrderListScreen(
+                            'Running',
+                            OrderFilterType.running,
+                          ),
+                        ),
                         // put real data here
                         SizedBox(width: 10),
-                        info_card(state.todayOrders.toString(), 'TODAYS', AppColour.lightGrey.withOpacity(0.6),() => navigateToOrderListScreen('Today', OrderFilterType.today)),
+                        info_card(
+                          state.todayOrders.toString(),
+                          'TODAYS',
+                          AppColour.lightGrey.withOpacity(0.6),
+                          () => navigateToOrderListScreen(
+                            'Today',
+                            OrderFilterType.today,
+                          ),
+                        ),
                         // put real data here
                       ],
                     ),
@@ -120,11 +145,24 @@ class _HomeScreenAState extends State<HomeScreenA> {
                       children: [
                         info_card(
                           state.deliveredOrders.toString(),
-                          'DELIVERED', AppColour.green.withOpacity(0.6),()=>navigateToOrderListScreen('Delivered', OrderFilterType.delivered),
+                          'DELIVERED',
+                          AppColour.green.withOpacity(0.6),
+                          () => navigateToOrderListScreen(
+                            'Delivered',
+                            OrderFilterType.delivered,
+                          ),
                         ),
                         // put real data here
                         SizedBox(width: 10),
-                        info_card(state.cancelledOrders.toString(), 'CANCELLED', AppColour.red.withOpacity(0.6),()=>navigateToOrderListScreen('Cancelled',OrderFilterType.cancelled)),
+                        info_card(
+                          state.cancelledOrders.toString(),
+                          'CANCELLED',
+                          AppColour.red.withOpacity(0.6),
+                          () => navigateToOrderListScreen(
+                            'Cancelled',
+                            OrderFilterType.cancelled,
+                          ),
+                        ),
                         // put real data here
                       ],
                     ),
@@ -139,12 +177,16 @@ class _HomeScreenAState extends State<HomeScreenA> {
                           state.totalOrders.toString(),
                           'ALL ORDERS',
                           AppColour.white,
-                            ()=> navigateToOrderListScreen('All',OrderFilterType.all)
+                          () => navigateToOrderListScreen(
+                            'All',
+                            OrderFilterType.all,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: 10),
+                  SizedBox(height: 140, child: ReviewAnalyticsWidget()),
                 ],
               ),
             ],

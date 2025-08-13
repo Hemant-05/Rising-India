@@ -93,7 +93,6 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            Spacer(),
                           ],
                         ) : Center(child: Text('Restart the app.....',style: simple_text_style()),);
                 },

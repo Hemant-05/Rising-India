@@ -10,6 +10,7 @@ import 'package:raising_india/features/admin/all_product_list/bloc/products_cubi
 import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
 import 'package:raising_india/features/admin/order/bloc/admin_order_details_cubit.dart';
+import 'package:raising_india/features/admin/review/bloc/admin_review_bloc.dart';
 import 'package:raising_india/features/admin/services/category_repository.dart';
 import 'package:raising_india/features/admin/services/order_repository.dart';
 import 'package:raising_india/features/user/coupon/bloc/coupon_bloc.dart';
@@ -17,8 +18,10 @@ import 'package:raising_india/features/user/home/bloc/user_product_bloc/category
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
 import 'package:raising_india/features/user/profile/bloc/profile_bloc.dart';
+import 'package:raising_india/features/user/review/bloc/review_bloc.dart';
 import 'package:raising_india/features/user/search/bloc/product_search_bloc/product_search_bloc.dart';
 import 'package:raising_india/features/user/services/coupon_repository.dart';
+import 'package:raising_india/features/services/review_repository.dart';
 import 'package:raising_india/features/user/services/user_product_services.dart';
 import 'package:raising_india/screens/splash_screen.dart';
 import 'features/auth/bloc/auth_bloc.dart';
@@ -42,6 +45,7 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<CategoryRepository>(create: (_) => CategoryRepositoryImpl(),),
         RepositoryProvider<OrderRepository>(create: (_) => OrderRepository(firestore: FirebaseFirestore.instance)),
         RepositoryProvider<CouponRepository>(create: (_) => CouponRepositoryImpl(),),
+        RepositoryProvider<ReviewRepository>(create: (_) => ReviewRepositoryImpl(),),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -58,6 +62,8 @@ class MyApp extends StatelessWidget {
           BlocProvider<ProductsCubit>(create: (context) => ProductsCubit(FirebaseFirestore.instance)..fetchProducts()),
           BlocProvider<AdminOrderDetailsCubit>(create: (context) => AdminOrderDetailsCubit(),),
           BlocProvider<CouponBloc>(create: (context) => CouponBloc(couponRepository: context.read<CouponRepository>(),),),
+          BlocProvider<ReviewBloc>(create: (context) => ReviewBloc(reviewRepository: context.read<ReviewRepository>(), orderRepository: context.read<OrderRepository>(),),),
+          BlocProvider<AdminReviewBloc>(create: (context) => AdminReviewBloc(reviewRepository: context.read<ReviewRepository>(),),),
         ],
         child: MaterialApp(
           title: 'Raising India',

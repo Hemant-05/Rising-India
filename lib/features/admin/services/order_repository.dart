@@ -97,13 +97,11 @@ class OrderRepository {
   Future<OrderWithProducts?> getOrderById(String orderId) async {
     try {
       final orderDoc = await firestore.collection('orders').doc(orderId).get();
-
       if (!orderDoc.exists) {
         return null;
       }
 
       final order = OrderModel.fromMap(orderDoc.data()!);
-
       // Extract product IDs
       final productIds = order.items.map((item) => item['productId'] as String).toList();
 
@@ -118,7 +116,7 @@ class OrderRepository {
       // Create ordered products
       final orderProducts = order.items.map((item) {
         final product = productMap[item['productId']];
-        final qty = (item['quantity'] ?? 1) as int;
+        final qty = int.parse(item['quantity'] ?? 1);
         return OrderedProduct(product: product, qty: qty);
       }).toList();
 

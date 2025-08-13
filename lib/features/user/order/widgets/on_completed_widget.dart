@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
+import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/features/user/order/screens/order_details_screen.dart';
+import 'package:raising_india/features/user/review/screens/review_screen.dart';
 import 'package:raising_india/models/order_model.dart';
 
 Widget onCompletedWidget(List<OrderModel> list) {
@@ -145,24 +147,54 @@ Widget onCompletedWidget(List<OrderModel> list) {
                           ),
                         ],
                       ),
-                      ElevatedButton(
-                        style: elevated_button_style(),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  OrderDetailsScreen(order: list[index]),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              style: elevated_button_style(),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        OrderDetailsScreen(order: list[index]),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Order Details',
+                                style: simple_text_style(
+                                  color: AppColour.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          );
-                        },
-                        child: Text(
-                          'Order Details',
-                          style: simple_text_style(
-                            color: AppColour.white,
-                            fontWeight: FontWeight.bold,
                           ),
-                        ),
+                          if(list[index].orderStatus == OrderStatusDeliverd)...[
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: elevated_button_style(),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ReviewScreen(orderId: list[index].orderId),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Review',
+                                  style: simple_text_style(
+                                    color: AppColour.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ]
+                        ],
                       ),
                     ],
                   ),
