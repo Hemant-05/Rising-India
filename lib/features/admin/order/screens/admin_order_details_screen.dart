@@ -125,6 +125,7 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
   // Function to show location options dialog
   void _showLocationOptions(OrderModel order) {
     showModalBottomSheet(
+      backgroundColor: AppColour.white,
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -134,16 +135,16 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               'Location Options',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              style: simple_text_style(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 20),
 
             ListTile(
               leading: const Icon(Icons.map_outlined, color: Colors.blue),
-              title: const Text('Open in Google Maps'),
-              subtitle: const Text('Navigate to delivery location'),
+              title: Text('Open in Google Maps',style: simple_text_style(),),
+              subtitle: Text('Navigate to delivery location',style: simple_text_style(),),
               onTap: () {
                 Navigator.pop(context);
                 _openGoogleMaps(
@@ -155,15 +156,15 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
 
             ListTile(
               leading: const Icon(Icons.copy_outlined, color: Colors.green),
-              title: const Text('Copy Address'),
-              subtitle: const Text('Copy address to clipboard'),
+              title: Text('Copy Address',style: simple_text_style(),),
+              subtitle: Text('Copy address to clipboard',style: simple_text_style(),),
               onTap: () {
                 Navigator.pop(context);
                 Clipboard.setData(
                   ClipboardData(text: order.address.fullAddress),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Address copied to clipboard')),
+                  SnackBar(content: Text('Address copied to clipboard',style: simple_text_style(),)),
                 );
               },
             ),
@@ -171,8 +172,8 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
             if (order.address.contactNumber.isNotEmpty)
               ListTile(
                 leading: const Icon(Icons.phone_outlined, color: Colors.orange),
-                title: const Text('Call Customer'),
-                subtitle: Text(order.address.contactNumber),
+                title: Text('Call Customer',style: simple_text_style(),),
+                subtitle: Text(order.address.contactNumber,style: simple_text_style(),),
                 onTap: () {
                   Navigator.pop(context);
                   _launchPhone(order.address.contactNumber);

@@ -7,9 +7,11 @@ import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
 import 'package:raising_india/features/admin/home/widgets/info_card_widget.dart';
 import 'package:raising_india/features/admin/home/widgets/review_analytics_widget.dart';
+import 'package:raising_india/features/admin/home/widgets/sales_dashboard_widget.dart';
 import 'package:raising_india/features/admin/order/OrderFilterType.dart';
 import 'package:raising_india/features/admin/order/screens/order_list_screen.dart';
 import 'package:raising_india/features/admin/review/bloc/admin_review_bloc.dart';
+import 'package:raising_india/features/admin/sales_analytics/bloc/sales_analytics_bloc.dart';
 import 'package:raising_india/services/admin_notification_service.dart';
 import '../../../../comman/simple_text_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
@@ -26,6 +28,7 @@ class _HomeScreenAState extends State<HomeScreenA> {
   void initState() {
     super.initState();
     context.read<AdminReviewBloc>().add(LoadAllReviews());
+    context.read<SalesAnalyticsBloc>().add(LoadSalesAnalytics());
     // _initializeNotifications();
   }
 
@@ -102,9 +105,10 @@ class _HomeScreenAState extends State<HomeScreenA> {
       ),
       body: BlocBuilder<OrderStatsCubit, OrderStatsState>(
         builder: (context, state) {
-          return ListView(
+          return SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             padding: const EdgeInsets.all(16),
-            children: [
+              child:
               // Stats Tiles Row
               Column(
                 children: [
@@ -186,10 +190,12 @@ class _HomeScreenAState extends State<HomeScreenA> {
                     ),
                   ),
                   SizedBox(height: 10),
+                  const SalesDashboardWidget(),
+                  SizedBox(height: 10),
                   SizedBox(height: 140, child: ReviewAnalyticsWidget()),
                 ],
               ),
-            ],
+
           );
         },
       ),

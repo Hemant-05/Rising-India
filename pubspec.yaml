@@ -60,6 +60,7 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   url_launcher: ^6.3.2
   share_plus: ^11.0.0
+  fl_chart: ^1.0.0
 
 dev_dependencies:
   flutter_test:

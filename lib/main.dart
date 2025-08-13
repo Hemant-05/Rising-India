@@ -11,8 +11,10 @@ import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
 import 'package:raising_india/features/admin/order/bloc/admin_order_details_cubit.dart';
 import 'package:raising_india/features/admin/review/bloc/admin_review_bloc.dart';
+import 'package:raising_india/features/admin/sales_analytics/bloc/sales_analytics_bloc.dart';
 import 'package:raising_india/features/admin/services/category_repository.dart';
 import 'package:raising_india/features/admin/services/order_repository.dart';
+import 'package:raising_india/features/admin/services/sales_analytics_repository.dart';
 import 'package:raising_india/features/user/coupon/bloc/coupon_bloc.dart';
 import 'package:raising_india/features/user/home/bloc/user_product_bloc/category_product_bloc.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<OrderRepository>(create: (_) => OrderRepository(firestore: FirebaseFirestore.instance)),
         RepositoryProvider<CouponRepository>(create: (_) => CouponRepositoryImpl(),),
         RepositoryProvider<ReviewRepository>(create: (_) => ReviewRepositoryImpl(),),
+        RepositoryProvider<SalesAnalyticsRepository>(create: (_) => SalesAnalyticsRepositoryImpl(),),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -64,6 +67,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<CouponBloc>(create: (context) => CouponBloc(couponRepository: context.read<CouponRepository>(),),),
           BlocProvider<ReviewBloc>(create: (context) => ReviewBloc(reviewRepository: context.read<ReviewRepository>(), orderRepository: context.read<OrderRepository>(),),),
           BlocProvider<AdminReviewBloc>(create: (context) => AdminReviewBloc(reviewRepository: context.read<ReviewRepository>(),),),
+          BlocProvider<SalesAnalyticsBloc>(create: (context) => SalesAnalyticsBloc(repository: context.read<SalesAnalyticsRepository>(),),),
         ],
         child: MaterialApp(
           title: 'Raising India',

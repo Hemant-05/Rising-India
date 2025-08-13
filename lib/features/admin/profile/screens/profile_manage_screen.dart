@@ -9,6 +9,7 @@ import 'package:raising_india/features/admin/profile/screens/admin_profile_scree
 import 'package:raising_india/features/admin/profile/widgets/option_list_tile_widget.dart';
 import 'package:raising_india/features/admin/profile/widgets/upper_widget.dart';
 import 'package:raising_india/features/admin/review/screens/admin_reviews_screen.dart';
+import 'package:raising_india/features/admin/sales_analytics/screens/sales_analytics_screen.dart';
 import 'package:raising_india/features/auth/bloc/auth_bloc.dart';
 import 'package:raising_india/features/auth/screens/login_screen.dart';
 
@@ -56,7 +57,31 @@ class _ProfileManageScreenState extends State<ProfileManageScreen> {
                           ),
                         ),
                         optionsListTileWidget(
-                          () {
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const SalesAnalyticsScreen(),
+                              ),
+                            );
+                          },
+                          receipt_svg,
+                          'Sale Analytics',
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: AppColour.grey,
+                            size: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  CusContainer(
+                    Column(
+                      children: [
+                        optionsListTileWidget(
+                              () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -73,7 +98,7 @@ class _ProfileManageScreenState extends State<ProfileManageScreen> {
                           ),
                         ),
                         optionsListTileWidget(
-                          () {
+                              () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -90,7 +115,7 @@ class _ProfileManageScreenState extends State<ProfileManageScreen> {
                           ),
                         ),
                       ],
-                    ),
+                    )
                   ),
                   SizedBox(height: 10),
                   CusContainer(
