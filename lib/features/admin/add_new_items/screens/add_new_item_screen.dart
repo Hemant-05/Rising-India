@@ -132,12 +132,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       appBar: _buildStunningAppBar(),
       body: BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) {
-          if (state is ProductAddLoading) {
-            // ✅ Show loading state
-            setState(() {
-              _isLoading = true;
-            });
-          } else if (state is ProductAdded) {
+          if (state is ProductAdded) {
             // ✅ Hide loading and clear form
             setState(() {
               _isLoading = false;
@@ -885,7 +880,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
           children: [
             Icon(Icons.refresh, color: Colors.white),
             const SizedBox(width: 8),
-            const Text('Form reset successfully!'),
+            const Text('Details reset successfully!'),
           ],
         ),
         backgroundColor: AppColour.primary,

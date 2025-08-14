@@ -5,7 +5,7 @@ import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
-import 'package:raising_india/features/admin/all_product_list/bloc/products_cubit.dart';
+import 'package:raising_india/features/admin/product/bloc/products_cubit.dart';
 import 'package:raising_india/models/product_model.dart';
 
 class AdminProductDetailScreen extends StatefulWidget {

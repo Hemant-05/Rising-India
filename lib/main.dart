@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/image_cubit.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/product_bloc/product_bloc.dart';
-import 'package:raising_india/features/admin/all_product_list/bloc/products_cubit.dart';
+import 'package:raising_india/features/admin/product/bloc/products_cubit.dart';
 import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
 import 'package:raising_india/features/admin/order/bloc/admin_order_details_cubit.dart';

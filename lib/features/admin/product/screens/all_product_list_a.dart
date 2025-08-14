@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
-import 'package:raising_india/features/admin/all_product_list/bloc/products_cubit.dart';
-import 'package:raising_india/features/admin/all_product_list/screens/admin_product_details_screen.dart';
+import 'package:raising_india/features/admin/product/bloc/products_cubit.dart';
+import 'package:raising_india/features/admin/product/screens/admin_product_details_screen.dart';
 
 class AllProductListA extends StatelessWidget {
   const AllProductListA({super.key});

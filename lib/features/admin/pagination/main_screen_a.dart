@@ -4,9 +4,9 @@ import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/features/admin/add_new_items/screens/add_new_item_screen.dart';
-import 'package:raising_india/features/admin/all_product_list/screens/all_product_list_a.dart';
 import 'package:raising_india/features/admin/home/screens/home_screen_a.dart';
 import 'package:raising_india/features/admin/notification/screens/notification_screen_a.dart';
+import 'package:raising_india/features/admin/product/screens/all_product_list_a.dart';
 import 'package:raising_india/features/admin/profile/screens/profile_manage_screen.dart';
 
 class MainScreenA extends StatefulWidget {
