@@ -13,8 +13,9 @@ class AllProductListA extends StatelessWidget {
     return BlocBuilder<ProductsCubit, ProductsState>(
       builder: (context, state) {
         if (state.loading) return Center(child: CircularProgressIndicator());
-        if (state.error != null)
+        if (state.error != null) {
           return Center(child: Text("Error: ${state.error}"));
+        }
         final products = state.products;
         return Scaffold(
           backgroundColor: AppColour.white,

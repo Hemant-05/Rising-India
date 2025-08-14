@@ -519,7 +519,7 @@ class _AdminReviewsScreenState extends State<AdminReviewsScreen>
                                     Icon(Icons.receipt, size: 16, color: Colors.grey.shade600),
                                     const SizedBox(width: 4),
                                     Text(
-                                      'Order #${review.orderId.substring(0, 8)}',
+                                      'Id #${review.orderId.substring(0, 8)}',
                                       style: simple_text_style(
                                         color: Colors.grey.shade600,
                                         fontSize: 12,

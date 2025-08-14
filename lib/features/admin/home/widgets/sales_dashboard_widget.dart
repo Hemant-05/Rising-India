@@ -264,7 +264,7 @@ class SalesDashboardWidget extends StatelessWidget {
           SalesChartWidget(
             salesData: state.currentPeriodData,
             period: state.currentPeriod,
-            isBarChart: false,
+            isBarChart: true,
           ),
         ],
       ),
