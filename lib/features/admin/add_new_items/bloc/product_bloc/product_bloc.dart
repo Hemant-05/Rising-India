@@ -37,7 +37,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     });
     on<AddProductEvent>((event, emit) async {
       try {
-        emit(ProductLoading());
+        emit(ProductAddLoading());
         final message = await ProductServices(event.uid).addProduct(event.product);
         emit(ProductAdded(message));
       } catch (e) {
