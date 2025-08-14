@@ -252,11 +252,13 @@ class SalesDashboardWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Sales Overview',
-            style: simple_text_style(fontSize: 18, fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 12),
+            child: Text(
+              'Sales Overview',
+              style: simple_text_style(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
-          SizedBox(height: 12,),
           _buildPeriodSelector(state),
           SizedBox(height: 8,),
 
@@ -272,14 +274,17 @@ class SalesDashboardWidget extends StatelessWidget {
   }
 
   Widget _buildPeriodSelector(SalesAnalyticsLoaded state) {
-    return Row(
-      children: [
-        _buildPeriodButton('Day', SalesTimePeriod.day, state.currentPeriod),
-        const SizedBox(width: 8),
-        _buildPeriodButton('Week', SalesTimePeriod.week, state.currentPeriod),
-        const SizedBox(width: 8),
-        _buildPeriodButton('Month', SalesTimePeriod.month, state.currentPeriod),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          _buildPeriodButton('Day', SalesTimePeriod.day, state.currentPeriod),
+          const SizedBox(width: 8),
+          _buildPeriodButton('Week', SalesTimePeriod.week, state.currentPeriod),
+          const SizedBox(width: 8),
+          _buildPeriodButton('Month', SalesTimePeriod.month, state.currentPeriod),
+        ],
+      ),
     );
   }
 
