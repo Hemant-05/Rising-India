@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/image_cubit.dart';
@@ -21,13 +20,14 @@ class AddNewItemScreen extends StatefulWidget {
 
 class _AddNewItemScreenState extends State<AddNewItemScreen>
     with TickerProviderStateMixin {
-
   // Your existing controllers
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _ratingController = TextEditingController();
-  final TextEditingController _stockQuantityController = TextEditingController();
-  final TextEditingController _itemDescriptionController = TextEditingController();
+  final TextEditingController _stockQuantityController =
+      TextEditingController();
+  final TextEditingController _itemDescriptionController =
+      TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _measurementController = TextEditingController();
@@ -63,16 +63,19 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeAnimationController, curve: Curves.easeInOut),
+      CurvedAnimation(
+        parent: _fadeAnimationController,
+        curve: Curves.easeInOut,
+      ),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideAnimationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _slideAnimationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     // Start animations
     _fadeAnimationController.forward();
@@ -95,7 +98,8 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      bool isValid = _itemNameController.text.isNotEmpty &&
+      bool isValid =
+          _itemNameController.text.isNotEmpty &&
           _priceController.text.isNotEmpty &&
           _categoryController.text.isNotEmpty &&
           _quantityController.text.isNotEmpty &&
@@ -149,7 +153,9 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
                 ),
                 backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             );
           } else if (state is ProductAddError) {
@@ -168,7 +174,9 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
                 ),
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             );
           }
@@ -203,7 +211,9 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
                           children: [
                             CircularProgressIndicator(
                               strokeWidth: 3,
-                              valueColor: AlwaysStoppedAnimation<Color>(AppColour.primary),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColour.primary,
+                              ),
                             ),
                             const SizedBox(height: 16),
                             Text(
@@ -242,10 +252,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              AppColour.primary,
-              AppColour.primary.withOpacity(0.8),
-            ],
+            colors: [AppColour.primary, AppColour.primary.withOpacity(0.8)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -259,11 +266,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              Icons.add_box_outlined,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: Icon(Icons.add_box_outlined, color: Colors.white, size: 24),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -296,7 +299,9 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
               border: Border.all(color: Colors.white.withOpacity(0.3)),
             ),
             child: TextButton.icon(
-              onPressed: _isLoading ? null : _resetForm, // ✅ Disable during loading
+              onPressed: _isLoading
+                  ? null
+                  : _resetForm, // ✅ Disable during loading
               icon: Icon(Icons.refresh, color: Colors.white, size: 18),
               label: Text(
                 'RESET',
@@ -366,10 +371,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
         children: [
           Text(
             'Upload high-quality images to showcase your product',
-            style: simple_text_style(
-              color: Colors.grey.shade600,
-              fontSize: 12,
-            ),
+            style: simple_text_style(color: Colors.grey.shade600, fontSize: 12),
           ),
           const SizedBox(height: 16),
           ProductImageSelector(),
@@ -380,7 +382,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
 
   Widget _buildBasicInfoSection() {
     return _buildSectionCard(
-      title: 'Name, Price, Category',
+      title: 'Name, Category',
       icon: Icons.info_outlined,
       child: Column(
         children: [
@@ -388,29 +390,14 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
             controller: _itemNameController,
             hintText: 'Product Name',
             icon: Icons.shopping_bag_outlined,
-            validator: (value) => value?.isEmpty ?? true ? 'Name is required' : null,
+            validator: (value) =>
+                value?.isEmpty ?? true ? 'Name is required' : null,
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildStyledTextField(
-                  controller: _priceController,
-                  hintText: 'Price (₹)',
-                  icon: Icons.currency_rupee,
-                  keyboardType: TextInputType.number,
-                  validator: (value) => value?.isEmpty ?? true ? 'Price is required' : null,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildStyledDropdown(
-                  controller: _categoryController,
-                  hintText: 'Category',
-                  icon: Icons.category_outlined,
-                ),
-              ),
-            ],
+          _buildStyledDropdown(
+            controller: _categoryController,
+            hintText: 'Category',
+            icon: Icons.category_outlined,
           ),
         ],
       ),
@@ -419,23 +406,37 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
 
   Widget _buildPricingSection() {
     return _buildSectionCard(
-      title: 'Quantity & Measurement',
+      title: 'Qty, Price & Measurement',
       icon: Icons.scale_outlined,
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: _buildStyledTextField(
-              controller: _quantityController,
-              hintText: 'Quantity',
-              icon: Icons.production_quantity_limits,
-              keyboardType: TextInputType.number,
-              validator: (value) => value?.isEmpty ?? true ? 'Quantity is required' : null,
+          Row(
+            children: [
+              Expanded(
+                child: _buildStyledTextField(
+                  controller: _priceController,
+                  hintText: 'Price (₹)',
+                  icon: Icons.currency_rupee,
+                  keyboardType: TextInputType.number,
+                  validator: (value) =>
+                      value?.isEmpty ?? true ? 'Price is required' : null,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildStyledTextField(
+                  controller: _quantityController,
+                  hintText: 'Quantity',
+                  icon: Icons.production_quantity_limits,
+                  keyboardType: TextInputType.number,
+                  validator: (value) =>
+                  value?.isEmpty ?? true ? 'Quantity is required' : null,
+                ),
+              ),
+            ],
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: _buildMeasurementDropdown(),
-          ),
+          const SizedBox(height: 16),
+          _buildMeasurementDropdown(),
         ],
       ),
     );
@@ -447,44 +448,28 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       icon: Icons.inventory_outlined,
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: _buildStyledTextField(
-                  controller: _stockQuantityController,
-                  hintText: 'Stock Quantity',
-                  icon: Icons.inventory_2_outlined,
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildStyledTextField(
-                  controller: _lowStockController,
-                  hintText: 'Low Stock Alert',
-                  icon: Icons.warning_amber_outlined,
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-            ],
+          _buildStyledTextField(
+            controller: _stockQuantityController,
+            hintText: 'Stock Quantity',
+            icon: Icons.inventory_2_outlined,
+            keyboardType: TextInputType.number,
           ),
           const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildStyledTextField(
-                  controller: _ratingController,
-                  hintText: 'Rating (1-5)',
-                  icon: Icons.star_outline,
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildAvailabilityToggle(),
-              ),
-            ],
+          _buildStyledTextField(
+            controller: _lowStockController,
+            hintText: 'Low Stock Alert',
+            icon: Icons.warning_amber_outlined,
+            keyboardType: TextInputType.number,
           ),
+          const SizedBox(height: 16),
+          _buildStyledTextField(
+            controller: _ratingController,
+            hintText: 'Rating (1-5)',
+            icon: Icons.star_outline,
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 16),
+          _buildAvailabilityToggle(),
         ],
       ),
     );
@@ -510,11 +495,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
             contentPadding: const EdgeInsets.all(16),
             prefixIcon: Padding(
               padding: const EdgeInsets.all(16),
-              child: Icon(
-                Icons.edit_note,
-                color: AppColour.primary,
-                size: 20,
-              ),
+              child: Icon(Icons.edit_note, color: AppColour.primary, size: 20),
             ),
           ),
         ),
@@ -583,10 +564,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
           ),
 
           // Section Content
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: child,
-          ),
+          Padding(padding: const EdgeInsets.all(20), child: child),
         ],
       ),
     );
@@ -616,10 +594,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
           contentPadding: const EdgeInsets.all(16),
           prefixIcon: Icon(icon, color: AppColour.primary, size: 20),
         ),
-        style: simple_text_style(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
+        style: simple_text_style(fontSize: 14, fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -646,30 +621,33 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
               ),
               Expanded(
                 child: DropdownMenu(
-                  width: null,
-                  controller: controller,
+                  onSelected: (value){
+                    controller.text = value.toString();
+                  },
+                  width: double.infinity,
                   textStyle: simple_text_style(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                   ),
                   hintText: hintText,
-                  inputDecorationTheme: const InputDecorationTheme(
+                  inputDecorationTheme: InputDecorationTheme(
                     border: InputBorder.none,
+                    hintStyle: simple_text_style(color: AppColour.lightGrey),
                     contentPadding: EdgeInsets.zero,
                   ),
                   menuStyle: MenuStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.white),
+                    backgroundColor: MaterialStateProperty.all(AppColour.white),
                     elevation: MaterialStateProperty.all(8),
                   ),
                   dropdownMenuEntries: state is CategoryLoaded
                       ? state.categories
-                      .map(
-                        (category) => DropdownMenuEntry(
-                      value: category.name,
-                      label: category.name,
-                    ),
-                  )
-                      .toList()
+                            .map(
+                              (category) => DropdownMenuEntry(
+                                value: category.value,
+                                label: category.name,
+                              ),
+                            )
+                            .toList()
                       : [],
                 ),
               ),
@@ -690,21 +668,22 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       child: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Icon(Icons.straighten, color: AppColour.primary, size: 20),
           ),
           Expanded(
             child: DropdownMenu(
-              width: null,
-              controller: _measurementController,
+              onSelected: (value) => _measurementController.text = value.toString(),
+              width: double.infinity,
               textStyle: simple_text_style(
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
               ),
               hintText: 'Measurement',
-              inputDecorationTheme: const InputDecorationTheme(
+              inputDecorationTheme: InputDecorationTheme(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
+                hintStyle: simple_text_style(color: AppColour.lightGrey),
               ),
               menuStyle: MenuStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -713,7 +692,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
               dropdownMenuEntries: const [
                 DropdownMenuEntry(value: 'KG', label: 'Kilogram (kg)'),
                 DropdownMenuEntry(value: 'GM', label: 'Gram (gm)'),
-                DropdownMenuEntry(value: 'LITER', label: 'Liter (l)'),
+                DropdownMenuEntry(value: 'LTR', label: 'Liter (l)'),
                 DropdownMenuEntry(value: 'ML', label: 'Milliliter (ml)'),
                 DropdownMenuEntry(value: 'PCS', label: 'Pieces (pcs)'),
                 DropdownMenuEntry(value: 'Dar', label: 'Dozen (12 pcs)'),
@@ -727,7 +706,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
 
   Widget _buildAvailabilityToggle() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 4),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(12),
@@ -747,7 +726,9 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
               style: simple_text_style(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: isAvailable ? Colors.green.shade700 : Colors.red.shade700,
+                color: isAvailable
+                    ? Colors.green.shade700
+                    : Colors.red.shade700,
               ),
             ),
           ),
@@ -758,9 +739,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
               setState(() {
                 isAvailable = value;
               });
-              context.read<ProductBloc>().add(
-                ToggleAvailabilityEvent(value),
-              );
+              context.read<ProductBloc>().add(ToggleAvailabilityEvent(value));
             },
           ),
         ],
@@ -775,25 +754,27 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       decoration: BoxDecoration(
         gradient: (_isFormValid && !_isLoading)
             ? LinearGradient(
-          colors: [AppColour.primary, AppColour.primary.withOpacity(0.8)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        )
+                colors: [AppColour.primary, AppColour.primary.withOpacity(0.8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
             : null,
         color: (_isFormValid && !_isLoading) ? null : Colors.grey.shade300,
         borderRadius: BorderRadius.circular(16),
         boxShadow: (_isFormValid && !_isLoading)
             ? [
-          BoxShadow(
-            color: AppColour.primary.withOpacity(0.4),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ]
+                BoxShadow(
+                  color: AppColour.primary.withOpacity(0.4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
+                ),
+              ]
             : null,
       ),
       child: ElevatedButton(
-        onPressed: (_isFormValid && !_isLoading) ? _addProduct : null, // ✅ Disable during loading
+        onPressed: (_isFormValid && !_isLoading)
+            ? _addProduct
+            : null, // ✅ Disable during loading
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -803,46 +784,50 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
         ),
         child: _isLoading
             ? Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'Adding Product...',
-              style: simple_text_style(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        )
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Adding Product...',
+                    style: simple_text_style(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              )
             : Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.add_shopping_cart,
-              color: (_isFormValid && !_isLoading) ? Colors.white : Colors.grey.shade500,
-              size: 24,
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'Add Product to Store',
-              style: simple_text_style(
-                color: (_isFormValid && !_isLoading) ? Colors.white : Colors.grey.shade500,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.add_shopping_cart,
+                    color: (_isFormValid && !_isLoading)
+                        ? Colors.white
+                        : Colors.grey.shade500,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Add Product to Store',
+                    style: simple_text_style(
+                      color: (_isFormValid && !_isLoading)
+                          ? Colors.white
+                          : Colors.grey.shade500,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -899,13 +884,9 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       setState(() {
         _isLoading = true;
       });
-      photos_list.addAll(
-        context.read<ImageSelectionCubit>().state.images,
-      );
+      photos_list.addAll(context.read<ImageSelectionCubit>().state.images);
       photos_list_urls.addAll(
-        await context.read<ImageSelectionCubit>().getImageUrl(
-          photos_list,
-        ),
+        await context.read<ImageSelectionCubit>().getImageUrl(photos_list),
       );
       String uid = FirebaseAuth.instance.currentUser!.uid;
       double price = double.parse(_priceController.text.trim());
@@ -951,7 +932,9 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
           content: Text('Error: ${e.toString()}'),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
     }

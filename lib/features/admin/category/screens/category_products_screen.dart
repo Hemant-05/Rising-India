@@ -112,7 +112,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
           // Products List
           Expanded(
             child: isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator(color: AppColour.primary,))
                 : products.isEmpty
                 ? _buildEmptyState()
                 : _buildProductsList(),

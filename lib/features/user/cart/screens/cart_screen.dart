@@ -109,10 +109,7 @@ class _CartScreenState extends State<CartScreen> {
                                           ),
                                           spreadRadius: 1,
                                           blurRadius: 5,
-                                          offset: const Offset(
-                                            0,
-                                            3,
-                                          ), // changes position of shadow
+                                          offset: const Offset(0, 3),
                                         ),
                                       ],
                                     ),
@@ -315,6 +312,13 @@ class _CartScreenState extends State<CartScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              Text(
+                                'Free Delivery Above ₹99',
+                                style: simple_text_style(
+                                  color: double.parse(state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString()) > 99 ? AppColour.green : AppColour.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               const SizedBox(height: 16),
                               ElevatedButton(
                                 onPressed: () async {
@@ -334,38 +338,31 @@ class _CartScreenState extends State<CartScreen> {
                                       String address = result['address'];
                                       final user = await authService
                                           .getCurrentUser();
-                                      String totalPrice = state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString();
-                                      List<CartItem> cartItems = state
-                                          .getCartProduct
-                                          .map((map) {
-                                            return CartItem(
-                                              product: map['product'],
-                                              quantity: map['quantity'],
-                                            );
-                                          })
-                                          .toList();
-                                      /*Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => CombinedCheckoutScreen(
-                                            cartItems: cartItems,
-                                            subtotal: 70,
-                                            deliveryFee: 12,
-                                          ),
-                                        ),
-                                      );*/
+                                      String totalPrice = state.getCartProduct
+                                          .fold(
+                                            0,
+                                            (total, product) =>
+                                                total +
+                                                ((product['product'].price)
+                                                            .toInt() *
+                                                        product['quantity']
+                                                    as int),
+                                          )
+                                          .toString();
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => PaymentCheckoutScreen(
-                                            address: address,
-                                            addressCode: location,
-                                            total: totalPrice,
-                                            email: user!.email,
-                                            contact: user.number,
-                                            name: user.name,
-                                            cartProductList: state.getCartProduct,
-                                          ),
+                                          builder: (context) =>
+                                              PaymentCheckoutScreen(
+                                                address: address,
+                                                addressCode: location,
+                                                total: totalPrice,
+                                                email: user!.email,
+                                                contact: user.number,
+                                                name: user.name,
+                                                cartProductList:
+                                                    state.getCartProduct,
+                                              ),
                                         ),
                                       );
                                     } else {

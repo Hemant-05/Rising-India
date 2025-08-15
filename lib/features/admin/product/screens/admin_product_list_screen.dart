@@ -570,7 +570,7 @@ class _AdminProductListScreenState extends State<AdminProductListScreen>
       children: [
         // ✅ Status Badge (removed toggle functionality)
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
           decoration: BoxDecoration(
             color: product.isAvailable
                 ? Colors.green.shade100
@@ -582,31 +582,15 @@ class _AdminProductListScreenState extends State<AdminProductListScreen>
                   : Colors.red.shade300,
             ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                product.isAvailable ? Icons.check_circle : Icons.cancel,
-                size: 14,
-                color: product.isAvailable
-                    ? Colors.green.shade600
-                    : Colors.red.shade600,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                product.isAvailable ? 'Available' : 'Unavailable',
-                style: simple_text_style(
-                  color: product.isAvailable
-                      ? Colors.green.shade700
-                      : Colors.red.shade700,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+          child: Icon(
+            product.isAvailable ? Icons.check_circle : Icons.cancel,
+            size: 14,
+            color: product.isAvailable
+                ? Colors.green.shade600
+                : Colors.red.shade600,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
 
         // ✅ Navigate Arrow
         Icon(
