@@ -4,18 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/product/bloc/products_cubit.dart';
+import 'package:raising_india/features/services/stock_management_repository.dart';
 import 'package:raising_india/models/product_model.dart';
 
 class AdminProductDetailScreen extends StatefulWidget {
   final ProductModel product;
   const AdminProductDetailScreen({super.key, required this.product});
   @override
-  State<AdminProductDetailScreen> createState() => _AdminProductDetailScreenState();
+  State<AdminProductDetailScreen> createState() =>
+      _AdminProductDetailScreenState();
 }
 
 class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     with TickerProviderStateMixin {
-
   // ✅ Enhanced Controllers for all editable fields
   late TextEditingController nameController;
   late TextEditingController descriptionController;
@@ -42,13 +43,27 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
 
     // ✅ Initialize all controllers with product data
     nameController = TextEditingController(text: widget.product.name);
-    descriptionController = TextEditingController(text: widget.product.description);
-    priceController = TextEditingController(text: widget.product.price.toString());
-    quantityController = TextEditingController(text: widget.product.quantity.toString());
-    measurementController = TextEditingController(text: widget.product.measurement ?? '');
-    stockQuantityController = TextEditingController(text: widget.product.stockQuantity?.toString() ?? '100');
-    lowStockController = TextEditingController(text: widget.product.lowStockQuantity?.toString() ?? '10');
-    ratingController = TextEditingController(text: widget.product.rating.toString());
+    descriptionController = TextEditingController(
+      text: widget.product.description,
+    );
+    priceController = TextEditingController(
+      text: widget.product.price.toString(),
+    );
+    quantityController = TextEditingController(
+      text: widget.product.quantity.toString(),
+    );
+    measurementController = TextEditingController(
+      text: widget.product.measurement ?? '',
+    );
+    stockQuantityController = TextEditingController(
+      text: widget.product.stockQuantity?.toString() ?? '100',
+    );
+    lowStockController = TextEditingController(
+      text: widget.product.lowStockQuantity?.toString() ?? '10',
+    );
+    ratingController = TextEditingController(
+      text: widget.product.rating.toString(),
+    );
     isAvailable = widget.product.isAvailable;
 
     // ✅ Initialize animations
@@ -63,11 +78,17 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _fadeAnimationController, curve: Curves.easeInOut),
+      CurvedAnimation(
+        parent: _fadeAnimationController,
+        curve: Curves.easeInOut,
+      ),
     );
 
     _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _scaleAnimationController, curve: Curves.elasticOut),
+      CurvedAnimation(
+        parent: _scaleAnimationController,
+        curve: Curves.elasticOut,
+      ),
     );
 
     // Start animations
@@ -122,23 +143,34 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
       final updatedData = {
         'name': nameController.text.trim(),
         'description': descriptionController.text.trim(),
-        'price': double.tryParse(priceController.text.trim()) ?? widget.product.price,
-        'quantity': double.tryParse(quantityController.text.trim()) ?? widget.product.quantity,
+        'price':
+            double.tryParse(priceController.text.trim()) ??
+            widget.product.price,
+        'quantity':
+            double.tryParse(quantityController.text.trim()) ??
+            widget.product.quantity,
         'measurement': measurementController.text.trim().isNotEmpty
             ? measurementController.text.trim()
             : widget.product.measurement,
-        'stockQuantity': double.tryParse(stockQuantityController.text.trim()) ?? 100.0,
-        'lowStockQuantity': double.tryParse(lowStockController.text.trim()) ?? 10.0,
-        'rating': double.tryParse(ratingController.text.trim()) ?? widget.product.rating,
+        'lowStockQuantity':
+            double.tryParse(lowStockController.text.trim()) ?? 10.0,
+        'rating':
+            double.tryParse(ratingController.text.trim()) ??
+            widget.product.rating,
         'isAvailable': isAvailable,
         'name_lower': nameController.text.trim().toLowerCase(),
-        'lastUpdated': FieldValue.serverTimestamp(),
       };
 
       await FirebaseFirestore.instance
           .collection('products')
           .doc(widget.product.pid)
           .update(updatedData);
+
+      StockManagementRepository().refillStock(
+        widget.product.pid,
+        double.tryParse(stockQuantityController.text.trim()) ?? 100.0,
+        double.tryParse(lowStockController.text.trim()) ?? 10.0,
+      );
 
       setState(() {
         loading = false;
@@ -157,7 +189,9 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
           ),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
 
@@ -175,7 +209,9 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
           ),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
     }
@@ -194,7 +230,11 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
                 color: Colors.red.shade100,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(Icons.delete_outline, color: Colors.red.shade600, size: 24),
+              child: Icon(
+                Icons.delete_outline,
+                color: Colors.red.shade600,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 12),
             Text(
@@ -211,7 +251,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
           children: [
             Text(
               "Are you sure you want to delete this product?",
-              style: TextStyle(fontFamily: 'Sen',fontSize: 16),
+              style: TextStyle(fontFamily: 'Sen', fontSize: 16),
             ),
             const SizedBox(height: 8),
             Text(
@@ -235,12 +275,17 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red.shade600,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
               "Delete",
-              style: simple_text_style(color: Colors.white, fontWeight: FontWeight.bold),
+              style: simple_text_style(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -294,7 +339,9 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
                         children: [
                           CircularProgressIndicator(
                             strokeWidth: 3,
-                            valueColor: AlwaysStoppedAnimation<Color>(AppColour.primary),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColour.primary,
+                            ),
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -332,10 +379,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
       flexibleSpace: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              AppColour.primary,
-              AppColour.primary.withOpacity(0.8),
-            ],
+            colors: [AppColour.primary, AppColour.primary.withOpacity(0.8)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -535,63 +579,70 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
             padding: const EdgeInsets.all(20),
             child: widget.product.photos_list.isNotEmpty
                 ? SizedBox(
-              height: 120,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.product.photos_list.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 120,
+                    height: 120,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.product.photos_list.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 12),
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 120,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              widget.product.photos_list[index],
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Container(
+                                color: Colors.grey.shade200,
+                                child: Icon(
+                                  Icons.broken_image,
+                                  color: Colors.grey.shade400,
+                                  size: 40,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                : Container(
+                    height: 120,
+                    width: double.infinity,
                     decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade300,
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                        style: BorderStyle.solid,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.image_not_supported,
+                          size: 40,
+                          color: Colors.grey.shade400,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'No images available',
+                          style: simple_text_style(color: Colors.grey.shade600),
                         ),
                       ],
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        widget.product.photos_list[index],
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          color: Colors.grey.shade200,
-                          child: Icon(
-                            Icons.broken_image,
-                            color: Colors.grey.shade400,
-                            size: 40,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            )
-                : Container(
-              height: 120,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300, style: BorderStyle.solid),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.image_not_supported, size: 40, color: Colors.grey.shade400),
-                  const SizedBox(height: 8),
-                  Text(
-                    'No images available',
-                    style: simple_text_style(color: Colors.grey.shade600),
                   ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
@@ -715,12 +766,16 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: isAvailable ? Colors.green.shade100 : Colors.red.shade100,
+                color: isAvailable
+                    ? Colors.green.shade100
+                    : Colors.red.shade100,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 isAvailable ? Icons.check_circle : Icons.cancel,
-                color: isAvailable ? Colors.green.shade600 : Colors.red.shade600,
+                color: isAvailable
+                    ? Colors.green.shade600
+                    : Colors.red.shade600,
                 size: 20,
               ),
             ),
@@ -737,7 +792,9 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
                     ),
                   ),
                   Text(
-                    isAvailable ? 'Available for sale' : 'Currently unavailable',
+                    isAvailable
+                        ? 'Available for sale'
+                        : 'Currently unavailable',
                     style: simple_text_style(
                       color: Colors.grey.shade600,
                       fontSize: 12,
@@ -823,10 +880,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
           ),
 
           // Section Content
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: child,
-          ),
+          Padding(padding: const EdgeInsets.all(20), child: child),
         ],
       ),
     );
@@ -862,10 +916,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
             controller: controller,
             keyboardType: keyboardType,
             maxLines: maxLines ?? 1,
-            style: simple_text_style(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
+            style: simple_text_style(fontSize: 14, fontWeight: FontWeight.w500),
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: simple_text_style(color: AppColour.lightGrey),
@@ -887,7 +938,10 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
       {'value': 'LITER', 'label': 'Liter (l)'},
       {'value': 'ML', 'label': 'Milliliter (ml)'},
       {'value': 'PCS', 'label': 'Pieces (pcs)'},
-      {'value': 'DAR', 'label': 'Dozen (12 pcs)'}, // ✅ Changed from 'Dar' to 'DAR'
+      {
+        'value': 'DAR',
+        'label': 'Dozen (12 pcs)',
+      }, // ✅ Changed from 'Dar' to 'DAR'
     ];
 
     // ✅ CRITICAL: Normalize the current value to match dropdown values
@@ -927,7 +981,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
           normalizedCurrentValue = 'DAR';
           break;
         default:
-        // ✅ If value doesn't match any known measurement, set to null
+          // ✅ If value doesn't match any known measurement, set to null
           normalizedCurrentValue = null;
           break;
       }
@@ -957,7 +1011,11 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
-              prefixIcon: Icon(Icons.straighten, color: AppColour.primary, size: 20),
+              prefixIcon: Icon(
+                Icons.straighten,
+                color: AppColour.primary,
+                size: 20,
+              ),
             ),
             hint: Text(
               'Select measurement',
@@ -993,7 +1051,6 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     );
   }
 
-
   Widget _buildSaveButton() {
     return Container(
       width: double.infinity,
@@ -1001,21 +1058,21 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
       decoration: BoxDecoration(
         gradient: _hasUnsavedChanges
             ? LinearGradient(
-          colors: [AppColour.primary, AppColour.primary.withOpacity(0.8)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        )
+                colors: [AppColour.primary, AppColour.primary.withOpacity(0.8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
             : null,
         color: _hasUnsavedChanges ? null : Colors.grey.shade300,
         borderRadius: BorderRadius.circular(16),
         boxShadow: _hasUnsavedChanges
             ? [
-          BoxShadow(
-            color: AppColour.primary.withOpacity(0.4),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ]
+                BoxShadow(
+                  color: AppColour.primary.withOpacity(0.4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
+                ),
+              ]
             : null,
       ),
       child: ElevatedButton(
@@ -1063,18 +1120,25 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
                 color: Colors.orange.shade100,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(Icons.warning_amber, color: Colors.orange.shade600, size: 24),
+              child: Icon(
+                Icons.warning_amber,
+                color: Colors.orange.shade600,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 12),
             Text(
               'Unsaved Changes',
-              style: simple_text_style(fontWeight: FontWeight.bold, fontSize: 18),
+              style: simple_text_style(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
             ),
           ],
         ),
         content: Text(
           'You have unsaved changes. Do you want to discard them?',
-          style: TextStyle(fontFamily: 'Sen',fontSize: 16),
+          style: TextStyle(fontFamily: 'Sen', fontSize: 16),
         ),
         actions: [
           TextButton(
@@ -1087,12 +1151,17 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange.shade600,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               'Discard',
-              style: simple_text_style(color: Colors.white, fontWeight: FontWeight.bold),
+              style: simple_text_style(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],

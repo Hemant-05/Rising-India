@@ -46,6 +46,28 @@ class StockManagementRepository {
     }
   }
 
+  // refill stock.
+  Future<bool> refillStock(String productId, double quantityToFill, double lowStockThreshold) async {
+    try {
+      return await _firestore.runTransaction((transaction) async {
+        final productRef = _firestore.collection('products').doc(productId);
+        // ✅ Update stock quantity
+        transaction.update(productRef, {
+          'stockQuantity': quantityToFill,
+          'lastStockUpdate': FieldValue.serverTimestamp(),
+        });
+
+        if (quantityToFill > lowStockThreshold) {
+          await _removeLowStockAlert(transaction, productId);
+        }
+        return true;
+      });
+    } catch (e) {
+      print('❌ Error restoring stock: $e');
+      return false;
+    }
+  }
+
   // ✅ Restore stock when order is cancelled
   Future<bool> restoreStock(String productId, double quantityToRestore) async {
     try {
@@ -102,16 +124,12 @@ class StockManagementRepository {
       for (var entry in productQuantities.entries) {
         final success = await deductStock(entry.key, entry.value);
         if (!success) {
-          print('==========================');
-          print(productQuantities);
           // ✅ If any product fails, restore previously deducted stock
           await _rollbackStockDeduction(order.orderId, productQuantities);
           return false;
         }
       }
 
-      // ✅ Log stock transaction
-      await _logStockTransaction(order.orderId, productQuantities, 'DEDUCT');
       return true;
     } catch (e) {
       print('❌ Error processing order stock deduction: $e');
@@ -140,9 +158,6 @@ class StockManagementRepository {
       for (var entry in productQuantities.entries) {
         await restoreStock(entry.key, entry.value);
       }
-
-      // ✅ Log stock transaction
-      await _logStockTransaction(order.orderId, productQuantities, 'RESTORE');
       return true;
     } catch (e) {
       print('❌ Error processing order stock restoration: $e');
@@ -192,21 +207,6 @@ class StockManagementRepository {
   Future<void> _removeLowStockAlert(Transaction transaction, String productId) async {
     final alertRef = _firestore.collection('low_stock_alerts').doc(productId);
     transaction.delete(alertRef);
-  }
-
-  // ✅ Log stock transactions for audit trail
-  Future<void> _logStockTransaction(String orderId, Map<String, double> productQuantities, String action) async {
-    try {
-      await _firestore.collection('stock_transactions').doc(orderId).set({
-        'orderId': orderId,
-        'productQuantities': productQuantities,
-        'action': action, // 'DEDUCT' or 'RESTORE'
-        'timestamp': FieldValue.serverTimestamp(),
-        'processedBy': 'SYSTEM',
-      });
-    } catch (e) {
-      print('❌ Error logging stock transaction: $e');
-    }
   }
 
   // ✅ Rollback stock deduction if order processing fails
