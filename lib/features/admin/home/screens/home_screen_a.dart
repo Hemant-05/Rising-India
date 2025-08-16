@@ -121,11 +121,10 @@ class _HomeScreenAState extends State<HomeScreenA>
                 // ✅ Order Statistics Section
                 _buildOrderStatsSection(),
 
+                _buildLowStockAlertSection(),
+
                 // ✅ Sales Analytics Section
                 _buildSalesAnalyticsSection(),
-                const SizedBox(height: 20),
-
-                _buildLowStockAlertSection(),
                 const SizedBox(height: 20),
 
                 // ✅ Review Analytics Section
