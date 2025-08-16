@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProductModel {
   final String pid;
   final String uid;
@@ -13,6 +15,7 @@ class ProductModel {
   final List<String> photos_list;
   final double? stockQuantity;
   final double? lowStockQuantity;
+  final DateTime? lastStockUpdate;
 
   ProductModel({
     required this.uid,
@@ -29,7 +32,22 @@ class ProductModel {
     required this.measurement,
     this.stockQuantity,
     this.lowStockQuantity,
+    this.lastStockUpdate,
   });
+
+  // ✅ Check if stock is low
+  bool get isLowStock => stockQuantity! <= lowStockQuantity!;
+
+  // ✅ Check if out of stock
+  bool get isOutOfStock => stockQuantity! <= 0;
+
+  // ✅ Calculate stock status
+  StockStatus get stockStatus {
+    if (isOutOfStock) return StockStatus.outOfStock;
+    if (isLowStock) return StockStatus.lowStock;
+    return StockStatus.inStock;
+  }
+
   // Factory constructor to create a ProductModel from a map
   factory ProductModel.fromMap(Map<String, dynamic> map,String uid) {
     return ProductModel(
@@ -45,8 +63,11 @@ class ProductModel {
       measurement: map['measurement'] ?? '',
       photos_list: List<String>.from(map['photos_list'] ?? []),
       uid: uid,
-      stockQuantity: map['stockQuantity'],
-      lowStockQuantity: map['lowStockQuantity'],
+      stockQuantity: double.parse(map['stockQuantity'].toString()),
+      lowStockQuantity: double.parse(map['lowStockQuantity'].toString()),
+      lastStockUpdate: map['lastStockUpdate'] != null
+          ? (map['lastStockUpdate'] as Timestamp).toDate()
+          : null,
     );
   }
   // Method to convert ProductModel to a map
@@ -68,4 +89,10 @@ class ProductModel {
       'lowStockQuantity': lowStockQuantity,
     };
   }
+}
+
+enum StockStatus {
+  inStock,
+  lowStock,
+  outOfStock,
 }

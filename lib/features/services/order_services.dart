@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:raising_india/constant/ConString.dart';
+import 'package:raising_india/features/services/order_processing_service.dart';
 import 'package:raising_india/models/order_model.dart';
 
 class OrderServices {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final OrderProcessingService _service = OrderProcessingService();
 
   Future<List<OrderModel>> getAllDeliveredOrders() async {
     List<OrderModel> list = [];
@@ -135,6 +137,7 @@ class OrderServices {
 
   Future<void> placeOrder(OrderModel model) async {
     await _firestore.collection('orders').doc(model.orderId).set(model.toMap());
+    await _service.confirmOrder(model);
     await _firestore
         .collection('users')
         .doc(_auth.currentUser!.uid)
@@ -150,6 +153,8 @@ class OrderServices {
   }
 
   Future<void> cancelOrder(String orderId, String cancellationReason) async {
+    final order = await getOrderById(orderId);
+    await _service.cancelOrder(order);
     await _firestore.collection('orders').doc(orderId).update({
       'orderStatus': OrderStatusCancelled,
       'cancellationReason': cancellationReason,

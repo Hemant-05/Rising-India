@@ -15,7 +15,7 @@ class product_card extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      color: product.isAvailable? AppColour.white : AppColour.lightGrey,
+      color: AppColour.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -66,8 +66,8 @@ class product_card extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    product.isAvailable? '₹ ${product.price}' : 'Out of Stock',
-                    style: simple_text_style(),
+                    (!product.isOutOfStock && product.isAvailable)? '₹ ${product.price}' : 'Out of Stock !!',
+                    style: simple_text_style(color: (!product.isOutOfStock && product.isAvailable)? AppColour.black : AppColour.red),
                   ),
                 ],
               ),

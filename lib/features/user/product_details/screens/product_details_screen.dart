@@ -182,7 +182,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                 ),
                                 color: AppColour.lightGrey.withOpacity(0.2),
                               ),
-                              child: state.product!.isAvailable
+                              child: (!state.product!.isOutOfStock && state.product!.isAvailable)
                                   ? Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,

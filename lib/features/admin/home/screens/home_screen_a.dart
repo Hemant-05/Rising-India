@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,8 @@ import 'package:raising_india/features/admin/order/OrderFilterType.dart';
 import 'package:raising_india/features/admin/order/screens/order_list_screen.dart';
 import 'package:raising_india/features/admin/review/bloc/admin_review_bloc.dart';
 import 'package:raising_india/features/admin/sales_analytics/bloc/sales_analytics_bloc.dart';
+import 'package:raising_india/features/admin/stock_management/screens/low_stock_alert_screen.dart';
+import 'package:raising_india/features/services/low_stock_notification_service.dart';
 import 'package:raising_india/services/admin_notification_service.dart';
 import '../../../../comman/simple_text_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
@@ -68,6 +71,7 @@ class _HomeScreenAState extends State<HomeScreenA>
 
     // Initialize notifications (uncomment when needed)
     // _initializeNotifications();
+    // _initializeStockManagement();
   }
 
   @override
@@ -84,6 +88,12 @@ class _HomeScreenAState extends State<HomeScreenA>
         AdminNotificationService.setupAdminMessageHandler();
       }
     });
+  }
+  void _initializeStockManagement() {
+    LowStockNotificationService.initializeLowStockMonitoring();
+
+    // Run initial stock check
+    LowStockNotificationService.checkAllProductsForLowStock();
   }
 
   void navigateToOrderListScreen(String title, OrderFilterType orderType) {
@@ -113,6 +123,9 @@ class _HomeScreenAState extends State<HomeScreenA>
 
                 // ✅ Sales Analytics Section
                 _buildSalesAnalyticsSection(),
+                const SizedBox(height: 20),
+
+                _buildLowStockAlertSection(),
                 const SizedBox(height: 20),
 
                 // ✅ Review Analytics Section
@@ -551,4 +564,56 @@ class _HomeScreenAState extends State<HomeScreenA>
       ),
     );
   }
+  Widget _buildLowStockAlertSection() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('low_stock_alerts')
+          .where('isResolved', isEqualTo: false)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const SizedBox.shrink();
+
+        final alertCount = snapshot.data!.docs.length;
+        if (alertCount == 0) return const SizedBox.shrink();
+
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.red.shade100, Colors.red.shade50],
+            ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.red.shade300),
+          ),
+          child: ListTile(
+            leading: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.red.shade200,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(Icons.warning, color: Colors.red.shade700),
+            ),
+            title: Text(
+              '$alertCount Low Stock Alert${alertCount > 1 ? 's' : ''}',
+              style: simple_text_style(
+                fontWeight: FontWeight.bold,
+                color: Colors.red.shade700,
+              ),
+            ),
+            subtitle: Text(
+              'Products need restocking',
+              style: simple_text_style(color: Colors.red.shade600, fontSize: 12),
+            ),
+            trailing: Icon(Icons.arrow_forward_ios, color: Colors.red.shade400),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LowStockAlertScreen()),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }

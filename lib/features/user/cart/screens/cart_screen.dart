@@ -9,7 +9,6 @@ import 'package:raising_india/features/auth/services/auth_service.dart';
 import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
 import 'package:raising_india/features/user/payment/screens/payment_checkout_screen.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
-import 'package:raising_india/models/cart_model.dart';
 import 'package:raising_india/models/product_model.dart';
 
 class CartScreen extends StatefulWidget {
@@ -319,7 +318,7 @@ class _CartScreenState extends State<CartScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 8),
                               ElevatedButton(
                                 onPressed: () async {
                                   AuthService authService = AuthService();
