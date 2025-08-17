@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "793194430829",
-    "project_id": "raising-6ef34",
-    "storage_bucket": "raising-6ef34.firebasestorage.app"
+    "project_number": "657027117935",
+    "project_id": "rising-mart",
+    "storage_bucket": "rising-mart.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:793194430829:android:f8cc4d5003126f8b311a64",
+        "mobilesdk_app_id": "1:657027117935:android:c8475fc85c1adaa8042e9a",
         "android_client_info": {
           "package_name": "com.example.raising_india"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDDASNlUbwbH6YnJxifxtmGhfFmxvTacYk"
+          "current_key": "AIzaSyB0A-99S3VEg8bRrnQNmuo_YEUBMuUZT_0"
         }
       ],
       "services": {

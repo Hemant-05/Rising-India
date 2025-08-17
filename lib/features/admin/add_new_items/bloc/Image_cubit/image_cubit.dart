@@ -13,10 +13,10 @@ class ImageSelectionCubit extends Cubit<ImageSelectionState> {
     emit(state.copyWith(images: newImages));
   }
 
-  Future<List<String>> getImageUrl(List<File?> images) async {
+  Future<List<String>> getImageUrl(String productName,List<File?> images) async {
     ImageServices imageServices = ImageServices();
     List<String> imageUrls = [];
-    imageUrls = await imageServices.uploadImages(images);
+    imageUrls = await imageServices.uploadImages(images,productName);
     return imageUrls;
   }
 

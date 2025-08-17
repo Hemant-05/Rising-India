@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
@@ -30,8 +31,11 @@ class ProductsCubit extends Cubit<ProductsState> {
     await firestore.collection('products').doc(pid).update({'isAvailable': value});
   }
 
-  Future<void> deleteProduct(BuildContext context, String pid) async {
+  Future<void> deleteProduct(BuildContext context, String pid,List<String> url_list) async {
     try {
+      for (String url in url_list) {
+        await deleteImage(url);
+      }
       await FirebaseFirestore.instance.collection('products').doc(pid).delete();
       if (context.mounted) {
         Navigator.pop(context); // Close Product Detail Screen
@@ -47,6 +51,19 @@ class ProductsCubit extends Cubit<ProductsState> {
               backgroundColor: AppColour.primary,
               content: Text("Delete failed: $e",style: simple_text_style(),))
       );
+    }
+  }
+
+  // ✅ Delete image
+  Future<bool> deleteImage(String downloadUrl) async {
+    try {
+      final Reference ref = FirebaseStorage.instance.refFromURL(downloadUrl);
+      await ref.delete();
+      print('✅ Image deleted successfully');
+      return true;
+    } catch (e) {
+      print('❌ Delete error: $e');
+      return false;
     }
   }
 

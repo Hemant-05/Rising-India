@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:raising_india/features/admin/services/category_repository.dart';
 import 'package:raising_india/models/category_model.dart';
-
+import 'package:uuid/uuid.dart';
 part 'category_event.dart';
 part 'category_state.dart';
 
@@ -61,11 +61,11 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       String imageUrl = '';
 
       if (event.imageFile != null) {
-        imageUrl = await _repository.uploadCategoryImage(event.imageFile!);
+        imageUrl = await _repository.uploadCategoryImage(event.imageFile!,event.name);
       }
 
       final category = CategoryModel(
-        id: '', // Firestore will generate the ID
+        id: Uuid().v1(),
         name: event.name,
         image: imageUrl,
         value: event.value,
@@ -102,7 +102,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       String imageUrl = event.category.image;
 
       if (event.newImageFile != null) {
-        imageUrl = await _repository.uploadCategoryImage(event.newImageFile!);
+        imageUrl = await _repository.uploadCategoryImage(event.newImageFile!,event.category.name);
       }
 
       final updatedCategory = event.category.copyWith(
@@ -137,7 +137,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     }
 
     try {
-      await _repository.deleteCategory(event.categoryId);
+      await _repository.deleteCategory(event.categoryId, event.url);
 
       if (!emit.isDone) {
         emit(CategoryActionSuccess(

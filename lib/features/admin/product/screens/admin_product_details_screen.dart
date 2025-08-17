@@ -293,7 +293,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     );
 
     if (confirmed == true) {
-      context.read<ProductsCubit>().deleteProduct(context, widget.product.pid);
+      context.read<ProductsCubit>().deleteProduct(context, widget.product.pid,widget.product.photos_list);
     }
   }
 

@@ -28,6 +28,6 @@ class UpdateCategory extends CategoryEvent {
 
 class DeleteCategory extends CategoryEvent {
   final String categoryId;
-
-  DeleteCategory(this.categoryId);
+  final String url;
+  DeleteCategory(this.categoryId,this.url);
 }

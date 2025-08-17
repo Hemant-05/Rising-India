@@ -375,7 +375,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
           ),
           InkWell(
             onTap: () {
-              context.read<CategoryBloc>().add(DeleteCategory(widget.category.id));
+              context.read<CategoryBloc>().add(DeleteCategory(widget.category.id, widget.category.image));
               Navigator.pop(context);
               Navigator.pop(screenContext);
             },

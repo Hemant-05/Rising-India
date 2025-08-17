@@ -315,7 +315,10 @@ class _AddEditCategoryScreenState extends State<AddEditCategoryScreen> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: _isLoading ? null : _submitForm,
+        onPressed: _isLoading && _nameController.text.isNotEmpty && _valueController.text.isNotEmpty ? (){} : (){
+          setState(() => _isLoading = true);
+          _submitForm();
+        },
         style: elevated_button_style(),
         child: _isLoading
             ? SizedBox(

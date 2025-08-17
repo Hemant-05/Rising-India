@@ -105,7 +105,7 @@ class SalesChartWidget extends StatelessWidget {
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
-          horizontalInterval: maxY / 5,
+          horizontalInterval: maxY == 0? 1: maxY / 5,
           getDrawingHorizontalLine: (value) {
             return FlLine(
               color: Colors.grey.shade300,
@@ -303,7 +303,7 @@ class SalesChartWidget extends StatelessWidget {
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
-          horizontalInterval: maxY / 5,
+          horizontalInterval: maxY == 0? 1: maxY / 5,
           getDrawingHorizontalLine: (value) {
             return FlLine(
               color: Colors.grey.shade300,

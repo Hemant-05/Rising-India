@@ -884,13 +884,13 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       setState(() {
         _isLoading = true;
       });
+      String itemName = _itemNameController.text.trim();
       photos_list.addAll(context.read<ImageSelectionCubit>().state.images);
       photos_list_urls.addAll(
-        await context.read<ImageSelectionCubit>().getImageUrl(photos_list),
+        await context.read<ImageSelectionCubit>().getImageUrl(itemName,photos_list),
       );
       String uid = FirebaseAuth.instance.currentUser!.uid;
       double price = double.parse(_priceController.text.trim());
-      String itemName = _itemNameController.text.trim();
       String itemDescription = _itemDescriptionController.text.trim();
       String category = _categoryController.text.trim();
       double sellQuantity = double.parse(_quantityController.text.trim());
