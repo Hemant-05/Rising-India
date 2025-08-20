@@ -13,7 +13,6 @@ import 'package:raising_india/features/admin/order/screens/order_list_screen.dar
 import 'package:raising_india/features/admin/review/bloc/admin_review_bloc.dart';
 import 'package:raising_india/features/admin/sales_analytics/bloc/sales_analytics_bloc.dart';
 import 'package:raising_india/features/admin/stock_management/screens/low_stock_alert_screen.dart';
-import 'package:raising_india/features/services/low_stock_notification_service.dart';
 import '../../../../comman/simple_text_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 
@@ -67,10 +66,6 @@ class _HomeScreenAState extends State<HomeScreenA>
     // Load data
     context.read<AdminReviewBloc>().add(LoadAllReviews());
     context.read<SalesAnalyticsBloc>().add(LoadSalesAnalytics());
-
-    // Initialize notifications (uncomment when needed)
-    // _initializeNotifications();
-    // _initializeStockManagement();
   }
 
   @override
@@ -78,22 +73,6 @@ class _HomeScreenAState extends State<HomeScreenA>
     _fadeAnimationController.dispose();
     _slideAnimationController.dispose();
     super.dispose();
-  }
-
-/*  void _initializeNotifications() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
-        AdminNotificationService.initializeAdminNotifications();
-        AdminNotificationService.setupAdminMessageHandler();
-      }
-    });
-  }*/
-
-  void _initializeStockManagement() {
-    LowStockNotificationService.initializeLowStockMonitoring();
-
-    // Run initial stock check
-    LowStockNotificationService.checkAllProductsForLowStock();
   }
 
   void navigateToOrderListScreen(String title, OrderFilterType orderType) {
