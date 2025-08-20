@@ -31,6 +31,7 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
   late String currentOrderStatus;
   late String currentPaymentStatus;
   late String orderId = widget.orderWithProducts.order.orderId;
+  late OrderModel order = widget.orderWithProducts.order;
   late bool payIsPending = true;
   late bool orderIsRunning = true;
   bool isUpdating = false;
@@ -190,7 +191,7 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
 
     try {
       await context.read<AdminOrderDetailsCubit>().updateOrderStatus(
-        orderId,
+        order,
         newStatus,
       );
       setState(() => currentOrderStatus = newStatus);

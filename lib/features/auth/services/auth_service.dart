@@ -6,7 +6,6 @@ import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/features/services/location_service.dart';
 import 'package:raising_india/models/address_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../models/user_model.dart';
 
 class AuthService extends ChangeNotifier {

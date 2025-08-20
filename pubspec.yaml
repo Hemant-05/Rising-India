@@ -61,6 +61,7 @@ dependencies:
   url_launcher: ^6.3.2
   share_plus: ^11.0.0
   fl_chart: ^1.0.0
+  flutter_local_notifications: ^19.4.0
 
 dev_dependencies:
   flutter_test:

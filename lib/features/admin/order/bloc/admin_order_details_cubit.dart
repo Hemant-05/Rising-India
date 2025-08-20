@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:raising_india/constant/ConString.dart';
@@ -31,10 +30,10 @@ class AdminOrderDetailsCubit extends Cubit<AdminOrderDetailsState> {
         );
   }
 
-  Future<void> updateOrderStatus(String orderId, String status) async {
+  Future<void> updateOrderStatus(OrderModel order, String status) async {
     try {
       bool isDelivered = status == OrderStatusDeliverd;
-      await FirebaseFirestore.instance.collection('orders').doc(orderId).update(
+      await FirebaseFirestore.instance.collection('orders').doc(order.orderId).update(
         {
           'orderStatus': status,
           'deliveredAt': isDelivered ? DateTime.now() : null,

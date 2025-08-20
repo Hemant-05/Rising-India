@@ -14,7 +14,6 @@ import 'package:raising_india/features/admin/review/bloc/admin_review_bloc.dart'
 import 'package:raising_india/features/admin/sales_analytics/bloc/sales_analytics_bloc.dart';
 import 'package:raising_india/features/admin/stock_management/screens/low_stock_alert_screen.dart';
 import 'package:raising_india/features/services/low_stock_notification_service.dart';
-import 'package:raising_india/services/admin_notification_service.dart';
 import '../../../../comman/simple_text_style.dart';
 import '../../../auth/bloc/auth_bloc.dart';
 
@@ -81,14 +80,15 @@ class _HomeScreenAState extends State<HomeScreenA>
     super.dispose();
   }
 
-  void _initializeNotifications() {
+/*  void _initializeNotifications() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user != null) {
         AdminNotificationService.initializeAdminNotifications();
         AdminNotificationService.setupAdminMessageHandler();
       }
     });
-  }
+  }*/
+
   void _initializeStockManagement() {
     LowStockNotificationService.initializeLowStockMonitoring();
 

@@ -131,6 +131,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
 
   void _handlePaymentError(PaymentFailureResponse response) {
     placeOrder(false, false, null);
+
     _removeCoupon();
     Navigator.push(
       context,
