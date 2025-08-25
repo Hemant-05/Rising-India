@@ -132,6 +132,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey.shade50,
       appBar: _buildStunningAppBar(),
       body: BlocConsumer<ProductBloc, ProductState>(

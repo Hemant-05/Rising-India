@@ -103,16 +103,16 @@ class _SetNewPassScreenState extends State<SetNewPassScreen> {
                       child: Column(
                         children: [
                           cus_text_field(
-                            'PASSWORD',
-                            _passController,
-                            '********',
+                            label: 'PASSWORD',
+                            controller: _passController,
+                            hintText: '********',
                             obscureText: true,
                           ),
                           const SizedBox(height: 20),
                           cus_text_field(
-                            'CONFIRM PASSWORD',
-                            _conPasswordController,
-                            '********',
+                            label: 'CONFIRM PASSWORD',
+                            controller: _conPasswordController,
+                            hintText: '********',
                             obscureText: true,
                           ),
                           const SizedBox(height: 20),

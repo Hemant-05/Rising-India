@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/features/services/location_service.dart';
 import 'package:raising_india/models/address_model.dart';
+import 'package:raising_india/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../models/user_model.dart';
 
@@ -40,6 +41,8 @@ class AuthService extends ChangeNotifier {
         email: email,
         password: password,
       );
+      // Refresh notification token after login
+      await NotificationService.refreshToken();
       final user = cred.user;
       if (user != null) {
         final appUser = AppUser(
@@ -83,6 +86,7 @@ class AuthService extends ChangeNotifier {
         email: email,
         password: password,
       );
+      await NotificationService.refreshToken();
       return x.user != null ? null : "Invalid email or password";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -177,6 +181,7 @@ class AuthService extends ChangeNotifier {
   } */
 
   Future<void> signOut() async {
+    await NotificationService.clearToken();
     await _auth.signOut();
     _user = null;
     SharedPreferences prefs = await SharedPreferences.getInstance();

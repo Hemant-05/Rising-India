@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -26,19 +27,33 @@ import 'package:raising_india/features/user/services/coupon_repository.dart';
 import 'package:raising_india/features/services/review_repository.dart';
 import 'package:raising_india/features/user/services/user_product_services.dart';
 import 'package:raising_india/screens/splash_screen.dart';
+import 'package:raising_india/services/notification_service.dart';
 import 'features/auth/bloc/auth_bloc.dart';
 import 'features/auth/services/auth_service.dart';
 import 'firebase_options.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  print('🔔 Background message m: ${message.notification?.title}');
+}
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: '.env');
-  runApp(const MyApp());
+  // Initialize notifications
+  await NotificationService.initialize();
+  // Set background message handler
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  runApp(MyApp(navigatorKey: navigatorKey));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final GlobalKey<NavigatorState> navigatorKey;
+  const MyApp({super.key,required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +85,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<SalesAnalyticsBloc>(create: (context) => SalesAnalyticsBloc(repository: context.read<SalesAnalyticsRepository>(),),),
         ],
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           title: 'Raising India',
           debugShowCheckedModeBanner: false,
           theme : ThemeData(

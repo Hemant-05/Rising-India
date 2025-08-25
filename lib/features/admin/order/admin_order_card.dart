@@ -40,7 +40,6 @@ class AdminOrderCard extends StatelessWidget {
             MaterialPageRoute(
               builder: (_) => AdminOrderDetailScreen(
                 orderWithProducts: orderWithProducts,
-                isRunning: isRunning,
               ),
             ),
           );

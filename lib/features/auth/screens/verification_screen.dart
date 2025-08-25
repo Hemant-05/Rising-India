@@ -125,9 +125,9 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                       child: Column(
                         children: [
                           cus_text_field(
-                            'CODE',
-                            _verificationCodeController,
-                            '2456',
+                            label: 'CODE',
+                            controller: _verificationCodeController,
+                            hintText: '2456',
                           ),
                           const SizedBox(height: 20),
                           if (_error != null)

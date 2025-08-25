@@ -278,131 +278,129 @@ class _CartScreenState extends State<CartScreen> {
                                 },
                               ),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: AppColour.white,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(16),
-                              topRight: Radius.circular(16),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColour.grey.withOpacity(0.3),
-                                spreadRadius: 1,
-                                blurRadius: 5,
-                                offset: const Offset(
-                                  0,
-                                  -3,
-                                ), // changes position of shadow
-                              ),
-                            ],
+                      Container(
+                        height: 150,
+                        decoration: BoxDecoration(
+                          color: AppColour.white,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
                           ),
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Total: ₹${state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString()}',
-                                style: simple_text_style(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColour.grey.withOpacity(0.3),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: const Offset(
+                                0,
+                                -3,
+                              ), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Total: ₹${state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString()}',
+                              style: simple_text_style(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
-                              Text(
-                                'Free Delivery Above ₹99',
-                                style: simple_text_style(
-                                  color: double.parse(state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString()) > 99 ? AppColour.green : AppColour.grey,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            ),
+                            Text(
+                              'Free Delivery Above ₹99',
+                              style: simple_text_style(
+                                color: double.parse(state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString()) > 99 ? AppColour.green : AppColour.grey,
+                                fontWeight: FontWeight.bold,
                               ),
-                              const SizedBox(height: 8),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  AuthService authService = AuthService();
-                                  if (state.getCartProduct.isNotEmpty) {
-                                    final result = await Navigator.push(
+                            ),
+                            const SizedBox(height: 8),
+                            ElevatedButton(
+                              onPressed: () async {
+                                AuthService authService = AuthService();
+                                if (state.getCartProduct.isNotEmpty) {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          SelectAddressScreen(
+                                            isFromProfile: false,
+                                          ),
+                                    ),
+                                  );
+                                  if (result != null) {
+                                    LatLng location = result['latLng'];
+                                    String address = result['address'];
+                                    final user = await authService
+                                        .getCurrentUser();
+                                    String totalPrice = state.getCartProduct
+                                        .fold(
+                                          0,
+                                          (total, product) =>
+                                              total +
+                                              ((product['product'].price)
+                                                          .toInt() *
+                                                      product['quantity']
+                                                  as int),
+                                        )
+                                        .toString();
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            SelectAddressScreen(
-                                              isFromProfile: false,
+                                            PaymentCheckoutScreen(
+                                              address: address,
+                                              addressCode: location,
+                                              total: totalPrice,
+                                              email: user!.email,
+                                              contact: user.number,
+                                              name: user.name,
+                                              cartProductList:
+                                                  state.getCartProduct,
                                             ),
                                       ),
                                     );
-                                    if (result != null) {
-                                      LatLng location = result['latLng'];
-                                      String address = result['address'];
-                                      final user = await authService
-                                          .getCurrentUser();
-                                      String totalPrice = state.getCartProduct
-                                          .fold(
-                                            0,
-                                            (total, product) =>
-                                                total +
-                                                ((product['product'].price)
-                                                            .toInt() *
-                                                        product['quantity']
-                                                    as int),
-                                          )
-                                          .toString();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              PaymentCheckoutScreen(
-                                                address: address,
-                                                addressCode: location,
-                                                total: totalPrice,
-                                                email: user!.email,
-                                                contact: user.number,
-                                                name: user.name,
-                                                cartProductList:
-                                                    state.getCartProduct,
-                                              ),
-                                        ),
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: AppColour.white,
-                                          content: Text(
-                                            'Location Not Fetched !!',
-                                            style: simple_text_style(),
-                                          ),
-                                        ),
-                                      );
-                                    }
                                   } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    ScaffoldMessenger.of(
+                                      context,
+                                    ).showSnackBar(
                                       SnackBar(
                                         backgroundColor: AppColour.white,
                                         content: Text(
-                                          'Add Product then continue !!',
+                                          'Location Not Fetched !!',
                                           style: simple_text_style(),
                                         ),
                                       ),
                                     );
                                   }
-                                },
-                                style: elevated_button_style(),
-                                child: Text(
-                                  state.cartProductCount == 0
-                                      ? 'NO ITEM'
-                                      : 'SELECT DELIVERY ADDRESS',
-                                  style: simple_text_style(
-                                    color: AppColour.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: AppColour.white,
+                                      content: Text(
+                                        'Add Product then continue !!',
+                                        style: simple_text_style(),
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              style: elevated_button_style(),
+                              child: Text(
+                                state.cartProductCount == 0
+                                    ? 'NO ITEM'
+                                    : 'SELECT DELIVERY ADDRESS',
+                                style: simple_text_style(
+                                  color: AppColour.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

@@ -65,7 +65,6 @@ class _SignupScreenState extends State<SignupScreen> {
         }
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         backgroundColor: AppColour.background,
         body: Stack(
           children: [
@@ -124,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 10),
                 Expanded(
                   flex: 3,
                   child: Container(
@@ -135,40 +134,40 @@ class _SignupScreenState extends State<SignupScreen> {
                         topRight: Radius.circular(22),
                       ),
                     ),
-                    padding: const EdgeInsets.all(22),
+                    padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 22),
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
                           cus_text_field(
-                            'NAME',
-                            _nameController,
-                            'Hemant sahu',
+                           label: 'NAME',
+                            controller : _nameController,
+                            hintText : 'Hemant sahu',
                           ),
                           const SizedBox(height: 10),
                           cus_text_field(
-                            'EMAIL',
-                            _emailController,
-                            'example@gmail.com',
+                            label: 'EMAIL',
+                            controller: _emailController,
+                            hintText: 'example@gmail.com',
                           ),
                           const SizedBox(height: 10),
                           cus_text_field(
-                            'MOBILE NUMBER',
-                            _numberController,
-                            '1234567890',
+                            label: 'MOBILE NUMBER',
+                            controller: _numberController,
+                            hintText: '1234567890',
                             isNumber: true,
                           ),
                           const SizedBox(height: 10),
                           cus_text_field(
-                            'PASSWORD',
-                            _passwordController,
-                            '********',
+                            label: 'PASSWORD',
+                            controller: _passwordController,
+                            hintText: '********',
                             obscureText: true,
                           ),
                           const SizedBox(height: 10),
                           cus_text_field(
-                            'CONFIRM PASSWORD',
-                            _confirmPasswordController,
-                            '********',
+                            label: 'CONFIRM PASSWORD',
+                            controller: _confirmPasswordController,
+                            hintText: '********',
                             obscureText: true,
                           ),
                           const SizedBox(height: 20),

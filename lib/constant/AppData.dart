@@ -14,7 +14,7 @@ final List<Map<String, String>> categories = [
   {
     'name' : 'Dairy Products',
     'image' : dairy_product_image,
-    'value' : 'Dairy',
+    'value' : 'Dairy Products',
   },
 ];
 

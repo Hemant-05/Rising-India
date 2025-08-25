@@ -127,8 +127,9 @@ class CouponBloc extends Bloc<CouponEvent, CouponState> {
       );
 
       if (coupon != null) {
-        final discountAmount = (event.orderTotal * coupon.discountPercent / 100)
-            .clamp(0.0, coupon.value); // Don't exceed coupon value
+        // final discountAmount = (event.orderTotal * coupon.discountPercent / 100)
+        //     .clamp(0.0, coupon.value); // Don't exceed coupon value
+        final discountAmount = coupon.value;
         final finalTotal = (event.orderTotal - discountAmount).clamp(0.0, double.infinity);
 
         emit(CouponAppliedToCheckout(

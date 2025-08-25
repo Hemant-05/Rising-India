@@ -64,7 +64,6 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         backgroundColor: AppColour.background,
         body: Stack(
           children: [
@@ -110,15 +109,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         children: [
                           cus_text_field(
-                            'EMAIL',
-                            _emailController,
-                            'example@gmail.com',
+                            label: 'EMAIL',
+                            controller: _emailController,
+                            hintText: 'example@gmail.com',
                           ),
                           const SizedBox(height: 20),
                           cus_text_field(
-                            'PASSWORD',
-                            _passwordController,
-                            '********',
+                            label: 'PASSWORD',
+                            controller: _passwordController,
+                            hintText: '********',
                             obscureText: true,
                           ),
                           const SizedBox(height: 20),

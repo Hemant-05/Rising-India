@@ -128,6 +128,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
             color: AppColour.primary,
             backgroundColor: AppColour.white,
             onRefresh: () async {
+              BlocProvider.of<CategoryProductBloc>(context).add(FetchBestSellingProducts());
               context.read<OrderBloc>().add(LoadUserOngoingOrderEvent());
             },
             child: SingleChildScrollView(

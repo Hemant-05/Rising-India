@@ -131,9 +131,9 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
                       child: Column(
                         children: [
                           cus_text_field(
-                            'EMAIL',
-                            _emailController,
-                            'example@gmail.com',
+                            label: 'EMAIL',
+                            controller: _emailController,
+                            hintText: 'example@gmail.com',
                           ),
                           const SizedBox(height: 20),
                           if (_error != null)

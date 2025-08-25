@@ -15,12 +15,10 @@ import 'package:intl/intl.dart';
 
 class AdminOrderDetailScreen extends StatefulWidget {
   final OrderWithProducts orderWithProducts;
-  final bool isRunning;
 
   const AdminOrderDetailScreen({
     super.key,
     required this.orderWithProducts,
-    required this.isRunning,
   });
 
   @override
