@@ -79,8 +79,8 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             Column(
               children: [
-                Expanded(
-                  flex: 1,
+                SizedBox(
+                  height: 180,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -123,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 30),
                 Expanded(
                   flex: 3,
                   child: Container(
