@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:raising_india/constant/AppData.dart';
 import 'package:raising_india/models/product_model.dart';
 import 'package:raising_india/models/order_model.dart';
 
@@ -23,13 +24,17 @@ class StockManagementRepository {
           throw Exception('Insufficient stock. Available: $currentStock, Requested: $quantityOrdered');
         }*/
 
-        final newStock = currentStock - quantityOrdered;
-
+        var qty = (quantityOrdered * double.parse(productDoc.data()!['quantity'].toString()));
+        var measure = productDoc.data()!['measurement'].toString().toLowerCase();
+        if(measure == 'gm' || measure == 'ml'){
+          qty = qty/1000;
+        }
+        final newStock = currentStock - qty;
         // ✅ Update stock quantity
         transaction.update(productRef, {
-          'stockQuantity': newStock,
+          'stockQuantity': double.parse(newStock.toString()),
           'lastStockUpdate': FieldValue.serverTimestamp(),
-          'isAvailable': newStock > 0, // Auto-disable if out of stock
+          'isAvailable': newStock > 0,
         });
 
         // ✅ Check if stock is now low and create alert
@@ -37,7 +42,6 @@ class StockManagementRepository {
         if (newStock <= lowStockThreshold) {
           await _createLowStockAlert(transaction, productId, newStock, lowStockThreshold);
         }
-
         return true;
       });
     } catch (e) {
@@ -80,11 +84,15 @@ class StockManagementRepository {
         }
 
         final currentStock = (productDoc.data()!['stockQuantity'] ?? 0).toDouble();
-        final newStock = currentStock + quantityToRestore;
-
+        var qty = quantityToRestore * double.parse(productDoc.data()!['quantity'].toString());
+        var measure = productDoc.data()!['measurement'].toString().toLowerCase();
+        if(measure == 'gm' || measure == 'ml'){
+          qty = qty/1000;
+        }
+        final newStock = currentStock + qty;
         // ✅ Update stock quantity
         transaction.update(productRef, {
-          'stockQuantity': newStock,
+          'stockQuantity': double.parse(newStock.toString()),
           'lastStockUpdate': FieldValue.serverTimestamp(),
           'isAvailable': true, // Re-enable product
         });

@@ -36,7 +36,9 @@ class _HomeScreenUState extends State<HomeScreenU> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<CategoryProductBloc>(context).add(FetchBestSellingProducts());
+    BlocProvider.of<CategoryProductBloc>(
+      context,
+    ).add(FetchBestSellingProducts());
     BlocProvider.of<OrderBloc>(context).add(LoadUserOngoingOrderEvent());
   }
 
@@ -54,9 +56,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
             body: Center(child: Text('Please log in to continue')),
           );
         } else if (state is UserError) {
-          return Scaffold(
-            body: Center(child: Text('Error: ${state.message}')),
-          );
+          return Scaffold(body: Center(child: Text('Error: ${state.message}')));
         }
         return Scaffold(
           backgroundColor: AppColour.white,
@@ -65,7 +65,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
             title: Row(
               children: [
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     context.read<ProfileBloc>().add(OnProfileOpened());
                     Navigator.push(
                       context,
@@ -99,14 +99,15 @@ class _HomeScreenUState extends State<HomeScreenU> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SelectAddressScreen(
-                                isFromProfile: true,
-                              ),
+                              builder: (context) =>
+                                  SelectAddressScreen(isFromProfile: true),
                             ),
                           );
                         },
                         child: Text(
-                          address.isNotEmpty ? address : 'Tap to add address...',
+                          address.isNotEmpty
+                              ? address
+                              : 'Tap to add address...',
                           style: simple_text_style(
                             color: AppColour.black,
                             fontSize: 14,
@@ -128,7 +129,9 @@ class _HomeScreenUState extends State<HomeScreenU> {
             color: AppColour.primary,
             backgroundColor: AppColour.white,
             onRefresh: () async {
-              BlocProvider.of<CategoryProductBloc>(context).add(FetchBestSellingProducts());
+              BlocProvider.of<CategoryProductBloc>(
+                context,
+              ).add(FetchBestSellingProducts());
               context.read<OrderBloc>().add(LoadUserOngoingOrderEvent());
             },
             child: SingleChildScrollView(
@@ -152,7 +155,6 @@ class _HomeScreenUState extends State<HomeScreenU> {
 
                     // Ongoing Orders Section
                     _buildOngoingOrdersSection(),
-                    const SizedBox(height: 16),
 
                     // Best Products Section
                     _buildBestProductsSection(),
@@ -193,42 +195,34 @@ class _HomeScreenUState extends State<HomeScreenU> {
   Widget _buildOngoingOrdersSection() {
     return BlocBuilder<OrderBloc, OrderState>(
       builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  state is CompletedOrderLoadedState?'History Orders':
-                  'Ongoing Orders',
-                  style: simple_text_style(
-                    color: AppColour.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+        return state is OrderLoadingState
+            ? _buildOrderLoadingState()
+            : state is OngoingOrderLoadedState
+            ? Visibility(
+                visible: state.orderList.isNotEmpty,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Ongoing Orders',
+                          style: simple_text_style(
+                            color: AppColour.black,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    _buildOrdersList(state.orderList),
+                    const SizedBox(height: 16),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // Order Content
-            if (state is OrderLoadingState)
-              _buildOrderLoadingState()
-            else if (state is OngoingOrderLoadedState)
-              state.orderList.isEmpty
-                  ? _buildEmptyOrderState()
-                  : _buildOrdersList(state.orderList)
-            else if (state is CompletedOrderLoadedState)
-                state.orderList.isEmpty
-                    ? _buildEmptyOrderState()
-                    : _buildOrdersList(state.orderList)
-            else if (state is OrderErrorState)
-                _buildOrderErrorState(state.error ?? 'Unknown error')
-              else
-                _buildOrderLoadingState(),
-          ],
-        );
+              )
+            : SizedBox();
       },
     );
   }
@@ -405,7 +399,10 @@ class _HomeScreenUState extends State<HomeScreenU> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: statusColor.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(8),
@@ -480,7 +477,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Best Products',
+          'All Products',
           style: simple_text_style(
             color: AppColour.black,
             fontSize: 22,

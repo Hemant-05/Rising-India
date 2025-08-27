@@ -8,6 +8,7 @@ import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConString.dart';
+import 'package:raising_india/features/auth/screens/verification_screen.dart';
 import 'package:raising_india/features/user/coupon/bloc/coupon_bloc.dart';
 import 'package:raising_india/features/user/coupon/screens/coupons_screen.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
@@ -30,6 +31,7 @@ class PaymentCheckoutScreen extends StatefulWidget {
     required this.contact,
     required this.email,
     required this.cartProductList,
+    required this.isVerified,
   });
 
   final String address;
@@ -39,6 +41,7 @@ class PaymentCheckoutScreen extends StatefulWidget {
   final String contact;
   final String email;
   final List<Map<String, dynamic>> cartProductList;
+  final bool isVerified;
 
   @override
   State<PaymentCheckoutScreen> createState() => _PaymentCheckoutScreenState();
@@ -50,7 +53,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  bool isCOD = false;
+  bool isCOD = true;
   bool _isProcessingOrder = false;
 
   late CouponBloc _couponBloc;
@@ -67,8 +70,12 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
 
   String? _userId;
 
-  double get _originalTotal => double.parse(widget.total) ;
-  double get _finalTotal => _originalTotal - _discountAmount + 3 + (double.parse(widget.total) < 99 ? 15 : 0);
+  double get _originalTotal => double.parse(widget.total);
+  double get _finalTotal =>
+      _originalTotal -
+      _discountAmount +
+      3 +
+      (double.parse(widget.total) < 99 ? 15 : 0);
   // 3, 15 < 99 > free
 
   @override
@@ -148,11 +155,39 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
     print(response.walletName);
   }
 
+  void userNotVerifiedSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Your account is not verified. \nPlease verify your account to place the order.',
+        ),
+        backgroundColor: Colors.red,
+      ),
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => VerificationCodeScreen(role: user),
+      ),
+    );
+  }
+
+  void payNowComingSoonSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'This feature is, Coming Soon....',
+        ),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
   void placeOrder(
-      bool isCod,
-      bool isPaymentSuccess,
-      String? transactionId,
-      ) async {
+    bool isCod,
+    bool isPaymentSuccess,
+    String? transactionId,
+  ) async {
     setState(() => _isProcessingOrder = true);
 
     List<Map<String, dynamic>> list = widget.cartProductList.map((map) {
@@ -181,7 +216,9 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
           : isPaymentSuccess
           ? PayStatusPaid
           : PayStatusFailed,
-      orderStatus: (isPaymentSuccess || isCod) ? OrderStatusCreated : OrderStatusCancelled,
+      orderStatus: (isPaymentSuccess || isCod)
+          ? OrderStatusCreated
+          : OrderStatusCancelled,
       cancellationReason: (isPaymentSuccess || isCod) ? null : 'Payment Failed',
       address: DeliveryAddress(
         widget.address,
@@ -219,7 +256,9 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('🎉 Order completed! Cashback coupon added to your account.'),
+          content: Text(
+            '🎉 Order completed! Cashback coupon added to your account.',
+          ),
           backgroundColor: Colors.green,
         ),
       );
@@ -271,10 +310,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
   void _removeCoupon() {
     if (_appliedCoupon != null && _userId != null) {
       _couponBloc.add(
-        CancelCouponApplication(
-          userId: _userId!,
-          couponId: _appliedCoupon!.id,
-        ),
+        CancelCouponApplication(userId: _userId!, couponId: _appliedCoupon!.id),
       );
     }
   }
@@ -306,16 +342,15 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('🎉 Coupon applied! You saved ₹${state.discountAmount.toStringAsFixed(2)}'),
+          content: Text(
+            '🎉 Coupon applied! You saved ₹${state.discountAmount.toStringAsFixed(2)}',
+          ),
           backgroundColor: Colors.green,
         ),
       );
     } else if (state is CouponError) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.message),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(state.message), backgroundColor: Colors.red),
       );
     } else if (state is CouponApplicationCancelled) {
       setState(() {
@@ -465,7 +500,11 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.home_outlined, color: AppColour.primary, size: 20),
+                      Icon(
+                        Icons.home_outlined,
+                        color: AppColour.primary,
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -520,7 +559,11 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
             ),
             child: Row(
               children: [
-                Icon(Icons.shopping_bag_outlined, color: Colors.white, size: 24),
+                Icon(
+                  Icons.shopping_bag_outlined,
+                  color: Colors.white,
+                  size: 24,
+                ),
                 const SizedBox(width: 12),
                 Text(
                   'Order Summary',
@@ -532,7 +575,10 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
@@ -633,7 +679,10 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColour.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(6),
@@ -685,7 +734,11 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
           children: [
             Row(
               children: [
-                Icon(Icons.local_offer_outlined, color: AppColour.primary, size: 24),
+                Icon(
+                  Icons.local_offer_outlined,
+                  color: AppColour.primary,
+                  size: 24,
+                ),
                 const SizedBox(width: 12),
                 Text(
                   'Apply Coupon',
@@ -713,8 +766,10 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
                           hintText: 'Enter coupon code',
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.all(16),
-                          prefixIcon: Icon(Icons.confirmation_number_outlined,
-                              color: AppColour.primary),
+                          prefixIcon: Icon(
+                            Icons.confirmation_number_outlined,
+                            color: AppColour.primary,
+                          ),
                         ),
                         textCapitalization: TextCapitalization.characters,
                         style: simple_text_style(
@@ -741,21 +796,23 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
                           ),
                           child: isLoading
                               ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
                               : Text(
-                            'Apply',
-                            style: simple_text_style(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                                  'Apply',
+                                  style: simple_text_style(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       );
                     },
@@ -779,7 +836,9 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
                       ],
                     ),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColour.primary.withOpacity(0.3)),
+                    border: Border.all(
+                      color: AppColour.primary.withOpacity(0.3),
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -794,8 +853,11 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
                         ),
                       ),
                       const Spacer(),
-                      Icon(Icons.arrow_forward_ios,
-                          color: AppColour.primary, size: 16),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: AppColour.primary,
+                        size: 16,
+                      ),
                     ],
                   ),
                 ),
@@ -816,7 +878,11 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.check_circle, color: Colors.green.shade600, size: 24),
+                        Icon(
+                          Icons.check_circle,
+                          color: Colors.green.shade600,
+                          size: 24,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -848,8 +914,11 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
                               color: Colors.green.shade200,
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(Icons.close,
-                                color: Colors.green.shade700, size: 18),
+                            child: Icon(
+                              Icons.close,
+                              color: Colors.green.shade700,
+                              size: 18,
+                            ),
                           ),
                         ),
                       ],
@@ -905,7 +974,11 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
           children: [
             Row(
               children: [
-                Icon(Icons.receipt_long_outlined, color: AppColour.primary, size: 24),
+                Icon(
+                  Icons.receipt_long_outlined,
+                  color: AppColour.primary,
+                  size: 24,
+                ),
                 const SizedBox(width: 12),
                 Text(
                   'Price Details',
@@ -919,7 +992,10 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
             const SizedBox(height: 16),
 
             _buildPriceRow('Subtotal', '₹${widget.total}'),
-            _buildPriceRow('Delivery Fee', double.parse(widget.total) < 99 ? '₹15' : 'Free'),
+            _buildPriceRow(
+              'Delivery Fee',
+              double.parse(widget.total) < 99 ? '₹15' : 'Free',
+            ),
             _buildPriceRow('Platform Fee', '₹3'),
 
             if (_isCouponApplied)
@@ -1058,16 +1134,28 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
     );
   }
 
-  Widget _buildPaymentOption(String title, String value, IconData icon, String subtitle) {
+  Widget _buildPaymentOption(
+    String title,
+    String value,
+    IconData icon,
+    String subtitle,
+  ) {
     final isSelected = isCOD ? (value == 'cod') : (value == 'online');
 
     return GestureDetector(
-      onTap: () => setState(() => isCOD = (value == 'cod')),
+      onTap: () => setState(() {
+        // isCOD = (value == 'cod');
+        if(value == 'online'){
+          payNowComingSoonSnackBar();
+        }
+      }),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColour.primary.withOpacity(0.1) : Colors.grey.shade50,
+          color: isSelected
+              ? AppColour.primary.withOpacity(0.1)
+              : Colors.grey.shade50,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColour.primary : Colors.grey.shade300,
@@ -1112,25 +1200,33 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
       height: 60,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColour.primary, AppColour.primary.withOpacity(0.8)],
+          colors: widget.isVerified
+              ? [AppColour.primary, AppColour.primary.withOpacity(0.8)]
+              : [AppColour.grey, AppColour.grey.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColour.primary.withOpacity(0.3),
+            color: widget.isVerified
+                ? AppColour.primary.withOpacity(0.3)
+                : AppColour.grey.withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
         ],
       ),
       child: ElevatedButton(
-        onPressed: _isProcessingOrder
-            ? null
-            : () {
-          isCOD ? placeOrder(true, false, null) : _openCheckOut();
-        },
+        onPressed: widget.isVerified
+            ? () {
+                _isProcessingOrder
+                    ? null
+                    : isCOD
+                    ? placeOrder(true, false, null)
+                    : _openCheckOut();
+              }
+            : userNotVerifiedSnackBar,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -1140,44 +1236,52 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
         ),
         child: _isProcessingOrder
             ? Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              'Processing Order...',
-              style: simple_text_style(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        )
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Processing Order...',
+                    style: simple_text_style(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              )
             : Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.shopping_cart_checkout, color: Colors.white, size: 24),
-            const SizedBox(width: 12),
-            Text(
-              isCOD
-                  ? "PLACE ORDER ₹${_finalTotal.toStringAsFixed(2)}"
-                  : "PROCEED & PAY ₹${_finalTotal.toStringAsFixed(2)}",
-              style: simple_text_style(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    widget.isVerified
+                        ? Icons.shopping_cart_checkout
+                        : Icons.block,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    widget.isVerified
+                        ? isCOD
+                              ? "PLACE ORDER ₹${_finalTotal.toStringAsFixed(2)}"
+                              : "PROCEED & PAY ₹${_finalTotal.toStringAsFixed(2)}"
+                        : 'NOT VERIFIED',
+                    style: simple_text_style(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

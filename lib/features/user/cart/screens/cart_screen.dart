@@ -360,6 +360,7 @@ class _CartScreenState extends State<CartScreen> {
                                               name: user.name,
                                               cartProductList:
                                                   state.getCartProduct,
+                                              isVerified: user.isVerified??false,
                                             ),
                                       ),
                                     );

@@ -61,18 +61,17 @@ class ResetPassword extends UserEvent {
 }
 
 class UserSignUp extends UserEvent {
-  final String name, email, number, password,confirmPassword;
+  final String name, email, password,confirmPassword;
   final String role;
   UserSignUp({
     required this.name,
     required this.email,
-    required this.number,
     required this.password,
     required this.confirmPassword,
     required this.role,
   });
   @override
-  List<Object?> get props => [name, email, number, password, role];
+  List<Object?> get props => [name, email, password, role];
 }
 
 class UserSignIn extends UserEvent {
@@ -81,6 +80,17 @@ class UserSignIn extends UserEvent {
   UserSignIn(this.email, this.password, this.rememberMe);
   @override
   List<Object?> get props => [email, password];
+}
+
+class VerifyNumber extends UserEvent{
+  final String number;
+  VerifyNumber(this.number);
+}
+
+class VerifyOtp extends UserEvent{
+  final dynamic otp;
+  final String verificationId;
+  VerifyOtp(this.otp,this.verificationId);
 }
 
 class UserGoogleSignIn extends UserEvent {}

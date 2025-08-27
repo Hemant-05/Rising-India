@@ -35,13 +35,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserError('Invalid email format'));
         return;
       }
-      if (event.number.isEmpty) {
-        emit(UserError('Phone number cannot be empty'));
-        return;
-      } else if (!RegExp(r'^\+?[0-9]{10,15}$').hasMatch(event.number)) {
-        emit(UserError('Invalid phone number format'));
-        return;
-      }
       if (event.confirmPassword.isEmpty) {
         emit(UserError('Confirm Password cannot be empty'));
         return;
@@ -59,7 +52,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final error = await authService.signUp(
         name: event.name,
         email: event.email,
-        number: event.number,
         password: event.password,
         role: event.role,
       );
@@ -110,6 +102,31 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       } else {
         emit(UserError(error));
       }
+    });
+
+    on<VerifyOtp>((event,emit) async {
+      emit(UserLoading());
+      final otp = event.otp;
+      final verificationId = event.verificationId;
+      var data = await authService.verifyOtpAndLink(otp, verificationId);
+      bool success = data.split(' ').first == 'Success';
+      if(success){
+        emit(OtpVerified());
+      }else{
+        UserError(data);
+      }
+    });
+
+    on<VerifyNumber>((event,emit)async{
+      emit(UserLoading());
+      final number = event.number;
+   /*   var res = await authService.verifyPhone(number);
+      print(res);
+      if(res['type'] != null && res['type'].toString() != 'fail') {
+        emit(NumberVerified(res));
+      }else{
+        emit(UserError('Error verity number _________________ : ${res['data']}'));
+      }*/
     });
 
     on<SendVerificationCode>((event, emit) async {

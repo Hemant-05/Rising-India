@@ -7,6 +7,7 @@ class AppUser {
   final String email;
   final String number;
   final String role;
+  final bool? isVerified;
   final GeoPoint? currentLocation;
   final String? address;
   final List<AddressModel> addressList;
@@ -17,6 +18,7 @@ class AppUser {
     required this.email,
     required this.number,
     required this.role,
+    this.isVerified,
     this.currentLocation,
     this.address,
     required this.addressList,
@@ -28,6 +30,7 @@ class AppUser {
       'email': email,
       'number': number,
       'role': role,
+      'isVerified': isVerified,
       'currentLocation': currentLocation,
       'address': address,
       'addressList' : addressList,
@@ -41,6 +44,7 @@ class AppUser {
       email: map['email'],
       number: map['number'].toString(),
       role: map['role'],
+      isVerified: map['isVerified'],
       currentLocation: map['currentLocation'],
       address: map['address'],
       addressList: _convertAddressList(map['addressList']),

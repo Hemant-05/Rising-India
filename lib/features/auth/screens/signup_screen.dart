@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,8 @@ import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/pagination/main_screen_a.dart';
+import 'package:raising_india/features/auth/screens/verification_screen.dart';
+import 'package:raising_india/features/auth/services/auth_service.dart';
 import '../../../comman/bold_text_style.dart';
 import '../../../constant/ConString.dart';
 import '../../admin/home/screens/home_screen_a.dart';
@@ -25,7 +28,6 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _numberController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   String _role = user;
@@ -51,14 +53,13 @@ class _SignupScreenState extends State<SignupScreen> {
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
         if (state is UserAuthenticated) {
-          Navigator.pushAndRemoveUntil(
+          Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => state.user.role == admin
-                  ? const MainScreenA()
-                  : const HomeScreenU(),
+              builder: (_) => VerificationCodeScreen(
+                role : _role
+              ),
             ),
-            (route) => false,
           );
         } else if (state is UserError) {
           setState(() => _error = state.message);
@@ -134,27 +135,24 @@ class _SignupScreenState extends State<SignupScreen> {
                         topRight: Radius.circular(22),
                       ),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 22),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 22,
+                    ),
                     child: SingleChildScrollView(
                       child: Column(
-                        children: [
+                        children:[
+                          const SizedBox(height: 20,),
                           cus_text_field(
-                           label: 'NAME',
-                            controller : _nameController,
-                            hintText : 'Hemant sahu',
+                            label: 'NAME',
+                            controller: _nameController,
+                            hintText: 'Hemant sahu',
                           ),
                           const SizedBox(height: 10),
                           cus_text_field(
                             label: 'EMAIL',
                             controller: _emailController,
                             hintText: 'example@gmail.com',
-                          ),
-                          const SizedBox(height: 10),
-                          cus_text_field(
-                            label: 'MOBILE NUMBER',
-                            controller: _numberController,
-                            hintText: '1234567890',
-                            isNumber: true,
                           ),
                           const SizedBox(height: 10),
                           cus_text_field(
@@ -193,7 +191,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                     UserSignUp(
                                       name: _nameController.text,
                                       email: email.split('#').last,
-                                      number: _numberController.text,
                                       password: _passwordController.text,
                                       confirmPassword:
                                           _confirmPasswordController.text,
@@ -208,7 +205,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                         ),
                                       )
                                     : Text(
-                                        'Sign Up',
+                                        'CREATE ACCOUNT',
                                         style: simple_text_style(
                                           color: AppColour.white,
                                           fontWeight: FontWeight.bold,

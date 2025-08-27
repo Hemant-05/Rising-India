@@ -84,3 +84,10 @@ class ResetPasswordError extends UserState {
   @override
   List<Object?> get props => [message];
 }
+
+class NumberVerified extends UserState{
+  final Map<String,dynamic> res;
+  NumberVerified(this.res);
+}
+
+class OtpVerified extends UserState{}
