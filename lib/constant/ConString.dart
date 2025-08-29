@@ -2,6 +2,9 @@ final String welcome = 'Welcome';
 final String admin = 'ADMIN';
 final String user = 'USER';
 
+final double deliveryFee = 12;
+final double platformFee = 3;
+
 const String OrderStatusCreated = 'created';
 const String OrderStatusConfirmed = 'confirmed';
 const String OrderStatusPreparing = 'preparing';

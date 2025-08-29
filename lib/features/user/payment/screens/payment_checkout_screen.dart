@@ -75,7 +75,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
       _originalTotal -
       _discountAmount +
       3 +
-      (double.parse(widget.total) < 99 ? 15 : 0);
+      (double.parse(widget.total) < 99 ? deliveryFee : 0);
   // 3, 15 < 99 > free
 
   @override
@@ -206,7 +206,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
       createdAt: DateTime.now(),
       items: list,
       subtotal: _originalTotal,
-      deliveryFee: double.parse(widget.total) < 99 ? 15 : 0,
+      deliveryFee: double.parse(widget.total) < 99 ? deliveryFee : 0,
       transactionId: isPaymentSuccess ? transactionId : 'NA',
       total: _finalTotal,
       paymentMethod: isCod ? PayMethodCOD : PayMethodPrepaid,
@@ -994,9 +994,9 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
             _buildPriceRow('Subtotal', '₹${widget.total}'),
             _buildPriceRow(
               'Delivery Fee',
-              double.parse(widget.total) < 99 ? '₹15' : 'Free',
+              double.parse(widget.total) < 99 ? '₹${deliveryFee}' : 'Free',
             ),
-            _buildPriceRow('Platform Fee', '₹3'),
+            _buildPriceRow('Platform Fee', '₹${platformFee}'),
 
             if (_isCouponApplied)
               _buildPriceRow(

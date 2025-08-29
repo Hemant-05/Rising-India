@@ -134,7 +134,7 @@ class OrderDetailsScreen extends StatelessWidget {
           ),
           _orderSummaryRow("Subtotal", order.subtotal),
           _orderSummaryRow("Delivery Fee", order.deliveryFee),
-          _orderSummaryRow("Platform Fee", 3),
+          _orderSummaryRow("Platform Fee", platformFee),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
