@@ -20,6 +20,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String userId = '';
     return Scaffold(
       backgroundColor: AppColour.white,
       appBar: AppBar(
@@ -43,87 +44,97 @@ class ProfileScreen extends StatelessWidget {
               width: double.infinity,
               child: BlocBuilder<ProfileBloc, ProfileState>(
                 builder: (context, state) {
-                  return state is OnProfileLoading
-                      ? Center(
-                          child: CircularProgressIndicator(
+                  if (state is OnProfileLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: AppColour.primary,
+                      ),
+                    );
+                  } else if (state is OnProfileLoaded) {
+                    userId = state.user!.uid;
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
                             color: AppColour.primary,
+                            borderRadius: BorderRadius.circular(100),
                           ),
-                        )
-                      : state is OnProfileLoaded? Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          child: Icon(
+                            Icons.person_outline,
+                            color: AppColour.white,
+                            size: 50,
+                          ),
+                        ),
+                        SizedBox(width: 15),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                color: AppColour.primary,
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              child: Icon(
-                                Icons.person_outline,
-                                color: AppColour.white,
-                                size: 50,
+                            Text(
+                              '${state.user?.name}',
+                              style: simple_text_style(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(width: 15),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${state.user?.name}',
-                                  style: simple_text_style(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  '${state.user?.email}',
-                                  style: simple_text_style(
-                                    color: AppColour.lightGrey,
-                                  ),
-                                ),
-                                SizedBox(height: 10,),
-                                Text(
-                                  '${state.user?.number}',
-                                  style: simple_text_style(
-                                    color: AppColour.lightGrey,
-                                  ),
-                                ),
-                              ],
+                            SizedBox(height: 10),
+                            Text(
+                              '${state.user?.email}',
+                              style: simple_text_style(
+                                fontSize: 14,
+                                color: AppColour.lightGrey,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '${state.user?.number}',
+                              style: simple_text_style(
+                                color: AppColour.lightGrey,
+                              ),
                             ),
                           ],
-                        ) : Center(child: Text('Restart the app.....',style: simple_text_style()),);
+                        ),
+                      ],
+                    );
+                  }
+                  return Center(
+                    child: Text(
+                      'Restart the app.....',
+                      style: simple_text_style(),
+                    ),
+                  );
                 },
               ),
             ),
             SizedBox(height: 16),
-                customContainer(
-                  Column(
-                    children: [
-                      optionListTile(map_svg, 'Addresses', () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SelectAddressScreen(isFromProfile: true),
-                          ),
-                        );
-                      }),
-                      optionListTile(coupon_svg, 'Coupons & Cashback\'s', () {
-                        context.read<CouponBloc>().add(LoadUserCoupons());
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                               CouponsScreen(isSelectionMode: false,),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
+            customContainer(
+              Column(
+                children: [
+                  optionListTile(map_svg, 'Addresses', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            SelectAddressScreen(isFromProfile: true),
+                      ),
+                    );
+                  }),
+                  optionListTile(coupon_svg, 'Coupons & Cashback\'s', () {
+                    context.read<CouponBloc>().add(LoadUserCoupons());
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            CouponsScreen(isSelectionMode: false),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
             customContainer(
               Column(
                 children: [
@@ -131,7 +142,7 @@ class ProfileScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NotificationScreen(),
+                        builder: (context) => NotificationsScreen(userId: userId,),
                       ),
                     );
                   }),
