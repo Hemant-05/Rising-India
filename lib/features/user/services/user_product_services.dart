@@ -202,6 +202,7 @@ class UserProductServices {
       final querySnapshot = await _firestore
           .collection('products')
           .orderBy('rating', descending: true)
+      .limit(8)
           .get();
       return querySnapshot.docs
           .map((doc) => ProductModel.fromMap(doc.data(), doc.id))

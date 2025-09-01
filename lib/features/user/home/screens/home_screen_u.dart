@@ -156,13 +156,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
   }
 
   Widget _bestProductsHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text('Best Products', style: simple_text_style(color: AppColour.black, fontSize: 20, fontWeight: FontWeight.bold)),
-        TextButton(onPressed: () {/* navigate to best products screen */}, child: const Text('See All')),
-      ],
-    );
+    return Text('Best Products', style: simple_text_style(color: AppColour.black, fontSize: 20, fontWeight: FontWeight.bold));
   }
 
   Widget buildBestProductsHorizontal(BuildContext context) {
