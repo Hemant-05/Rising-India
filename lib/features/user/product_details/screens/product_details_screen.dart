@@ -83,7 +83,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                             (context, error, stackTrace) =>
                                                 Center(
                                                   child: Icon(
-                                                    Icons.error_outline,
+                                                    Icons.image_not_supported_outlined,
                                                     size: 40,
                                                     color: Colors.grey,
                                                   ),

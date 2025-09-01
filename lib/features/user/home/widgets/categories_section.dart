@@ -16,7 +16,7 @@ Widget categories_section(BuildContext context) {
         children: [
           Text(
             'All Categories',
-            style: simple_text_style(color: AppColour.black, fontSize: 22,fontWeight: FontWeight.bold),
+            style: simple_text_style(color: AppColour.black, fontSize: 20,fontWeight: FontWeight.bold),
           ),
           TextButton(
             onPressed: () {
