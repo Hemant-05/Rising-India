@@ -210,4 +210,15 @@ class UserProductServices {
       throw Exception('Failed to fetch best selling products: $e');
     }
   }
+
+  Future<List<ProductModel>> getAllProducts() async{
+    try {
+      final querySnapshot = await _firestore.collection('products').get();
+      return querySnapshot.docs
+          .map((doc) => ProductModel.fromMap(doc.data(), doc.id))
+          .toList();
+    }catch(e){
+      throw Exception('Failed to fetch products: $e');
+    }
+  }
 }

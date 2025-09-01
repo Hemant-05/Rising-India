@@ -13,10 +13,10 @@ class ProductGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.8,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        crossAxisCount: 3,
+        childAspectRatio: 0.6,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
       ),
       itemCount: products.length,
       itemBuilder: (context, index) {

@@ -15,6 +15,7 @@ class CategoryProductBloc extends Bloc<CategoryProductEvent, CategoryProductStat
     on<FetchCategories>(_onFetchCategories);
     on<FetchBestSellingProducts>(_onFetchBestSellingProducts);
     on<FetchProductsByCategory>(_onFetchProductsByCategory);
+    on<FetchAllProducts>(_onFetchAllProducts);
   }
 
   FutureOr<void> _onFetchProducts(
@@ -66,6 +67,21 @@ class CategoryProductBloc extends Bloc<CategoryProductEvent, CategoryProductStat
       emit(state.copyWith(
         isLoading: false,
         productsByCategory: products,
+      ));
+    } catch (e) {
+      emit(state.copyWith(isLoading: false, error: e.toString()));
+    }
+  }
+  FutureOr<void> _onFetchAllProducts(
+    FetchAllProducts event,
+    Emitter<CategoryProductState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true));
+    try {
+      final products = await services.getAllProducts();
+      emit(state.copyWith(
+        isLoading: false,
+        allProducts: products,
       ));
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));

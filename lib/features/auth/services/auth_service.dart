@@ -94,14 +94,13 @@ class AuthService extends ChangeNotifier {
 
     try {
       final userId = user.uid;
+      await user.linkWithCredential(credential);
       var doc = await _db.collection('users').doc(userId).get();
       if (doc.exists) {
-        doc.reference.update({'isVerified': true});
+        doc.reference.update({'isVerified': true, 'number' : user.phoneNumber});
       } else {
-        await _db.collection('admin').doc(userId).update({'isVerified': true});
+        await _db.collection('admin').doc(userId).update({'isVerified': true,'number' : user.phoneNumber});
       }
-
-      await user.linkWithCredential(credential);
       return 'Success Phone number linked!';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'provider-already-linked') {
