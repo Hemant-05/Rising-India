@@ -90,7 +90,8 @@ class VerifyNumber extends UserEvent{
 class VerifyOtp extends UserEvent{
   final dynamic otp;
   final String verificationId;
-  VerifyOtp(this.otp,this.verificationId);
+  final String phoneNumber;
+  VerifyOtp(this.otp,this.verificationId,this.phoneNumber);
 }
 
 class UserGoogleSignIn extends UserEvent {}

@@ -108,7 +108,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(UserLoading());
       final otp = event.otp;
       final verificationId = event.verificationId;
-      var data = await authService.verifyOtpAndLink(otp, verificationId);
+      final phoneNumber = event.phoneNumber;
+      var data = await authService.verifyOtpAndLink(otp, verificationId,phoneNumber);
       bool success = data.split(' ').first == 'Success';
       if(success){
         emit(OtpVerified());

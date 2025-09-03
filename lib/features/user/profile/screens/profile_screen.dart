@@ -14,6 +14,7 @@ import 'package:raising_india/features/auth/screens/login_screen.dart';
 import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
 import 'package:raising_india/features/user/notification/screens/notification_screen.dart';
 import 'package:raising_india/features/user/order/screens/order_screen.dart';
+import 'package:raising_india/screens/policy_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -150,6 +151,12 @@ class ProfileScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => OrderScreen()),
+                    );
+                  }),
+                  optionListTile(policy_svg, 'Term & Conditions', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PolicyScreen()),
                     );
                   }),
                 ],

@@ -42,3 +42,4 @@ final String clock_svg = "assets/icons/clock_icon.svg";
 final String delivery_svg = "assets/icons/delivery_icon.svg";
 final String filled_heart_svg = "assets/icons/filled_heart_icon.svg";
 final String border_heart_svg = "assets/icons/border_heart_icon.svg";
+final String policy_svg = "assets/icons/policy_icon.svg";

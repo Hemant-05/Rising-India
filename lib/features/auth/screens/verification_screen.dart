@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,6 +33,9 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
   bool isNumberVerified = false;
   bool isLoading = false;
   String? verificationId;
+  int? resendToken;
+  Timer? timer;
+  int t = 30;
 
   @override
   void initState() {
@@ -47,14 +52,29 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
     );
   }
 
-  Future<void> verifyPhone(String phoneNumber) async {
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        t -= 1;
+        if (t <= 0) {
+          t = 0;
+          timer.cancel();
+        }
+      });
+    });
+  }
+
+  Future<void> verifyPhone(String phoneNumber, int? resendToken) async {
     setState(() {
       isLoading = true;
+      _error = null;
     });
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: '+91$phoneNumber',
+      forceResendingToken: resendToken,
+      timeout: const Duration(seconds: 45),
       verificationCompleted: (PhoneAuthCredential credential) async {
-        _service.linkPhoneNumber(credential);
+        _service.linkPhoneNumber(credential, phoneNumber);
       },
       verificationFailed: (FirebaseAuthException e) async {
         setState(() {
@@ -64,12 +84,32 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
       },
       codeSent: (String verificationId, int? resendToken) async {
         setState(() {
-          isNumberVerified = true;
           isLoading = false;
+          isNumberVerified = true;
+          this.resendToken = resendToken;
           this.verificationId = verificationId;
+          startTimer();
+          showOTPSendSnackBar();
         });
       },
       codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+  }
+
+  void resendOTP() {
+    String number = _numberController.text.trim();
+    verifyPhone(number, resendToken);
+    startTimer();
+  }
+
+  void showOTPSendSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Your Number ${_numberController.text} is Verified. \nOTP sent successfully...',
+        ),
+        backgroundColor: AppColour.primary,
+      ),
     );
   }
 
@@ -163,12 +203,12 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                     ),
                     padding: const EdgeInsets.symmetric(
                       vertical: 4,
-                      horizontal: 22
+                      horizontal: 22,
                     ),
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          const SizedBox(height: 10,),
+                          const SizedBox(height: 10),
                           cus_text_field(
                             label: 'NUMBER',
                             controller: _numberController,
@@ -183,37 +223,69 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
                             isNumber: true,
                           ),
                           const SizedBox(height: 20),
-                          if (_error != null)
+                          if (_error != null) ...{
                             Text(
                               _error!,
-                              style: TextStyle(fontFamily : 'Sen',color: AppColour.red),
+                              style: TextStyle(
+                                fontFamily: 'Sen',
+                                color: AppColour.red,
+                              ),
                             ),
-                          const SizedBox(height: 20),
+                            SizedBox(height: 20),
+                          },
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  isNumberVerified && t == 0
+                                      ? resendOTP()
+                                      : null;
+                                },
+                                child: Text(
+                                  'Resend OTP ${t == 30 || t == 0 ? '' : t.toString()}',
+                                  style: simple_text_style(
+                                    color: isNumberVerified && t == 0
+                                        ? AppColour.primary
+                                        : AppColour.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
                           BlocBuilder<UserBloc, UserState>(
                             builder: (context, state) {
                               return ElevatedButton(
                                 onPressed: isNumberVerified
                                     ? () {
-                                        if(_verificationCodeController.text.isNotEmpty){
-                                          BlocProvider.of<UserBloc>(context).add(
+                                        if (_verificationCodeController
+                                            .text
+                                            .isNotEmpty) {
+                                          BlocProvider.of<UserBloc>(
+                                            context,
+                                          ).add(
                                             VerifyOtp(
                                               _verificationCodeController.text
                                                   .trim(),
                                               verificationId!,
+                                              _numberController.text.trim(),
                                             ),
                                           );
-                                        }else{
+                                        } else {
                                           setState(() {
                                             _error = 'Please enter otp';
                                           });
                                         }
                                       }
                                     : () {
-                                        if(_numberController.text.isNotEmpty){
+                                        if (_numberController.text.isNotEmpty) {
                                           verifyPhone(
                                             _numberController.text.trim(),
+                                            null,
                                           );
-                                        }else{
+                                        } else {
                                           setState(() {
                                             _error = 'Please enter number';
                                           });
