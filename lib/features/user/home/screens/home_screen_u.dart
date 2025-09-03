@@ -5,9 +5,11 @@ import 'package:raising_india/comman/cart_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConString.dart';
+import 'package:raising_india/features/admin/banner/screen/add_banner_screen.dart';
 import 'package:raising_india/features/auth/services/auth_service.dart';
 import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
 import 'package:raising_india/features/user/home/bloc/user_product_bloc/category_product_bloc.dart';
+import 'package:raising_india/features/user/home/widgets/add_banner_widget.dart';
 import 'package:raising_india/features/user/home/widgets/categories_section.dart';
 import 'package:raising_india/features/user/home/widgets/product_grid.dart';
 import 'package:raising_india/features/user/home/widgets/search_bar_widget.dart';
@@ -78,6 +80,8 @@ class _HomeScreenUState extends State<HomeScreenU> {
                   SliverToBoxAdapter(child: const SizedBox(height: 10)),
                   SliverToBoxAdapter(child: search_bar_widget(context)),
                   SliverToBoxAdapter(child: const SizedBox(height: 14)),
+                  SliverToBoxAdapter(child: const AddBannerWidget(),),
+                  SliverToBoxAdapter(child: const SizedBox(height: 10)),
                   SliverToBoxAdapter(child: _buildCategoriesStrip(context)),
                   SliverToBoxAdapter(child: const SizedBox(height: 10)),
                   SliverToBoxAdapter(child: _buildOngoingOrdersSection()),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -123,12 +124,12 @@ class _CartScreenState extends State<CartScreen> {
                                             borderRadius: BorderRadius.circular(
                                               8,
                                             ),
-                                            child: Image.network(
-                                              product.photos_list[0],
+                                            child: CachedNetworkImage(
+                                              imageUrl: product.photos_list[0],
                                               width: 50,
                                               height: 50,
                                               fit: BoxFit.cover,
-                                              errorBuilder:
+                                              errorWidget:
                                                   (
                                                     context,
                                                     error,

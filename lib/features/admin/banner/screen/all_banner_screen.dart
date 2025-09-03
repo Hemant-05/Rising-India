@@ -80,7 +80,7 @@ class AllBannerScreen extends StatelessWidget {
                                   },
                                   filterQuality: FilterQuality.medium,
                                   state.list[index]['image'],
-                                  fit: BoxFit.fill,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),

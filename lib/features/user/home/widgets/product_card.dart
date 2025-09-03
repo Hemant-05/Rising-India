@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
@@ -42,10 +43,10 @@ class product_card extends StatelessWidget {
               children: [
                 AspectRatio(
                   aspectRatio: 1.15, // consistent card top
-                  child: Image.network(
-                    product.photos_list[0],
+                  child: CachedNetworkImage(
+                    imageUrl: product.photos_list[0],
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const Center(
+                    errorWidget: (_, __, ___) => const Center(
                       child: Icon(Icons.image_not_supported_rounded, size: 30),
                     ),
                   ),

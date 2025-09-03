@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -62,24 +63,21 @@ class ProductDetailsScreen extends StatelessWidget {
                                   itemBuilder: (context, index) {
                                     return ClipRRect(
                                       borderRadius: BorderRadius.circular(18),
-                                      child: Image.network(
-                                        product.photos_list[index],
+                                      child: CachedNetworkImage(
+                                        imageUrl: product.photos_list[index],
                                         fit: BoxFit.cover,
                                         width: double.infinity,
-                                        loadingBuilder:
+                                        progressIndicatorBuilder:
                                             (context, child, progress) {
-                                              if (progress == null) {
-                                                return child;
-                                              }
                                               return Center(
                                                 child:
                                                     CircularProgressIndicator(
-                                                      color:
-                                                          AppColour.primary,
+                                                      value: progress.progress,
+                                                      color: AppColour.primary,
                                                     ),
                                               );
                                             },
-                                        errorBuilder:
+                                        errorWidget:
                                             (context, error, stackTrace) =>
                                                 Center(
                                                   child: Icon(

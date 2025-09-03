@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
@@ -35,12 +36,12 @@ Widget category_widget(BuildContext context, CategoryModel category) {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(8),bottom: Radius.circular(2)),
-            child: Image.network(
-              category.image,
+            child: CachedNetworkImage(
+              imageUrl: category.image,
               width: double.infinity,
               height: 90,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
+              errorWidget: (context, error, stackTrace) {
                 return SizedBox(
                   height: 90,
                     width: double.infinity,
