@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
+import 'package:raising_india/features/admin/banner/bloc/banner_bloc.dart';
+import 'package:raising_india/features/admin/banner/screen/all_banner_screen.dart';
 import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/features/admin/category/screens/admin_categories_screen.dart';
 import 'package:raising_india/features/admin/profile/screens/admin_profile_screen.dart';
@@ -120,19 +122,46 @@ class _ProfileManageScreenState extends State<ProfileManageScreen> {
                   ),
                   SizedBox(height: 10),
                   CusContainer(
-                    optionsListTileWidget(
-                      () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const LowStockAlertScreen()));
-                      },
-                      notification_svg,
-                      'Low Stock Alerts',
-                      Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        color: AppColour.grey,
-                        size: 16,
-                      ),
+                    Column(
+                      children: [
+                        optionsListTileWidget(
+                          () {
+                            BlocProvider.of<BannerBloc>(
+                              context,
+                            ).add(LoadAllBannerEvent());
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AllBannerScreen(),
+                              ),
+                            );
+                          },
+                          banner_svg,
+                          'Ad Banner',
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: AppColour.grey,
+                            size: 16,
+                          ),
+                        ),
+                        optionsListTileWidget(
+                          () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const LowStockAlertScreen(),
+                              ),
+                            );
+                          },
+                          notification_svg,
+                          'Low Stock Alerts',
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            color: AppColour.grey,
+                            size: 16,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 10),

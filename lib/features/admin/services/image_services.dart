@@ -22,6 +22,37 @@ class ImageServices {
     return imageUrls;
   }
 
+  Future<String> uploadBannerImage(File image) async {
+    try{
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('User not authenticated');
+      }
+
+      final String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      final Reference ref = _storage.ref().child('banner_images/$fileName');
+
+      final SettableMetadata metadata = SettableMetadata(
+        contentType: 'image/jpeg',
+        customMetadata: {
+          'uploadedBy': user.uid,
+          'uploadTime': DateTime.now().toIso8601String(),
+        },
+      );
+
+      final UploadTask uploadTask = ref.putFile(image, metadata);
+
+      final TaskSnapshot snapshot = await uploadTask;
+
+      final String downloadUrl = await snapshot.ref.getDownloadURL();
+
+      return downloadUrl;
+    }catch(e){
+      return 'Error uploading image: $e';
+    }
+  }
+
   Future<String?> _uploadProductImage(File imageFile, String productName) async {
     try {
       // ✅ Check authentication

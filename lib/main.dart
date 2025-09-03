@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/Image_cubit/image_cubit.dart';
 import 'package:raising_india/features/admin/add_new_items/bloc/product_bloc/product_bloc.dart';
+import 'package:raising_india/features/admin/banner/bloc/banner_bloc.dart';
 import 'package:raising_india/features/admin/product/bloc/products_cubit.dart';
 import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/features/admin/home/bloc/order_cubit/order_stats_cubit.dart';
@@ -83,6 +84,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<ReviewBloc>(create: (context) => ReviewBloc(reviewRepository: context.read<ReviewRepository>(), orderRepository: context.read<OrderRepository>(),),),
           BlocProvider<AdminReviewBloc>(create: (context) => AdminReviewBloc(reviewRepository: context.read<ReviewRepository>(),),),
           BlocProvider<SalesAnalyticsBloc>(create: (context) => SalesAnalyticsBloc(repository: context.read<SalesAnalyticsRepository>(),),),
+          BlocProvider<BannerBloc>(create: (context) => BannerBloc(),),
         ],
         child: MaterialApp(
           navigatorKey: navigatorKey,
