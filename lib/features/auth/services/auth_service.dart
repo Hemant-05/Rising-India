@@ -81,11 +81,16 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<String> verifyOtpAndLink(String smsCode, String verificationId,String phoneNumber) async {
-    final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: verificationId,
-      smsCode: smsCode,
-    );
-    return await linkPhoneNumber(credential,phoneNumber);
+    try{
+      final PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      return await linkPhoneNumber(credential,phoneNumber);
+    }catch(e){
+      print('Error verifying OTP: $e');
+      return 'Error verifying OTP';
+    }
   }
 
   Future<String> linkPhoneNumber(PhoneAuthCredential credential,String phoneNumber) async {
@@ -96,7 +101,6 @@ class AuthService extends ChangeNotifier {
       await user.linkWithCredential(credential);
       var doc = await _db.collection('users').doc(userId).get();
       if (doc.exists) {
-        print('==========---------- ${user.phoneNumber} : $phoneNumber');
         doc.reference.update({'isVerified': true, 'number' : phoneNumber});
       } else {
         await _db.collection('admin').doc(userId).update({'isVerified': true,'number' : phoneNumber});
@@ -105,7 +109,7 @@ class AuthService extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'provider-already-linked') {
         return 'Error Number already Linked';
-      } else if (e.code == 'credential-already-in-use') { // 842024
+      } else if (e.code == 'credential-already-in-use') {
         return 'Error Number is already in user !!!';
       } else {
         print('Error linking phone: ${e.message}');
