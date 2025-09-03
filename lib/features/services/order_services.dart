@@ -152,12 +152,17 @@ class OrderServices {
     return model;
   }
 
-  Future<void> cancelOrder(String orderId, String cancellationReason) async {
+  Future<void> cancelOrder(String orderId, String cancellationReason,String payStatus) async {
     final order = await getOrderById(orderId);
     await _service.cancelOrder(order);
+    String paymentStatus = '';
+    if(payStatus == PayStatusPending){
+      paymentStatus = PayStatusNotPaid;
+    }
     await _firestore.collection('orders').doc(orderId).update({
       'orderStatus': OrderStatusCancelled,
       'cancellationReason': cancellationReason,
+      'paymentStatus': paymentStatus.isEmpty? payStatus : paymentStatus,
     });
   }
 }

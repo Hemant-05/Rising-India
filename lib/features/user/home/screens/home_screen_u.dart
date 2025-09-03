@@ -196,11 +196,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
       width: 180,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(14),
-        gradient: LinearGradient(
-          colors: [statusColor.withOpacity(0.12), Colors.white],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColour.white,
         border: Border.all(color: statusColor.withOpacity(0.2)),
         boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 6, offset: const Offset(0, 2))],
       ),
@@ -226,7 +222,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
               Text('${order.items.length} ${order.items.length == 1 ? 'item' : 'items'}',
                   style: simple_text_style(color: Colors.grey.shade700, fontSize: 12)),
               const SizedBox(height: 4),
-              Text(DateFormat('MMM d, h:mm a').format(order.createdAt), style: simple_text_style(color: Colors.grey, fontSize: 11)),
+              Text(DateFormat('MMM d, h:mm a').format(order.createdAt), style: simple_text_style(color: Colors.black, fontSize: 11)),
               const SizedBox(height: 6),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

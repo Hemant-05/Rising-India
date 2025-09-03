@@ -155,7 +155,8 @@ Widget onGoingWidget(List<OrderModel> list) {
                                   context.read<OrderBloc>().add(
                                     CancelOrderEvent(
                                       orderId: list[index].orderId,
-                                      cancellationReason: reason,
+                                      cancellationReason: '$reason \nCancelled By : ${list[index].name}',
+                                      payStatus: list[index].paymentStatus,
                                     ),
                                   );
                                 });

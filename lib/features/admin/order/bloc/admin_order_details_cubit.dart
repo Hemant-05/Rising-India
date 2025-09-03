@@ -33,14 +33,40 @@ class AdminOrderDetailsCubit extends Cubit<AdminOrderDetailsState> {
   Future<void> updateOrderStatus(OrderModel order, String status) async {
     try {
       bool isDelivered = status == OrderStatusDeliverd;
-      await FirebaseFirestore.instance.collection('orders').doc(order.orderId).update(
-        {
-          'orderStatus': status,
-          'deliveredAt': isDelivered ? DateTime.now() : null,
-        },
-      );
+      await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(order.orderId)
+          .update({
+            'orderStatus': status,
+            'deliveredAt': isDelivered ? DateTime.now() : null,
+          });
     } catch (e) {
-      emit(state.copyWith(error: e.toString()));
+      emit(state.copyWith(error: e.toString(), loading: false));
+    }
+  }
+
+  Future<void> cancelOrder(
+    String orderId,
+    String reason,
+    String paymentStatus,
+  ) async {
+    emit(state.copyWith(loading: true));
+    String payStatus = '';
+    if (paymentStatus == PayStatusPending) {
+      payStatus = PayStatusNotPaid;
+    }
+    try {
+      await FirebaseFirestore.instance
+          .collection('orders')
+          .doc(orderId)
+          .update({
+            'orderStatus': OrderStatusCancelled,
+            'cancellationReason': reason,
+            'paymentStatus': payStatus.isEmpty? paymentStatus : payStatus,
+          });
+      emit(state.copyWith(loading: false));
+    } catch (e) {
+      emit(state.copyWith(error: e.toString(), loading: false));
     }
   }
 

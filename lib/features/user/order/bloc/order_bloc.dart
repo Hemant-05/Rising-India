@@ -22,7 +22,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     });
     on<CancelOrderEvent>((event, emit) async {
       emit(OrderLoadingState());
-      await _services.cancelOrder(event.orderId,event.cancellationReason);
+      await _services.cancelOrder(event.orderId,event.cancellationReason,event.payStatus);
       final list = await _services.fetchUserOngoingOrders();
       emit(OngoingOrderLoadedState(orderList: list));
     });

@@ -220,12 +220,12 @@ class AuthService extends ChangeNotifier {
 
   Future<void> signOut() async {
     await NotificationService.clearToken();
-    await _auth.signOut();
-    _user = null;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('rememberMe', false);
     prefs.remove('isAdmin');
     notifyListeners();
+    await _auth.signOut();
+    _user = null;
   }
 
   Future<String?> updateUserLocation() async {

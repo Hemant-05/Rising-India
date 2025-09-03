@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:raising_india/features/admin/order/screens/admin_order_details_screen.dart';
 import 'package:raising_india/features/admin/stock_management/screens/low_stock_alert_screen.dart';
 import 'package:raising_india/features/services/order_services.dart';
@@ -24,8 +25,6 @@ class NotificationService {
 
   /// Initialize the notification service
   static Future<void> initialize() async {
-    print('🔔 Initializing Notification Service...');
-
     // Request permissions
     final settings = await _messaging.requestPermission(
       alert: true,
@@ -35,8 +34,6 @@ class NotificationService {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('✅ Notification permission granted');
-
       await _initializeLocalNotifications();
       await _saveTokenToFirestore();
       _setupMessageHandlers();
@@ -115,11 +112,8 @@ class NotificationService {
       final user = FirebaseAuth.instance.currentUser;
 
       if (token != null && user != null) {
-        print('💾 Saving FCM token...');
 
         final isAdmin = await _checkIfUserIsAdmin(user.uid);
-
-        // Save to user document
         if(isAdmin){
           await _firestore.collection('admin').doc(user.uid).update({
             'fcmToken': token,
@@ -358,8 +352,16 @@ class NotificationService {
 
   /// Refresh FCM token
   static Future<void> refreshToken() async {
-    print('🔄 Refreshing FCM token...');
-    await _saveTokenToFirestore();
+    try{
+      await _saveTokenToFirestore();
+      /*String dateString = DateFormat('d').format(DateTime.now());
+      print(dateString);
+      if(dateString == '3'){
+        await _saveTokenToFirestore();
+      }*/
+    }catch(e){
+      print('error : $e');
+    }
   }
 
   /// Clear FCM token (on logout)
@@ -367,9 +369,19 @@ class NotificationService {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await _firestore.collection('users').doc(user.uid).update({
-          'fcmToken': FieldValue.delete(),
-        });
+        if(await _checkIfUserIsAdmin(user.uid)){
+          await _firestore.collection('admin').doc(user.uid).update({
+            'fcmToken': FieldValue.delete(),
+            'lastTokenUpdate': FieldValue.serverTimestamp(),
+            'platform': defaultTargetPlatform.name,
+          });
+        }else{
+          await _firestore.collection('users').doc(user.uid).update({
+            'fcmToken': FieldValue.delete(),
+            'lastTokenUpdate': FieldValue.serverTimestamp(),
+            'platform': defaultTargetPlatform.name,
+          });
+        }
         await _firestore.collection('userTokens').doc(user.uid).delete();
         print('✅ FCM token cleared');
       }

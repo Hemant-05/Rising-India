@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/comman/back_button.dart';
+import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/features/admin/order/bloc/admin_order_details_cubit.dart';
+import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
 import 'package:raising_india/models/order_model.dart';
 import 'package:raising_india/models/order_with_product_model.dart';
 import 'package:raising_india/models/ordered_product.dart';
@@ -16,10 +18,7 @@ import 'package:intl/intl.dart';
 class AdminOrderDetailScreen extends StatefulWidget {
   final OrderWithProducts orderWithProducts;
 
-  const AdminOrderDetailScreen({
-    super.key,
-    required this.orderWithProducts,
-  });
+  const AdminOrderDetailScreen({super.key, required this.orderWithProducts});
 
   @override
   State<AdminOrderDetailScreen> createState() => _AdminOrderDetailScreenState();
@@ -33,6 +32,7 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
   late bool payIsPending = true;
   late bool orderIsRunning = true;
   bool isUpdating = false;
+  final TextEditingController _cancelController = TextEditingController();
 
   final List<Map<String, dynamic>> orderStatusStages = [
     {
@@ -136,14 +136,20 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
           children: [
             Text(
               'Location Options',
-              style: simple_text_style(fontSize: 18, fontWeight: FontWeight.w600),
+              style: simple_text_style(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 20),
 
             ListTile(
               leading: const Icon(Icons.map_outlined, color: Colors.blue),
-              title: Text('Open in Google Maps',style: simple_text_style(),),
-              subtitle: Text('Navigate to delivery location',style: simple_text_style(),),
+              title: Text('Open in Google Maps', style: simple_text_style()),
+              subtitle: Text(
+                'Navigate to delivery location',
+                style: simple_text_style(),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 _openGoogleMaps(
@@ -155,15 +161,23 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
 
             ListTile(
               leading: const Icon(Icons.copy_outlined, color: Colors.green),
-              title: Text('Copy Address',style: simple_text_style(),),
-              subtitle: Text('Copy address to clipboard',style: simple_text_style(),),
+              title: Text('Copy Address', style: simple_text_style()),
+              subtitle: Text(
+                'Copy address to clipboard',
+                style: simple_text_style(),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 Clipboard.setData(
                   ClipboardData(text: order.address.fullAddress),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Address copied to clipboard',style: simple_text_style(),)),
+                  SnackBar(
+                    content: Text(
+                      'Address copied to clipboard',
+                      style: simple_text_style(),
+                    ),
+                  ),
                 );
               },
             ),
@@ -171,8 +185,11 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
             if (order.address.contactNumber.isNotEmpty)
               ListTile(
                 leading: const Icon(Icons.phone_outlined, color: Colors.orange),
-                title: Text('Call Customer',style: simple_text_style(),),
-                subtitle: Text(order.address.contactNumber,style: simple_text_style(),),
+                title: Text('Call Customer', style: simple_text_style()),
+                subtitle: Text(
+                  order.address.contactNumber,
+                  style: simple_text_style(),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   _launchPhone(order.address.contactNumber);
@@ -347,6 +364,12 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                 // Order Status Section
                 _buildOrderStatusSection(),
                 const SizedBox(height: 16),
+
+                // Cancel Order Status Section
+                if (currentOrderStatus != OrderStatusCancelled && currentOrderStatus != OrderStatusDeliverd) ...{
+                  _cancelOrderStatus(),
+                  const SizedBox(height: 16),
+                },
 
                 // Payment Status Section
                 _buildPaymentStatusSection(),
@@ -754,6 +777,77 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
     );
   }
 
+  Widget _cancelOrderStatus() {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: AppColour.white,
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.cancel_outlined, color: AppColour.red),
+                const SizedBox(width: 8),
+                Text(
+                  'Cancel This Order',
+                  style: simple_text_style(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _cancelController,
+                    decoration: InputDecoration(hintText: 'Enter Reason'),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    String reason = _cancelController.text.trim().toString();
+                    if (reason.isNotEmpty) {
+                      context.read<AdminOrderDetailsCubit>().cancelOrder(
+                        order.orderId,
+                        '$reason \nCancelled By : Rising India Corporation',
+                        order.paymentStatus,
+                      );
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Please Enter Reason, to Cancel the order',
+                          ),
+                          backgroundColor: AppColour.red,
+                        ),
+                      );
+                    }
+                  },
+                  style: elevated_button_style(width: 100),
+                  child: Text(
+                    'Cancel',
+                    style: simple_text_style(
+                      color: AppColour.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildOrderStatusSection() {
     orderIsRunning =
         currentOrderStatus == OrderStatusPreparing ||
@@ -922,8 +1016,8 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                     widget.orderWithProducts.order.orderStatus ==
                             OrderStatusCancelled
                         ? 'Reason : ${widget.orderWithProducts.order.cancellationReason}'
-                        : 'Delivered At : ${DateFormat('d/MM/yy • h:mm a').format(widget.orderWithProducts.order.deliveredAt??DateTime.now())}',
-                    style: simple_text_style(),
+                        : 'Delivered At : ${DateFormat('d/MM/yy • h:mm a').format(widget.orderWithProducts.order.deliveredAt ?? DateTime.now())}',
+                    style: simple_text_style(fontSize: 14),
                   ),
           ],
         ),
@@ -961,7 +1055,9 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: currentPaymentStatus == PayStatusPaid
+                      color: currentPaymentStatus == PayStatusNotPaid
+                          ? Colors.grey.shade400
+                          : currentPaymentStatus == PayStatusPaid
                           ? Colors.green.withOpacity(0.2)
                           : currentPaymentStatus == PayStatusPending
                           ? AppColour.primary.withOpacity(0.2)
@@ -972,7 +1068,9 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                       currentPaymentStatus.toUpperCase(),
                       style: simple_text_style(
                         fontWeight: FontWeight.bold,
-                        color: currentPaymentStatus == PayStatusPaid
+                        color: currentPaymentStatus == PayStatusNotPaid
+                            ? Colors.grey.shade800
+                            : currentPaymentStatus == PayStatusPaid
                             ? Colors.green
                             : currentPaymentStatus == PayStatusPending
                             ? AppColour.primary
@@ -983,6 +1081,14 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
               ],
             ),
             const SizedBox(height: 16),
+            if(currentOrderStatus != OrderStatusDeliverd && currentPaymentStatus == PayStatusPaid)
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  _buildPaymentStatusChip('refunded','Refunded',Colors.blue),
+                ],
+              ),
 
             if (payIsPending)
               Wrap(
@@ -993,6 +1099,7 @@ class _AdminOrderDetailScreenState extends State<AdminOrderDetailScreen> {
                   _buildPaymentStatusChip('paid', 'Paid', Colors.green),
                   _buildPaymentStatusChip('failed', 'Failed', Colors.red),
                   _buildPaymentStatusChip('refunded', 'Refunded', Colors.blue),
+                  _buildPaymentStatusChip('not_paid', 'Not Paid', Colors.grey),
                 ],
               ),
           ],

@@ -19,6 +19,7 @@ const String PayStatusPending = 'pending';
 const String PayStatusPaid = 'paid';
 const String PayStatusFailed = 'failed';
 const String PayStatusRefunded = 'refunded';
+const String PayStatusNotPaid = 'not_paid';
 
 final String welcomeDescription = 'We are glad to have you here. Let\'s get started with your journey towards making a difference in your life.';
 
