@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:raising_india/comman/helper_functions.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/user/product_details/bloc/product_funtction_bloc/product_fun_bloc.dart';
@@ -9,7 +10,8 @@ import 'package:raising_india/models/product_model.dart';
 
 class product_card extends StatelessWidget {
   final ProductModel product;
-  const product_card({super.key, required this.product});
+  final bool isBig;
+  const product_card({super.key, required this.product, required this.isBig});
 
   @override
   Widget build(BuildContext context) {
@@ -117,12 +119,36 @@ class product_card extends StatelessWidget {
                             ),
                           ],
                         )
-                      : Text(
-                          '₹ ${product.price}',
-                          style: simple_text_style(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      : Row(
+                          children: [
+                            if (isBig)
+                              Text(
+                                '₹${product.mrp ?? (product.price + 5).toStringAsFixed(0)}',
+                                style: TextStyle(
+                                  fontFamily: 'Sen',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.lineThrough
+                                ),
+                              ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '₹${product.price.toStringAsFixed(0)}',
+                              style: simple_text_style(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${calculatePercentage(null, product.price).toStringAsFixed(0)}% off',
+                              style: simple_text_style(
+                                fontSize: 10,
+                                color: AppColour.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                 ],
               ),

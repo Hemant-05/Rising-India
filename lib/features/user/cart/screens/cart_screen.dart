@@ -30,6 +30,27 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductFunBloc, ProductFunState>(
       builder: (context, state) {
+        var total = state.getCartProduct
+            .fold(
+              0,
+              (total, product) =>
+                  total +
+                  ((product['product'].price).toInt() * product['quantity']
+                      as int),
+            )
+            .toString();
+        var mrpTotal = state.getCartProduct
+            .fold(
+              0,
+              (total, product) =>
+                  total +
+                  ((product['product'].mrp ?? (product['product'].price + 5))
+                              .toInt() *
+                          product['quantity']
+                      as int),
+            )
+            .toString();
+        var save = (double.parse(mrpTotal) - double.parse(total));
         return Scaffold(
           backgroundColor: AppColour.white,
           appBar: AppBar(
@@ -146,11 +167,31 @@ class _CartScreenState extends State<CartScreen> {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          subtitle: Text(
-                                            '${product.price} x ${state.getCartProduct[index]['quantity']} = ₹${(product.price * state.getCartProduct[index]['quantity']).toInt()}',
-                                            style: simple_text_style(
-                                              fontSize: 14,
-                                            ),
+                                          subtitle: Row(
+                                            children: [
+                                              Text(
+                                                '${product.mrp??(product.price + 5)} x ${state.getCartProduct[index]['quantity']} = ',
+                                                style: simple_text_style(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              Text(
+                                                '₹${((product.mrp?? (product.price + 5)) * state.getCartProduct[index]['quantity']).toInt()}',
+                                                style: TextStyle(
+                                                  fontFamily: 'Sen',
+                                                  decorationThickness: 2,
+                                                  decoration: TextDecoration.lineThrough,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                '₹${(product.price * state.getCartProduct[index]['quantity']).toInt()}',
+                                                style: simple_text_style(
+                                                  fontSize: 14,
+                                                ),
+                                              )
+                                            ],
                                           ),
                                           trailing: Row(
                                             mainAxisSize: MainAxisSize.min,
@@ -304,17 +345,56 @@ class _CartScreenState extends State<CartScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Total: ₹${state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString()}',
-                              style: simple_text_style(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Total',
+                                      style: simple_text_style(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '₹$mrpTotal',
+                                      style: TextStyle(
+                                        decorationThickness: 2,
+                                        decoration: TextDecoration.lineThrough,
+                                        fontFamily: 'Sen',
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '₹$total',
+                                      style: simple_text_style(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (save != 0)
+                                  Text(
+                                    'You Save: ₹${save}',
+                                    style: simple_text_style(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                              ],
                             ),
                             Text(
                               'Free Delivery Above ₹99',
                               style: simple_text_style(
-                                color: double.parse(state.getCartProduct.fold(0, (total, product) => total + ((product['product'].price).toInt() * product['quantity'] as int)).toString()) > 99 ? AppColour.green : AppColour.grey,
+                                fontSize: 14,
+                                color: double.parse(total.toString()) > 99
+                                    ? AppColour.green
+                                    : AppColour.grey,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -326,10 +406,9 @@ class _CartScreenState extends State<CartScreen> {
                                   final result = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          SelectAddressScreen(
-                                            isFromProfile: false,
-                                          ),
+                                      builder: (context) => SelectAddressScreen(
+                                        isFromProfile: false,
+                                      ),
                                     ),
                                   );
                                   if (result != null) {
@@ -356,19 +435,19 @@ class _CartScreenState extends State<CartScreen> {
                                               address: address,
                                               addressCode: location,
                                               total: totalPrice,
+                                              mrpTotal: mrpTotal,
                                               email: user!.email,
                                               contact: user.number,
                                               name: user.name,
                                               cartProductList:
                                                   state.getCartProduct,
-                                              isVerified: user.isVerified??false,
+                                              isVerified:
+                                                  user.isVerified ?? false,
                                             ),
                                       ),
                                     );
                                   } else {
-                                    ScaffoldMessenger.of(
-                                      context,
-                                    ).showSnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         backgroundColor: AppColour.white,
                                         content: Text(

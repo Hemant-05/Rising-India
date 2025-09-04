@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/elevated_button_style.dart';
+import 'package:raising_india/comman/helper_functions.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
@@ -22,6 +23,7 @@ class ProductDetailsScreen extends StatelessWidget {
     return BlocBuilder<ProductFunBloc, ProductFunState>(
       builder: (context, state) {
         var totalPrice = product.price * state.quantity;
+        var mrpTotal = (product.mrp ?? product.price + 5) * state.quantity;
         return state.isLoadingProductDetails
             ? Scaffold(
                 body: Center(
@@ -47,10 +49,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     Expanded(
                       flex: 4,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 8.0,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,14 +77,18 @@ class ProductDetailsScreen extends StatelessWidget {
                                               );
                                             },
                                         errorWidget:
-                                            (context, error, stackTrace) =>
-                                                Center(
-                                                  child: Icon(
-                                                    Icons.image_not_supported_outlined,
-                                                    size: 40,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
+                                            (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) => Center(
+                                              child: Icon(
+                                                Icons
+                                                    .image_not_supported_outlined,
+                                                size: 40,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
                                       ),
                                     );
                                   },
@@ -172,6 +175,7 @@ class ProductDetailsScreen extends StatelessWidget {
                             )
                           : Container(
                               alignment: Alignment.center,
+                              height: double.infinity,
                               padding: EdgeInsets.all(16.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.only(
@@ -180,7 +184,9 @@ class ProductDetailsScreen extends StatelessWidget {
                                 ),
                                 color: AppColour.lightGrey.withOpacity(0.2),
                               ),
-                              child: (!state.product!.isOutOfStock && state.product!.isAvailable)
+                              child:
+                                  (!state.product!.isOutOfStock &&
+                                      state.product!.isAvailable)
                                   ? Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
@@ -189,12 +195,38 @@ class ProductDetailsScreen extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              '₹ $totalPrice',
-                                              style: simple_text_style(
-                                                fontSize: 26,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  '₹${mrpTotal.toStringAsFixed(0)}',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Sen',
+                                                    fontSize: 22,
+                                                    decorationThickness: 2,
+                                                    fontWeight: FontWeight.w500,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  '₹${totalPrice.toStringAsFixed(0)}',
+                                                  style: simple_text_style(
+                                                    fontSize: 26,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 6),
+                                                Text(
+                                                  '${calculatePercentage(mrpTotal, totalPrice).toStringAsFixed(0)}% off',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Sen',
+                                                    fontSize: 14,
+                                                    color: AppColour.green,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                             Container(
                                               padding: EdgeInsets.symmetric(
@@ -226,7 +258,8 @@ class ProductDetailsScreen extends StatelessWidget {
                                                     )
                                                   : Row(
                                                       children: [
-                                                        InkWell(
+                                                        GestureDetector(
+
                                                           onTap: () {
                                                             context
                                                                 .read<

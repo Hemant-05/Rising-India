@@ -6,6 +6,7 @@ class ProductModel {
   final String name;
   final String description;
   final double price;
+  final double? mrp;
   final double rating; // Default rating if not provided
   final bool isAvailable; // Default availability status
   final double quantity;
@@ -30,6 +31,7 @@ class ProductModel {
     required this.price,
     required this.quantity,
     required this.measurement,
+    this.mrp,
     this.stockQuantity,
     this.lowStockQuantity,
     this.lastStockUpdate,
@@ -63,6 +65,7 @@ class ProductModel {
       measurement: map['measurement'] ?? '',
       photos_list: List<String>.from(map['photos_list'] ?? []),
       uid: uid,
+      mrp: map['mrp'],
       stockQuantity: double.parse(map['stockQuantity'].toString()),
       lowStockQuantity: double.parse(map['lowStockQuantity'].toString()),
       lastStockUpdate: map['lastStockUpdate'] != null
@@ -81,6 +84,7 @@ class ProductModel {
       'description': description,
       'isAvailable': isAvailable,
       'price': price,
+      'mrp': mrp,
       'rating': rating,
       'quantity': quantity,
       'measurement': measurement,

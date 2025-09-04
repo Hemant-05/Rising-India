@@ -95,13 +95,7 @@ class _NotificationScreenAState extends State<NotificationScreenA> {
       backgroundColor: AppColour.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            back_button(),
-            const SizedBox(width: 8),
-            Text('Notifications', style: simple_text_style(fontSize: 20)),
-          ],
-        ),
+        title: Text('Notifications', style: simple_text_style(fontSize: 20)),
         backgroundColor: AppColour.white,
       ),
       body: RefreshIndicator(
@@ -226,8 +220,6 @@ class _EmptyState extends StatelessWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            const SizedBox(height: 16),
-            FilledButton(onPressed: onBrowse, child: const Text('Browse products')),
           ],
         ),
       ),

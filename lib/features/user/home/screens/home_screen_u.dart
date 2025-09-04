@@ -5,7 +5,6 @@ import 'package:raising_india/comman/cart_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConString.dart';
-import 'package:raising_india/features/admin/banner/screen/add_banner_screen.dart';
 import 'package:raising_india/features/auth/services/auth_service.dart';
 import 'package:raising_india/features/user/address/screens/select_address_screen.dart';
 import 'package:raising_india/features/user/home/bloc/user_product_bloc/category_product_bloc.dart';
@@ -14,15 +13,12 @@ import 'package:raising_india/features/user/home/widgets/categories_section.dart
 import 'package:raising_india/features/user/home/widgets/product_grid.dart';
 import 'package:raising_india/features/user/home/widgets/search_bar_widget.dart';
 import 'package:raising_india/features/user/order/bloc/order_bloc.dart';
-import 'package:raising_india/features/user/order/screens/order_details_screen.dart';
-import 'package:raising_india/features/user/order/screens/order_screen.dart';
 import 'package:raising_india/features/user/order/screens/order_tracking_screen.dart';
-import 'package:raising_india/features/user/order/widgets/on_going_widget.dart';
 import 'package:raising_india/features/user/profile/bloc/profile_bloc.dart';
 import 'package:raising_india/features/user/profile/screens/profile_screen.dart';
 import 'package:raising_india/models/order_model.dart';
 import '../../../auth/bloc/auth_bloc.dart';
-import '../widgets/product_card.dart' show product_card;
+import '../widgets/product_card.dart';
 
 class HomeScreenU extends StatefulWidget {
   const HomeScreenU({super.key});
@@ -182,7 +178,7 @@ class _HomeScreenUState extends State<HomeScreenU> {
               separatorBuilder: (_, __) => const SizedBox(width: 12),
           itemBuilder: (context, i) => SizedBox(
           width: 180,
-          child: product_card(product: list[i]), // uses redesigned card below
+          child: product_card(product: list[i],isBig: true), // uses redesigned card below
           ),
           );
         },

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
   late TextEditingController nameController;
   late TextEditingController descriptionController;
   late TextEditingController priceController;
+  late TextEditingController mrpController;
   late TextEditingController quantityController;
   late TextEditingController measurementController;
   late TextEditingController stockQuantityController;
@@ -49,6 +51,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     priceController = TextEditingController(
       text: widget.product.price.toString(),
     );
+    mrpController = TextEditingController(text: widget.product.mrp.toString());
     quantityController = TextEditingController(
       text: widget.product.quantity.toString(),
     );
@@ -103,6 +106,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     nameController.addListener(_onFieldChanged);
     descriptionController.addListener(_onFieldChanged);
     priceController.addListener(_onFieldChanged);
+    mrpController.addListener(_onFieldChanged);
     quantityController.addListener(_onFieldChanged);
     measurementController.addListener(_onFieldChanged);
     stockQuantityController.addListener(_onFieldChanged);
@@ -125,6 +129,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     nameController.dispose();
     descriptionController.dispose();
     priceController.dispose();
+    mrpController.dispose();
     quantityController.dispose();
     measurementController.dispose();
     stockQuantityController.dispose();
@@ -146,6 +151,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
         'price':
             double.tryParse(priceController.text.trim()) ??
             widget.product.price,
+        'mrp': double.parse(mrpController.text.trim()) ?? widget.product.mrp,
         'quantity':
             double.tryParse(quantityController.text.trim()) ??
             widget.product.quantity,
@@ -184,7 +190,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
             children: [
               Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 8),
-              const Text('🎉 Product updated successfully!'),
+              Text('🎉 Product updated successfully!',style: simple_text_style(color: AppColour.white),),
             ],
           ),
           backgroundColor: Colors.green,
@@ -204,7 +210,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
             children: [
               Icon(Icons.error, color: Colors.white),
               const SizedBox(width: 8),
-              Expanded(child: Text("Save Failed: $e")),
+              Expanded(child: Text("Save Failed: $e",style: simple_text_style(color: AppColour.white),)),
             ],
           ),
           backgroundColor: Colors.red,
@@ -251,7 +257,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
           children: [
             Text(
               "Are you sure you want to delete this product?",
-              style: TextStyle(fontFamily: 'Sen', fontSize: 16),
+              style: simple_text_style(fontSize: 16),
             ),
             const SizedBox(height: 8),
             Text(
@@ -293,7 +299,11 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     );
 
     if (confirmed == true) {
-      context.read<ProductsCubit>().deleteProduct(context, widget.product.pid,widget.product.photos_list);
+      context.read<ProductsCubit>().deleteProduct(
+        context,
+        widget.product.pid,
+        widget.product.photos_list,
+      );
     }
   }
 
@@ -599,10 +609,10 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              widget.product.photos_list[index],
+                            child: CachedNetworkImage(
+                              imageUrl: widget.product.photos_list[index],
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Container(
+                              errorWidget: (_, __, ___) => Container(
                                 color: Colors.grey.shade200,
                                 child: Icon(
                                   Icons.broken_image,
@@ -688,28 +698,28 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
       icon: Icons.attach_money_outlined,
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: _buildStyledTextField(
-                  controller: priceController,
-                  label: 'Price (₹)',
-                  icon: Icons.currency_rupee,
-                  hintText: '99.00',
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildStyledTextField(
-                  controller: quantityController,
-                  label: 'Selling Quantity',
-                  icon: Icons.production_quantity_limits,
-                  hintText: '500',
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-            ],
+          _buildStyledTextField(
+            controller: mrpController,
+            label: 'MRP (₹)',
+            icon: Icons.currency_rupee,
+            hintText: '99.00',
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 16),
+          _buildStyledTextField(
+            controller: priceController,
+            label: 'Selling Price (₹)',
+            icon: Icons.currency_rupee,
+            hintText: '99.00',
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 16),
+          _buildStyledTextField(
+            controller: quantityController,
+            label: 'Selling Quantity',
+            icon: Icons.production_quantity_limits,
+            hintText: '500',
+            keyboardType: TextInputType.number,
           ),
           const SizedBox(height: 16),
           _buildMeasurementDropdown(),
@@ -1138,7 +1148,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
         ),
         content: Text(
           'You have unsaved changes. Do you want to discard them?',
-          style: TextStyle(fontFamily: 'Sen', fontSize: 16),
+          style: simple_text_style(fontSize: 16),
         ),
         actions: [
           TextButton(

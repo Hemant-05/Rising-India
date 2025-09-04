@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -52,8 +53,8 @@ Widget onGoingWidget(List<OrderModel> list) {
                                   child: Column(
                                     children: [
                                       Expanded(
-                                        child: Image.network(
-                                          imageList[0],
+                                        child: CachedNetworkImage(
+                                          imageUrl: imageList[0],
                                           fit: BoxFit.cover,
                                         ),
                                       ),

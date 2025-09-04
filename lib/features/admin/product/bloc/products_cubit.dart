@@ -42,14 +42,14 @@ class ProductsCubit extends Cubit<ProductsState> {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: AppColour.primary,
-                content: Text("Product deleted successfully",style: simple_text_style(),))
+                content: Text("Product deleted successfully",style: simple_text_style(color: AppColour.white),))
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               backgroundColor: AppColour.primary,
-              content: Text("Delete failed: $e",style: simple_text_style(),))
+              content: Text("Delete failed: $e",style: simple_text_style(color: AppColour.white),))
       );
     }
   }

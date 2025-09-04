@@ -20,8 +20,8 @@ class AddNewItemScreen extends StatefulWidget {
 
 class _AddNewItemScreenState extends State<AddNewItemScreen>
     with TickerProviderStateMixin {
-  // Your existing controllers
   final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _mrpController = TextEditingController();
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _ratingController = TextEditingController();
   final TextEditingController _stockQuantityController =
@@ -411,31 +411,32 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       icon: Icons.scale_outlined,
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: _buildStyledTextField(
-                  controller: _priceController,
-                  hintText: 'Price (₹)',
-                  icon: Icons.currency_rupee,
-                  keyboardType: TextInputType.number,
-                  validator: (value) =>
-                      value?.isEmpty ?? true ? 'Price is required' : null,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildStyledTextField(
-                  controller: _quantityController,
-                  hintText: 'Quantity',
-                  icon: Icons.production_quantity_limits,
-                  keyboardType: TextInputType.number,
-                  validator: (value) =>
-                  value?.isEmpty ?? true ? 'Quantity is required' : null,
-                ),
-              ),
-            ],
-            ),
+          _buildStyledTextField(
+            controller: _mrpController,
+            hintText: 'MRP (₹)',
+            icon: Icons.currency_rupee,
+            keyboardType: TextInputType.number,
+            validator: (value) =>
+                value?.isEmpty ?? true ? 'Price is required' : null,
+          ),
+          const SizedBox(height: 16),
+          _buildStyledTextField(
+            controller: _priceController,
+            hintText: 'Selling Price (₹)',
+            icon: Icons.currency_rupee,
+            keyboardType: TextInputType.number,
+            validator: (value) =>
+            value?.isEmpty ?? true ? 'Price is required' : null,
+          ),
+          const SizedBox(height: 16),
+          _buildStyledTextField(
+            controller: _quantityController,
+            hintText: 'Quantity',
+            icon: Icons.production_quantity_limits,
+            keyboardType: TextInputType.number,
+            validator: (value) =>
+            value?.isEmpty ?? true ? 'Quantity is required' : null,
+          ),
           const SizedBox(height: 16),
           _buildMeasurementDropdown(),
         ],
@@ -892,6 +893,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       );
       String uid = FirebaseAuth.instance.currentUser!.uid;
       double price = double.parse(_priceController.text.trim());
+      double mrp = double.parse(_mrpController.text.trim());
       String itemDescription = _itemDescriptionController.text.trim();
       String category = _categoryController.text.trim();
       double sellQuantity = double.parse(_quantityController.text.trim());
@@ -908,6 +910,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
 
       ProductModel newItem = ProductModel(
         price: price,
+        mrp: mrp,
         name: itemName,
         name_lower: itemName.toLowerCase(),
         description: itemDescription,

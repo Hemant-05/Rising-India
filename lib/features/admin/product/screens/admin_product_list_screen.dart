@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/product/bloc/products_cubit.dart';
 import 'package:raising_india/features/admin/product/screens/admin_product_details_screen.dart';
+import 'package:raising_india/models/product_model.dart';
 
 class AdminProductListScreen extends StatefulWidget {
   const AdminProductListScreen({super.key});
@@ -305,7 +307,7 @@ class _AdminProductListScreenState extends State<AdminProductListScreen>
               padding: const EdgeInsets.all(16),
               itemCount: products.length,
               itemBuilder: (context, index) {
-                final product = products[index];
+                ProductModel product = products[index];
                 return _buildProductCard(product, index);
               },
             ),
@@ -402,7 +404,7 @@ class _AdminProductListScreenState extends State<AdminProductListScreen>
     );
   }
 
-  Widget _buildProductCard(dynamic product, int index) {
+  Widget _buildProductCard(ProductModel product, int index) {
     return TweenAnimationBuilder<double>(
       duration: Duration(milliseconds: 500 + (index * 100)),
       tween: Tween<double>(begin: 0.0, end: 1.0),
@@ -467,10 +469,10 @@ class _AdminProductListScreenState extends State<AdminProductListScreen>
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: product.photos_list.isNotEmpty
-            ? Image.network(
-          product.photos_list.first,
+            ? CachedNetworkImage(
+          imageUrl : product.photos_list.first,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Container(
+          errorWidget: (context, error, stackTrace) => Container(
             color: Colors.grey.shade100,
             child: Icon(
               Icons.broken_image,
@@ -491,7 +493,7 @@ class _AdminProductListScreenState extends State<AdminProductListScreen>
     );
   }
 
-  Widget _buildProductInfo(dynamic product) {
+  Widget _buildProductInfo(ProductModel product) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -511,6 +513,24 @@ class _AdminProductListScreenState extends State<AdminProductListScreen>
         // Price and Quantity
         Row(
           children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColour.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                '₹${product.mrp?.toStringAsFixed(0) ?? (product.price + 5).toStringAsFixed(0)}',
+                style: TextStyle(
+                  fontFamily: 'Sen',
+                  decoration: TextDecoration.lineThrough,
+                  color: AppColour.primary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(

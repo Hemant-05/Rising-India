@@ -27,6 +27,7 @@ class PaymentCheckoutScreen extends StatefulWidget {
     required this.address,
     required this.addressCode,
     required this.total,
+    required this.mrpTotal,
     required this.name,
     required this.contact,
     required this.email,
@@ -37,6 +38,7 @@ class PaymentCheckoutScreen extends StatefulWidget {
   final String address;
   final LatLng addressCode;
   final String total;
+  final String mrpTotal;
   final String name;
   final String contact;
   final String email;
@@ -990,8 +992,9 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
               ],
             ),
             const SizedBox(height: 16),
-
-            _buildPriceRow('Subtotal', '₹${widget.total}'),
+            _buildPriceRow('Total', '₹${widget.mrpTotal}'),
+            _buildPriceRow('Discounted Price', '₹${widget.total}'),
+            _buildPriceRow('Your Saving', '₹${double.parse(widget.mrpTotal) - double.parse(widget.total)}'),
             _buildPriceRow(
               'Delivery Fee',
               double.parse(widget.total) < 99 ? '₹${deliveryFee}' : 'Free',

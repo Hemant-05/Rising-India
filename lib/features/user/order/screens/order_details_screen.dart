@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:raising_india/comman/back_button.dart';
@@ -107,10 +108,10 @@ class OrderDetailsScreen extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      product["image"] ?? "",
+                    child: CachedNetworkImage(
+                      imageUrl : product["image"] ?? "",
                       width: 48, height: 48, fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Icon(Icons.image),
+                      errorWidget: (_, __, ___) => const Icon(Icons.image),
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -132,9 +133,9 @@ class OrderDetailsScreen extends StatelessWidget {
             child: Text('Order Summary', style: simple_text_style(fontWeight: FontWeight.bold,fontSize: 18),
             ),
           ),
-          _orderSummaryRow("Subtotal", order.subtotal),
-          _orderSummaryRow("Delivery Fee", order.deliveryFee),
-          _orderSummaryRow("Platform Fee", platformFee),
+          _orderSummaryRow("Subtotal", order.subtotal.toStringAsFixed(1)),
+          _orderSummaryRow("Delivery Fee", '0' == order.deliveryFee.toStringAsFixed(0)? 'Free' : order.deliveryFee.toStringAsFixed(0)),
+          _orderSummaryRow("Platform Fee", platformFee.toStringAsFixed(0)),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,13 +172,13 @@ class OrderDetailsScreen extends StatelessWidget {
   }
 
   // --- UI Helpers ---
-  Widget _orderSummaryRow(String label, double value) => Padding(
+  Widget _orderSummaryRow(String label, String value) => Padding(
     padding: const EdgeInsets.only(bottom: 4),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: simple_text_style()),
-        Text("${value.toStringAsFixed(2)}", style: simple_text_style(fontSize: 14,color: AppColour.grey)),
+        Text(value, style: simple_text_style(fontSize: 14,color: AppColour.grey)),
       ],
     ),
   );
