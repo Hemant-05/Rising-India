@@ -141,7 +141,7 @@ class product_card extends StatelessWidget {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              '${calculatePercentage(null, product.price).toStringAsFixed(0)}% off',
+                              '${calculatePercentage((product.mrp?? product.price + 5) , product.price).toStringAsFixed(0)}% off',
                               style: simple_text_style(
                                 fontSize: 10,
                                 color: AppColour.green,
