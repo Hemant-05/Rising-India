@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
+import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/features/admin/product/bloc/products_cubit.dart';
 import 'package:raising_india/features/services/stock_management_repository.dart';
 import 'package:raising_india/models/product_model.dart';
@@ -28,6 +29,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
   late TextEditingController stockQuantityController;
   late TextEditingController lowStockController;
   late TextEditingController ratingController;
+  late TextEditingController categoryController;
 
   bool isAvailable = false;
   bool loading = false;
@@ -51,7 +53,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     priceController = TextEditingController(
       text: widget.product.price.toString(),
     );
-    mrpController = TextEditingController(text: widget.product.mrp.toString());
+    mrpController = widget.product.mrp == null? TextEditingController(text: (widget.product.price + 5).toString()) : TextEditingController(text: widget.product.mrp.toString());
     quantityController = TextEditingController(
       text: widget.product.quantity.toString(),
     );
@@ -67,6 +69,8 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     ratingController = TextEditingController(
       text: widget.product.rating.toString(),
     );
+    categoryController = TextEditingController(
+      text: widget.product.category);
     isAvailable = widget.product.isAvailable;
 
     // ✅ Initialize animations
@@ -112,6 +116,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     stockQuantityController.addListener(_onFieldChanged);
     lowStockController.addListener(_onFieldChanged);
     ratingController.addListener(_onFieldChanged);
+    categoryController.addListener(_onFieldChanged);
   }
 
   void _onFieldChanged() {
@@ -135,6 +140,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     stockQuantityController.dispose();
     lowStockController.dispose();
     ratingController.dispose();
+    categoryController.dispose();
     super.dispose();
   }
 
@@ -142,6 +148,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     if (loading) return;
 
     setState(() => loading = true);
+    print('-----------------------1');
 
     try {
       // ✅ Prepare updated data with validation
@@ -151,7 +158,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
         'price':
             double.tryParse(priceController.text.trim()) ??
             widget.product.price,
-        'mrp': double.parse(mrpController.text.trim()) ?? widget.product.mrp,
+        'mrp': mrpController.text.trim().isEmpty? (widget.product.price + 5) : double.parse(mrpController.text.trim()),
         'quantity':
             double.tryParse(quantityController.text.trim()) ??
             widget.product.quantity,
@@ -163,6 +170,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
         'rating':
             double.tryParse(ratingController.text.trim()) ??
             widget.product.rating,
+        'category': categoryController.text.trim(),
         'isAvailable': isAvailable,
         'name_lower': nameController.text.trim().toLowerCase(),
       };
@@ -190,7 +198,10 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
             children: [
               Icon(Icons.check_circle, color: Colors.white),
               const SizedBox(width: 8),
-              Text('🎉 Product updated successfully!',style: simple_text_style(color: AppColour.white),),
+              Text(
+                '🎉 Product updated successfully!',
+                style: simple_text_style(color: AppColour.white),
+              ),
             ],
           ),
           backgroundColor: Colors.green,
@@ -210,7 +221,12 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
             children: [
               Icon(Icons.error, color: Colors.white),
               const SizedBox(width: 8),
-              Expanded(child: Text("Save Failed: $e",style: simple_text_style(color: AppColour.white),)),
+              Expanded(
+                child: Text(
+                  "Save Failed: $e",
+                  style: simple_text_style(color: AppColour.white),
+                ),
+              ),
             ],
           ),
           backgroundColor: Colors.red,
@@ -687,6 +703,13 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
             hintText: '4.5',
             keyboardType: TextInputType.number,
           ),
+          const SizedBox(height: 16),
+          _buildStyledDropdown(
+            label: 'Category',
+            controller: categoryController,
+            hintText: 'Select Category',
+            icon: Icons.category_outlined,
+          ),
         ],
       ),
     );
@@ -940,6 +963,78 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     );
   }
 
+  Widget _buildStyledDropdown({
+    required TextEditingController controller,
+    required String hintText,
+    required IconData icon,
+    required String label,
+  }) {
+    return BlocConsumer<CategoryBloc, CategoryState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: simple_text_style(
+                color: AppColour.primary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Icon(icon, color: AppColour.primary, size: 20),
+                  ),
+                  Expanded(
+                    child: DropdownMenu(
+                      controller: categoryController,
+                      width: double.infinity,
+                      textStyle: simple_text_style(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                      hintText: hintText,
+                      inputDecorationTheme: InputDecorationTheme(
+                        border: InputBorder.none,
+                        hintStyle: simple_text_style(color: AppColour.lightGrey),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      menuStyle: MenuStyle(
+                        backgroundColor: MaterialStateProperty.all(AppColour.white),
+                        elevation: MaterialStateProperty.all(8),
+                      ),
+                      dropdownMenuEntries: state is CategoryLoaded
+                          ? state.categories
+                                .map(
+                                  (category) => DropdownMenuEntry(
+                                    value: category.value,
+                                    label: category.name,
+                                  ),
+                                )
+                                .toList()
+                          : [],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildMeasurementDropdown() {
     // ✅ FIXED: Ensure unique values and handle case sensitivity
     final List<Map<String, String>> measurements = [
@@ -1018,6 +1113,8 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
           child: DropdownButtonFormField<String>(
             // ✅ Use normalized value that matches dropdown items
             value: normalizedCurrentValue,
+            dropdownColor: AppColour.white,
+            borderRadius: BorderRadius.circular(12),
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: const EdgeInsets.all(16),
