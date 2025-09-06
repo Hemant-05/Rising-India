@@ -79,8 +79,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  flex: 1,
+                SizedBox(
+                  height: 180,
+                  width: double.infinity,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -104,10 +105,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         topRight: Radius.circular(22),
                       ),
                     ),
-                    padding: const EdgeInsets.all(22),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          const SizedBox(height: 20),
                           cus_text_field(
                             label: 'EMAIL',
                             controller: _emailController,
@@ -179,11 +181,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 20),
                           if (_error != null)
-                            Text(
-                              _error!,
-                              style: simple_text_style(color: AppColour.red),
+                            Container(
+                              margin: const EdgeInsets.only(
+                                bottom: 20,
+                              ),
+                              padding: EdgeInsets.all(8),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColour.red.withOpacity(0.1),
+                                border: Border.all(color: AppColour.red),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                _error!,
+                                style: simple_text_style(
+                                  color: AppColour.red,
+                                ),
+                              ),
                             ),
-                          const SizedBox(height: 20),
                           BlocBuilder<UserBloc, UserState>(
                             builder: (context, state) {
                               return ElevatedButton(

@@ -20,6 +20,7 @@ class ForgotPassScreen extends StatefulWidget {
 class _ForgotPassScreenState extends State<ForgotPassScreen> {
   final _emailController = TextEditingController();
   String? _error;
+  bool success = false;
 
   @override
   void initState() {
@@ -41,11 +42,14 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
         if (state is ForgotPasswordState) {
+          setState(() {
+            success = true;
+          });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
                 'Link sent to ${_emailController.text}',
-                style: simple_text_style(color: AppColour.white,fontWeight: FontWeight.bold),
+                style: simple_text_style(color: AppColour.white),
               ),
               backgroundColor: AppColour.green,
             ),
@@ -55,7 +59,6 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
         }
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         backgroundColor: AppColour.background,
         body: Stack(
           children: [
@@ -71,8 +74,9 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  flex: 1,
+                SizedBox(
+                  height: 180,
+                  width: double.infinity,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -126,45 +130,80 @@ class _ForgotPassScreenState extends State<ForgotPassScreen> {
                         topRight: Radius.circular(22),
                       ),
                     ),
-                    padding: const EdgeInsets.all(22),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          const SizedBox(height: 20),
                           cus_text_field(
                             label: 'EMAIL',
                             controller: _emailController,
                             hintText: 'example@gmail.com',
                           ),
                           const SizedBox(height: 20),
-                          if (_error != null)
-                            Text(
-                              _error!,
-                              style: simple_text_style(color: AppColour.red),
+                          if (success)
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 20),
+                              padding: EdgeInsets.all(8),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColour.green.withOpacity(0.1),
+                                border: Border.all(color: AppColour.green),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                'Reset Link Sent Successfully.. \nPlease Check Your Email : ${_emailController.text}\nSpam Section.',
+                                style: TextStyle(
+                                  fontFamily: 'Sen',
+                                  fontSize: 14,
+                                  color: AppColour.green,
+                                ),
+                              ),
                             ),
-                          if (_error != null) const SizedBox(height: 20),
+                          if (_error != null)
+                            Container(
+                              margin: const EdgeInsets.only(
+                                bottom: 20,
+                              ),
+                              padding: EdgeInsets.all(8),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColour.red.withOpacity(0.1),
+                                border: Border.all(color: AppColour.red),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                _error!,
+                                style: simple_text_style(
+                                  color: AppColour.red,
+                                ),
+                              ),
+                            ),
                           BlocBuilder<UserBloc, UserState>(
                             builder: (context, state) {
-                              if (state is UserLoading) {
-                                return SizedBox(
-                                  height: 50,
-                                  width: 50,
-                                  child: const CircularProgressIndicator(),
-                                );
-                              }
                               return ElevatedButton(
                                 onPressed: () {
-                                  BlocProvider.of<UserBloc>(
-                                    context,
-                                  ).add(SendVerificationCode(_emailController.text));
+                                  BlocProvider.of<UserBloc>(context).add(
+                                    SendVerificationCode(_emailController.text),
+                                  );
                                 },
                                 style: elevated_button_style(),
-                                child: Text(
-                                  'FORGOT PASSWORD',
-                                  style: simple_text_style(
-                                    color: AppColour.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                child: (state is UserLoading)
+                                    ? SizedBox(
+                                        height: 30,
+                                        width: 30,
+                                        child: CircularProgressIndicator(
+                                          color: AppColour.white,
+                                        ),
+                                      )
+                                    : Text(
+                                        'FORGOT PASSWORD',
+                                        style: simple_text_style(
+                                          color: AppColour.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               );
                             },
                           ),

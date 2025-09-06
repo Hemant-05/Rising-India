@@ -82,6 +82,7 @@ class _SignupScreenState extends State<SignupScreen> {
               children: [
                 SizedBox(
                   height: 180,
+                  width: double.infinity,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -136,8 +137,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                      horizontal: 22,
+                      horizontal: 20,
                     ),
                     child: SingleChildScrollView(
                       child: Column(
@@ -170,11 +170,25 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           const SizedBox(height: 20),
                           if (_error != null)
-                            Text(
-                              _error!,
-                              style: TextStyle(color: AppColour.red),
+                            Container(
+                              margin: const EdgeInsets.only(
+                                bottom: 20,
+                              ),
+                              padding: EdgeInsets.all(8),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColour.red.withOpacity(0.1),
+                                border: Border.all(color: AppColour.red),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                _error!,
+                                style: simple_text_style(
+                                  color: AppColour.red,
+                                ),
+                              ),
                             ),
-                          if (_error != null) const SizedBox(height: 20),
                           BlocBuilder<UserBloc, UserState>(
                             builder: (context, state) {
                               return ElevatedButton(

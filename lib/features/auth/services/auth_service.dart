@@ -130,7 +130,7 @@ class AuthService extends ChangeNotifier {
       if (e.code == 'user-not-found') {
         return "No user found with this email";
       } else if (e.code == 'wrong-password') {
-        return "Incorrect password";
+        return "Password is incorrect";
       } else if (e.code == 'invalid-email') {
         return "Invalid email format";
       } else if (e.code == 'network-request-failed') {
@@ -138,7 +138,7 @@ class AuthService extends ChangeNotifier {
       } else if (e.code == 'too-many-requests') {
         return "Too many login attempts, please try again later";
       } else if (e.code == 'invalid-credential') {
-        return "Invalid credentials provided";
+        return "Email or password is invalid";
       } else {
         return e.message;
       }
