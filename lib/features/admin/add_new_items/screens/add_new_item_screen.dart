@@ -367,6 +367,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
     return _buildSectionCard(
       title: 'Product Images',
       icon: Icons.image_outlined,
+      isImage : false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -385,6 +386,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
     return _buildSectionCard(
       title: 'Name, Category',
       icon: Icons.info_outlined,
+      isImage : false,
       child: Column(
         children: [
           _buildStyledTextField(
@@ -408,6 +410,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
   Widget _buildPricingSection() {
     return _buildSectionCard(
       title: 'Qty, Price & Measurement',
+      isImage: false,
       icon: Icons.scale_outlined,
       child: Column(
         children: [
@@ -426,7 +429,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
             icon: Icons.currency_rupee,
             keyboardType: TextInputType.number,
             validator: (value) =>
-            value?.isEmpty ?? true ? 'Price is required' : null,
+                value?.isEmpty ?? true ? 'Price is required' : null,
           ),
           const SizedBox(height: 16),
           _buildStyledTextField(
@@ -435,7 +438,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
             icon: Icons.production_quantity_limits,
             keyboardType: TextInputType.number,
             validator: (value) =>
-            value?.isEmpty ?? true ? 'Quantity is required' : null,
+                value?.isEmpty ?? true ? 'Quantity is required' : null,
           ),
           const SizedBox(height: 16),
           _buildMeasurementDropdown(),
@@ -448,6 +451,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
     return _buildSectionCard(
       title: 'Inventory Management',
       icon: Icons.inventory_outlined,
+      isImage: false,
       child: Column(
         children: [
           _buildStyledTextField(
@@ -480,6 +484,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
   Widget _buildDetailsSection() {
     return _buildSectionCard(
       title: 'Product Description',
+      isImage: false,
       icon: Icons.description_outlined,
       child: Container(
         decoration: BoxDecoration(
@@ -509,6 +514,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
     required String title,
     required IconData icon,
     required Widget child,
+    required bool isImage,
   }) {
     return Container(
       width: double.infinity,
@@ -543,24 +549,43 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
               ),
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColour.primary.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(icon, color: AppColour.primary, size: 20),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColour.primary.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(icon, color: AppColour.primary, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      title,
+                      style: simple_text_style(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColour.primary,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: simple_text_style(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColour.primary,
+                if (isImage)
+                  InkWell(
+                    onTap: (){
+
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColour.primary.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.add, color: AppColour.primary, size: 20),
+                    ),
                   ),
-                ),
               ],
             ),
           ),
@@ -623,7 +648,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
               ),
               Expanded(
                 child: DropdownMenu(
-                  onSelected: (value){
+                  onSelected: (value) {
                     controller.text = value.toString();
                   },
                   width: double.infinity,
@@ -675,7 +700,8 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
           ),
           Expanded(
             child: DropdownMenu(
-              onSelected: (value) => _measurementController.text = value.toString(),
+              onSelected: (value) =>
+                  _measurementController.text = value.toString(),
               width: double.infinity,
               textStyle: simple_text_style(
                 fontWeight: FontWeight.w500,
@@ -708,7 +734,7 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
 
   Widget _buildAvailabilityToggle() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(12),
@@ -889,7 +915,10 @@ class _AddNewItemScreenState extends State<AddNewItemScreen>
       String itemName = _itemNameController.text.trim();
       photos_list.addAll(context.read<ImageSelectionCubit>().state.images);
       photos_list_urls.addAll(
-        await context.read<ImageSelectionCubit>().getImageUrl(itemName,photos_list),
+        await context.read<ImageSelectionCubit>().getImageUrl(
+          itemName,
+          photos_list,
+        ),
       );
       String uid = FirebaseAuth.instance.currentUser!.uid;
       double price = double.parse(_priceController.text.trim());

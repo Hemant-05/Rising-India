@@ -36,7 +36,7 @@ class ProductsCubit extends Cubit<ProductsState> {
       for (String url in url_list) {
         await deleteImage(url);
       }
-      await FirebaseFirestore.instance.collection('products').doc(pid).delete();
+      await firestore.collection('products').doc(pid).delete();
       if (context.mounted) {
         Navigator.pop(context); // Close Product Detail Screen
         ScaffoldMessenger.of(context).showSnackBar(

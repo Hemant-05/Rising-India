@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/category/bloc/category_bloc.dart';
 import 'package:raising_india/features/admin/product/bloc/products_cubit.dart';
+import 'package:raising_india/features/admin/services/image_services.dart';
 import 'package:raising_india/features/services/stock_management_repository.dart';
 import 'package:raising_india/models/product_model.dart';
 
@@ -30,6 +33,10 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
   late TextEditingController lowStockController;
   late TextEditingController ratingController;
   late TextEditingController categoryController;
+  List<String> photos_list = [];
+  List<File> photos_files_list = [];
+  List<String> deleted_photos_list = [];
+  final ImageServices _imageServices = ImageServices();
 
   bool isAvailable = false;
   bool loading = false;
@@ -47,13 +54,16 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
 
     // ✅ Initialize all controllers with product data
     nameController = TextEditingController(text: widget.product.name);
+    photos_list.addAll(widget.product.photos_list);
     descriptionController = TextEditingController(
       text: widget.product.description,
     );
     priceController = TextEditingController(
       text: widget.product.price.toString(),
     );
-    mrpController = widget.product.mrp == null? TextEditingController(text: (widget.product.price + 5).toString()) : TextEditingController(text: widget.product.mrp.toString());
+    mrpController = widget.product.mrp == null
+        ? TextEditingController(text: (widget.product.price + 5).toString())
+        : TextEditingController(text: widget.product.mrp.toString());
     quantityController = TextEditingController(
       text: widget.product.quantity.toString(),
     );
@@ -69,8 +79,7 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     ratingController = TextEditingController(
       text: widget.product.rating.toString(),
     );
-    categoryController = TextEditingController(
-      text: widget.product.category);
+    categoryController = TextEditingController(text: widget.product.category);
     isAvailable = widget.product.isAvailable;
 
     // ✅ Initialize animations
@@ -148,17 +157,26 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     if (loading) return;
 
     setState(() => loading = true);
-    print('-----------------------1');
 
     try {
+      List<String> new_photos_list = await _imageServices.uploadImages(photos_files_list, widget.product.name);
+      photos_list.addAll(new_photos_list);
+      if(deleted_photos_list.isNotEmpty){
+        for(String url in deleted_photos_list){
+          await _imageServices.deleteImage(url);
+        }
+      }
       // ✅ Prepare updated data with validation
       final updatedData = {
+        'photos_list': photos_list,
         'name': nameController.text.trim(),
         'description': descriptionController.text.trim(),
         'price':
             double.tryParse(priceController.text.trim()) ??
             widget.product.price,
-        'mrp': mrpController.text.trim().isEmpty? (widget.product.price + 5) : double.parse(mrpController.text.trim()),
+        'mrp': mrpController.text.trim().isEmpty
+            ? (widget.product.price + 5)
+            : double.parse(mrpController.text.trim()),
         'quantity':
             double.tryParse(quantityController.text.trim()) ??
             widget.product.quantity,
@@ -323,77 +341,113 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
     }
   }
 
+  void _showImageSourceDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColour.white,
+      builder: (ctx) => Wrap(
+        children: [
+          ListTile(
+            leading: Icon(Icons.photo),
+            title: Text('Pick from gallery', style: simple_text_style()),
+            onTap: () async {
+              final image = await _imageServices.pickFromGallery();
+              if (image != null) {
+                setState(() {
+                  _hasUnsavedChanges = true;
+                  photos_files_list.add(image);
+                });
+              }
+              /*if (image != null) {
+                context.read<ImageSelectionCubit>().setImageAtIndex(imageSlot, image);
+              }*/
+              Navigator.pop(ctx);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.camera_alt),
+            title: Text('Take a photo', style: simple_text_style()),
+            onTap: () async {
+              final image = await _imageServices.pickFromCamera();
+              if (image != null) {
+                setState(() {
+                  _hasUnsavedChanges = true;
+                  photos_files_list.add(image);
+                });
+              }
+              /*if (image != null) {
+                context.read<ImageSelectionCubit>().setImageAtIndex(imageSlot, image);
+              }*/
+              Navigator.pop(ctx);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (_hasUnsavedChanges) {
-          final shouldPop = await _showUnsavedChangesDialog();
-          return shouldPop ?? false;
-        }
-        return true;
-      },
-      child: Scaffold(
-        backgroundColor: Colors.grey.shade50,
-        appBar: _buildStunningAppBar(),
-        body: Stack(
-          children: [
-            // ✅ Main Content
-            _buildMainContent(),
+    return Scaffold(
+      backgroundColor: Colors.grey.shade50,
+      appBar: _buildStunningAppBar(),
+      body: Stack(
+        children: [
+          // ✅ Main Content
+          _buildMainContent(),
 
-            // ✅ Loading Overlay
-            if (loading)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+          // ✅ Loading Overlay
+          if (loading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(
+                          strokeWidth: 3,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColour.primary,
                           ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CircularProgressIndicator(
-                            strokeWidth: 3,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColour.primary,
-                            ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Updating Product...',
+                          style: simple_text_style(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: AppColour.primary,
                           ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Updating Product...',
-                            style: simple_text_style(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: AppColour.primary,
-                            ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Please wait while we save changes',
+                          style: simple_text_style(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Please wait while we save changes',
-                            style: simple_text_style(
-                              color: Colors.grey.shade600,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
@@ -578,66 +632,114 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
               ),
             ),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppColour.primary.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(Icons.image, color: AppColour.primary, size: 20),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColour.primary.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        Icons.image,
+                        color: AppColour.primary,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Product Images',
+                      style: simple_text_style(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColour.primary,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Text(
-                  'Product Images',
-                  style: simple_text_style(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColour.primary,
+                InkWell(
+                  onTap: () {
+                    _showImageSourceDialog(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColour.primary.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.add_a_photo,
+                      color: AppColour.primary,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-
           // Images Content
+          const SizedBox(height: 10),
+          if(photos_list.isNotEmpty && photos_files_list.isNotEmpty)
+          Text('Old Images', style: simple_text_style(color: AppColour.black)),
           Padding(
-            padding: const EdgeInsets.all(20),
-            child: widget.product.photos_list.isNotEmpty
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 4),
+            child: photos_list.isNotEmpty
                 ? SizedBox(
-                    height: 120,
+                    height: 80,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
-                      itemCount: widget.product.photos_list.length,
+                      itemCount: photos_list.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 12),
                       itemBuilder: (context, index) {
-                        return Container(
-                          width: 120,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade300,
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
+                        return Stack(
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: AppColour.black,width: 1),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.shade300,
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.product.photos_list[index],
-                              fit: BoxFit.cover,
-                              errorWidget: (_, __, ___) => Container(
-                                color: Colors.grey.shade200,
-                                child: Icon(
-                                  Icons.broken_image,
-                                  color: Colors.grey.shade400,
-                                  size: 40,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: CachedNetworkImage(
+                                  imageUrl: photos_list[index],
+                                  fit: BoxFit.cover,
+                                  errorWidget: (_, __, ___) => Container(
+                                    color: Colors.grey.shade200,
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      color: Colors.grey.shade400,
+                                      size: 40,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    deleted_photos_list.add(photos_list[index]);
+                                    _hasUnsavedChanges = true;
+                                    photos_list.removeAt(index);
+                                  });
+                                },
+                                child: Icon(Icons.cancel, color: AppColour.red),
+                              ),
+                            ),
+                          ],
                         );
                       },
                     ),
@@ -670,6 +772,63 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
                     ),
                   ),
           ),
+          const SizedBox(height: 10),
+          if (photos_files_list.isNotEmpty)...{
+            Text('New Images', style: simple_text_style(color: AppColour.black)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
+              child: SizedBox(
+                height: 80,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: photos_files_list.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 12),
+                  itemBuilder: (context, index) {
+                    return Stack(
+                      children: [
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color: AppColour.black, width: 1),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.file(
+                              photos_files_list[index],
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _hasUnsavedChanges = true;
+                                photos_files_list.removeAt(index);
+                              });
+                            },
+                            child: Icon(Icons.cancel, color: AppColour.red),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+          }
         ],
       ),
     );
@@ -1007,11 +1166,15 @@ class _AdminProductDetailScreenState extends State<AdminProductDetailScreen>
                       hintText: hintText,
                       inputDecorationTheme: InputDecorationTheme(
                         border: InputBorder.none,
-                        hintStyle: simple_text_style(color: AppColour.lightGrey),
+                        hintStyle: simple_text_style(
+                          color: AppColour.lightGrey,
+                        ),
                         contentPadding: EdgeInsets.zero,
                       ),
                       menuStyle: MenuStyle(
-                        backgroundColor: MaterialStateProperty.all(AppColour.white),
+                        backgroundColor: MaterialStateProperty.all(
+                          AppColour.white,
+                        ),
                         elevation: MaterialStateProperty.all(8),
                       ),
                       dropdownMenuEntries: state is CategoryLoaded

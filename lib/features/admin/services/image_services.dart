@@ -22,6 +22,18 @@ class ImageServices {
     return imageUrls;
   }
 
+  Future<bool> deleteImage(String downloadUrl) async {
+    try {
+      final Reference ref = _storage.refFromURL(downloadUrl);
+      await ref.delete();
+      print('✅ Image deleted successfully');
+      return true;
+    } catch (e) {
+      print('❌ Delete error: $e');
+      return false;
+    }
+  }
+
   Future<String> uploadBannerImage(File image) async {
     try{
       final user = _auth.currentUser;
