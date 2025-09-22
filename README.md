@@ -25,6 +25,13 @@ It provides users with a **fast, smooth, and reliable shopping experience** — 
 |------|------------------------------------------|------|------------------------------------------|---------|
 | ![Home](screenshots/home.png) | ![Product](screenshots/all_products.png) | ![Cart](screenshots/cart.png) | ![Tracking](screenshots/track_order.png) | ![Profile](screenshots/profile.png) |
 
+ | Checkout | Order Confirmation                               | Payment | Notfication                                    |
+ |----------|--------------------------------------------------| -------- |------------------------------------------------|
+ | ![Checkout](screenshots/checkout.png) | ![Confirmation](screenshots/payment_success.png) | ![Payment](screenshots/payment.png) | ![Notification](screenshots/notifications.png) |
+
+  | LogIn | Forgot Password | Sign Up | Profile | 
+  | -------| ---------------| --------| --------|
+  | ![Login](screenshots/login.png) | ![Forgot](screenshots/forgot.png) | ![Signup](screenshots/signup.png) | ![Profile](screenshots/profile.png) |
 *(Add your screenshots inside `/screenshots/` and link them here)*
 
 ---
@@ -50,7 +57,7 @@ It provides users with a **fast, smooth, and reliable shopping experience** — 
 
 ```bash
 # Clone the repository
-git clone https://github.com/Hemant-05/raising_india.git
+git clone https://github.com/Hemant-05/Rising-India.git
 cd raising_india
 
 # Install dependencies
@@ -97,12 +104,12 @@ Push to branch → git push origin feature-name
 
 Open a Pull Request
 
-📜 License
+## 📜 License
 
 This project is licensed under the MIT License – see the LICENSE
- file for details.
+file for details.
 
-👨‍💻 Author
+## 👨‍💻 Author
 
 Hemant Sahu
 
