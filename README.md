@@ -1,86 +1,71 @@
-# raising_india
+# 🛒 Rising Mart – Grocery Delivery App
 
-🛒 Rising Mart – Grocery Delivery App
-📖 About the Project
+Rising Mart is a **full-featured grocery delivery application** built with **Flutter** and **Firebase**, inspired by popular apps like **Blinkit, Zepto, and BigBasket**.  
+It provides users with a **fast, smooth, and reliable shopping experience** — from browsing groceries to doorstep delivery.
 
-Rising Mart is a full-featured grocery delivery application built with Flutter and Firebase.
-It allows users to browse groceries, add them to cart, and get them delivered at their doorstep.
-Inspired by apps like Blinkit, Zepto, and BigBasket, Rising Mart aims to provide a fast, smooth, and reliable shopping experience.
+---
 
-✨ Features
+## ✨ Features
 
-👤 User Authentication (Sign up, Login, Profile Management)
+- 👤 **User Authentication** – Sign up, Login, Profile Management
+- 🛍 **Browse & Search Products** – Categories, Filters & Smart Search
+- 🛒 **Cart & Checkout** – Smooth order placement
+- 💳 **Multiple Payment Methods** – UPI, Wallet, COD, Razorpay
+- 📍 **Location-based Delivery** – Save & manage delivery addresses
+- 🚚 **Order Tracking** – Real-time status updates
+- 🔔 **Push Notifications** – Offers, order updates & reminders
+- 🌙 **Dark/Light Theme** – Personalized experience
+- 📊 **Admin Panel** – Manage Products, Users, Sales & Orders
 
-🛍 Browse & Search Products (with categories and filters)
+---
 
-🛒 Cart & Checkout
+## 📸 Screenshots
 
-💳 Multiple Payment Methods (UPI, Wallet, COD, etc.)
+| Home | Product Details                          | Cart | Order Tracking                           | Profile |
+|------|------------------------------------------|------|------------------------------------------|---------|
+| ![Home](screenshots/home.png) | ![Product](screenshots/all_products.png) | ![Cart](screenshots/cart.png) | ![Tracking](screenshots/track_order.png) | ![Profile](screenshots/profile.png) |
 
-📍 Address & Location-based Delivery
+*(Add your screenshots inside `/screenshots/` and link them here)*
 
-🚚 Order Tracking (status updates in real-time)
+---
 
-🔔 Push Notifications for offers and order updates
+## 🏗 Tech Stack
 
-🌙 Dark/Light Theme support
+- **Frontend:** Flutter (Dart)
+- **Backend:** Firebase (Authentication, Firestore, Storage, Cloud Functions)
+- **Payments:** UPI, Razorpay, COD
+- **Push Notifications:** Firebase Cloud Messaging (FCM)
+- **State Management:** BLoC & Cubit
 
-📊 Admin Panel (manage products, users, sales and orders)
+---
 
-🖼 Screenshots
+## 🚀 Getting Started
 
-(App screenshots, added soon here )
+### ✅ Prerequisites
+- Flutter SDK
+- Android Studio / VS Code
+- Firebase Project Setup
 
-Home Screen	Product Details	Cart	Order Tracking
-	
-	
-🏗 Tech Stack
+### ⚡ Installation
 
-Frontend: Flutter (Dart)
-
-Backend: Firebase (Authentication, Firestore, Storage, Cloud Functions)
-
-Payments: UPI / Razorpay / Payment Gateway
-
-Push Notifications: Firebase Cloud Messaging (FCM) and Firebase Cloud Functions
-
-State Management: BLoC and cubit
-
-🚀 Getting Started
-Prerequisites
-
-Flutter SDK 
-
-Android Studio / VS Code
-
-Firebase project setup
-
-Installation
-
-Clone the repository
-
+```bash
+# Clone the repository
 git clone https://github.com/Hemant-05/raising_india.git
-cd rising_india
+cd raising_india
 
-
-Install dependencies
-
+# Install dependencies
 flutter pub get
 
-
-Connect Firebase
-
-Add google-services.json (for Android) in /android/app
-
-Add GoogleService-Info.plist (for iOS) in /ios/Runner
-
-Run the app
-
+# Run the app
 flutter run
 
-⚙️ Configuration
+```
 
-Set up Firebase Authentication (Email/Phone/Google login)
+## 🔧 Firebase Configuration
+
+Add google-services.json → /android/app/
+
+Add GoogleService-Info.plist → /ios/Runner/
 
 Set up Firestore collections: users, products, orders
 
@@ -88,15 +73,15 @@ Enable Firebase Storage for product images
 
 Configure Cloud Functions for order handling (optional)
 
-📌 Roadmap
+## 📌 Roadmap
 
- Implement referral & rewards system
+🎁 Referral & Rewards System
 
- Add subscription model for daily groceries (milk, bread, etc.)
+📦 Subscription Model (daily groceries – milk, bread, etc.)
 
- Multi-language support (English/Hindi)
+🌍 Multi-language Support (English / Hindi)
 
- Delivery partner app
+🚴 Delivery Partner App
 
 🤝 Contributing
 
@@ -104,13 +89,13 @@ Contributions are always welcome!
 
 Fork the repo
 
-Create a feature branch (git checkout -b feature-name)
+Create a feature branch → git checkout -b feature-name
 
-Commit changes (git commit -m "Added new feature")
+Commit changes → git commit -m "Added new feature"
 
-Push to branch (git push origin feature-name)
+Push to branch → git push origin feature-name
 
-Create a Pull Request
+Open a Pull Request
 
 📜 License
 
@@ -119,4 +104,8 @@ This project is licensed under the MIT License – see the LICENSE
 
 👨‍💻 Author
 
-Hemant Sahu – GitHub | LinkedIn
+Hemant Sahu
+
+🌐 [LinkedIn](www.linkedin.com/in/hemant-sahu-06234324a)
+
+💻 [GitHub](www.github.com/Hemant-05)
