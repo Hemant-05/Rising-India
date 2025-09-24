@@ -992,9 +992,8 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
               ],
             ),
             const SizedBox(height: 16),
-            _buildPriceRow('Total', '₹${widget.mrpTotal}'),
+            _buildPriceRow('MRP Total', '₹${widget.mrpTotal}', AppColour.black, true),
             _buildPriceRow('Discounted Price', '₹${widget.total}'),
-            _buildPriceRow('Your Saving', '₹${double.parse(widget.mrpTotal) - double.parse(widget.total)}'),
             _buildPriceRow(
               'Delivery Fee',
               double.parse(widget.total) < 99 ? '₹${deliveryFee}' : 'Free',
@@ -1051,7 +1050,7 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
     );
   }
 
-  Widget _buildPriceRow(String label, String amount, [Color? color]) {
+  Widget _buildPriceRow(String label, String amount, [Color? color, bool isCut = false]) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -1060,13 +1059,16 @@ class _PaymentCheckoutScreenState extends State<PaymentCheckoutScreen>
           Text(
             label,
             style: simple_text_style(
-              color: color ?? Colors.grey.shade700,
+              color: Colors.grey.shade700,
               fontSize: 16,
             ),
           ),
           Text(
             amount,
-            style: simple_text_style(
+            style: TextStyle(
+              fontFamily: 'Sen',
+              decorationThickness: 2,
+              decoration: isCut ? TextDecoration.lineThrough : TextDecoration.none,
               color: color ?? AppColour.black,
               fontSize: 16,
               fontWeight: FontWeight.w600,
