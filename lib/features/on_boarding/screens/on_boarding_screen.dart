@@ -3,6 +3,7 @@ import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
 import 'package:raising_india/constant/ConString.dart';
 import 'package:raising_india/features/auth/screens/login_screen.dart';
+import 'package:raising_india/features/auth/screens/signup_screen.dart';
 
 import '../../../comman/elevated_button_style.dart';
 import '../../../models/OnboardingItem.dart';
@@ -101,7 +102,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               isLastPage
                   ? Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
+                      MaterialPageRoute(builder: (context) => SignupScreen()),
                       (route) => false,
                     )
                   : _pageController.nextPage(

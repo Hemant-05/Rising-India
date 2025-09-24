@@ -83,13 +83,41 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 180,
                   width: double.infinity,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('Log In', style: bold_text_style(AppColour.white)),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Please sign in to your existing account',
-                        style: simple_text_style(color: AppColour.white),
+                      Row(
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 40,
+                            margin: const EdgeInsets.only(top: 20, left: 20),
+                            decoration: BoxDecoration(
+                              color: AppColour.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(
+                                size: 16,
+                                Icons.arrow_back_ios_rounded,
+                                color: AppColour.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text('Log In', style: bold_text_style(AppColour.white)),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Please sign in to your existing account',
+                            style: simple_text_style(color: AppColour.white),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -228,32 +256,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                               );
                             },
-                          ),
-                          const SizedBox(height: 20),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const SignupScreen(),
-                                ),
-                              );
-                            },
-                            child: RichText(
-                              text: TextSpan(
-                                text: 'Don\'t have an account? ',
-                                style: simple_text_style(color: AppColour.grey),
-                                children: [
-                                  TextSpan(
-                                    text: 'SIGN UP',
-                                    style: simple_text_style(
-                                      color: AppColour.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
                         ],
                       ),

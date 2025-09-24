@@ -15,6 +15,7 @@ import 'package:raising_india/features/admin/sales_analytics/screens/sales_analy
 import 'package:raising_india/features/admin/stock_management/screens/low_stock_alert_screen.dart';
 import 'package:raising_india/features/auth/bloc/auth_bloc.dart';
 import 'package:raising_india/features/auth/screens/login_screen.dart';
+import 'package:raising_india/features/auth/screens/signup_screen.dart';
 
 class ProfileManageScreen extends StatefulWidget {
   const ProfileManageScreen({super.key});
@@ -184,7 +185,7 @@ class _ProfileManageScreenState extends State<ProfileManageScreen> {
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const LoginScreen(),
+                                  builder: (_) => const SignupScreen(),
                                 ),
                                 (route) => false,
                               );

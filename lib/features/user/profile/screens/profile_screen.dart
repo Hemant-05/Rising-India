@@ -5,6 +5,7 @@ import 'package:raising_india/comman/back_button.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/constant/ConPath.dart';
+import 'package:raising_india/features/auth/screens/signup_screen.dart';
 import 'package:raising_india/features/user/coupon/bloc/coupon_bloc.dart';
 import 'package:raising_india/features/user/coupon/screens/coupons_screen.dart';
 import 'package:raising_india/features/user/profile/bloc/profile_bloc.dart';
@@ -170,7 +171,7 @@ class ProfileScreen extends StatelessWidget {
                 ).showSnackBar(SnackBar(content: Text('Logged out...')));
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  MaterialPageRoute(builder: (_) => const SignupScreen()),
                   (route) => false,
                 );
               }),

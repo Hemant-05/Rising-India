@@ -7,6 +7,7 @@ import 'package:raising_india/comman/elevated_button_style.dart';
 import 'package:raising_india/comman/simple_text_style.dart';
 import 'package:raising_india/constant/AppColour.dart';
 import 'package:raising_india/features/admin/pagination/main_screen_a.dart';
+import 'package:raising_india/features/auth/screens/login_screen.dart';
 import 'package:raising_india/features/auth/screens/verification_screen.dart';
 import 'package:raising_india/features/auth/services/auth_service.dart';
 import '../../../comman/bold_text_style.dart';
@@ -84,43 +85,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   height: 180,
                   width: double.infinity,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            height: 40,
-                            width: 40,
-                            margin: const EdgeInsets.only(top: 20, left: 20),
-                            decoration: BoxDecoration(
-                              color: AppColour.white,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Icon(
-                                size: 16,
-                                Icons.arrow_back_ios_rounded,
-                                color: AppColour.black,
-                              ),
-                            ),
-                          ),
-                        ],
+                      Text(
+                        'Create an Account',
+                        style: bold_text_style(AppColour.white),
                       ),
-                      Column(
-                        children: [
-                          Text(
-                            'Sign Up',
-                            style: bold_text_style(AppColour.white),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            'Please sign up to get started',
-                            style: simple_text_style(color: AppColour.white),
-                          ),
-                        ],
+                      const SizedBox(height: 10),
+                      Text(
+                        'Please sign up to get started',
+                        style: simple_text_style(color: AppColour.white),
                       ),
                     ],
                   ),
@@ -227,6 +201,32 @@ class _SignupScreenState extends State<SignupScreen> {
                                       ),
                               );
                             },
+                          ),
+                          const SizedBox(height: 20),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginScreen(),
+                                )
+                              );
+                            },
+                            child: RichText(
+                              text: TextSpan(
+                                text: 'Already have an account? ',
+                                style: simple_text_style(color: AppColour.grey),
+                                children: [
+                                  TextSpan(
+                                    text: 'LOG IN',
+                                    style: simple_text_style(
+                                      color: AppColour.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ),
